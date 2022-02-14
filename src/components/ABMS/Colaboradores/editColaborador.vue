@@ -37,7 +37,6 @@
               placeholder="Escribe..."
               style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
             ></v-text-field>
-            usuariosDescripciones
             <v-select
               dense
               :disabled="permisoGuardar()"
@@ -120,6 +119,15 @@
               placeholder="Selecciona..."
               style="max-width:20rem;min-width:20rem; display:inline-block;margin-left:1rem"
             ></v-select>
+             <v-text-field
+              outlined
+              dense
+              :disabled="permisoGuardar()"
+              v-model="colaborador.Colaborador_Funcion_Descripcion"
+              label="Funcion"
+              placeholder="Escribe..."
+              style="display:inline-block; min-width:18rem;margin-left:1rem;margin-top:2rem"
+            ></v-text-field>
             
             <double-select
               :items="arrayOfItems"
@@ -280,7 +288,6 @@ export default {
     async initialize(){
       this.loadUsuarios();
       this.loadEmpresas();
-      //this.loadFunciones();
       this.loadRegions();
       this.loadCalendars();
       this.loadColaboradoresAreas();
@@ -376,18 +383,7 @@ export default {
           this.tiposDescripciones = response.data.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
         });
       },
-      /*
-      loadFunciones(){
-        var prueba = []
-        axios.get("http://localhost:1337"+"/funciones/descripciones")
-        .then((response) => {
-          prueba = response.data
-          this.arrayOfItems = prueba;
-          console.log(prueba)
-          console.log(this.arrayOfItems)
-        });
-        */
-
+     
     async guardar() {
           axios.delete(ip+"/colaboradores_funciones/"+this.colaborador.Colaborador_Key).then((response) => {
               console.log(response);
