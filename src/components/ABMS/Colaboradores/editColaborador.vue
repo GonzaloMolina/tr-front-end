@@ -119,15 +119,7 @@
               placeholder="Selecciona..."
               style="max-width:20rem;min-width:20rem; display:inline-block;margin-left:1rem"
             ></v-select>
-             <v-text-field
-              outlined
-              dense
-              :disabled="permisoGuardar()"
-              v-model="colaborador.Colaborador_Funcion_Descripcion"
-              label="Funcion"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width:18rem;margin-left:1rem;margin-top:2rem"
-            ></v-text-field>
+             
             
             <double-select
               :items="arrayOfItems"
