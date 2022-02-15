@@ -237,7 +237,7 @@ export default {
         Colaborador_Calendario: '',
         Colaborador_Area: '',
         Colaborador_Empresa: '',
-        Colaborador_Funcion : 'no aplica'
+        Colaborador_Funcion : 'no aplica',
         Colaborador_Hora: 0,
         Usuario_Creacion: 1,
         Usuario_Modificacion: 1,
