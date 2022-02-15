@@ -38,7 +38,7 @@
               style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
             ></v-text-field>
 
-             ></v-text-field>
+             </v-text-field>
             <v-text-field
               outlined
               dense
@@ -124,7 +124,7 @@
               outlined
               dense
               :disabled="permisoGuardar()"
-              v-model= 'colaborador.Colaborador_Funcion'
+              v-model= 'arrayOfSelectedItems'
               label="Funcion"
               placeholder="Escribe..."
               style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
