@@ -37,16 +37,17 @@
               placeholder="Escribe..."
               style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
             ></v-text-field>
-            <v-select
+
+             ></v-text-field>
+            <v-text-field
+              outlined
               dense
               :disabled="permisoGuardar()"
-              outlined
               v-model="colaborador.Colaborador_Usuario"
-              :items="usuariosDescripciones"
               label="Usuario"
-              placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
-            ></v-select>
+              placeholder="Escribe..."
+              style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
+            ></v-text-field>
             
             <v-select
               dense
@@ -119,8 +120,15 @@
               placeholder="Selecciona..."
               style="max-width:20rem;min-width:20rem; display:inline-block;margin-left:1rem"
             ></v-select>
-             
-            
+            <v-text-field
+              outlined
+              dense
+              :disabled="permisoGuardar()"
+              v-model= 'colaborador.Colaborador_Funcion'
+              label="Funcion"
+              placeholder="Escribe..."
+              style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
+            ></v-text-field>
             <double-select
               :items="arrayOfItems"
               :selectedItems="arrayOfSelectedItems"
@@ -229,6 +237,7 @@ export default {
         Colaborador_Calendario: '',
         Colaborador_Area: '',
         Colaborador_Empresa: '',
+        Colaborador_Funcion : 'no aplica'
         Colaborador_Hora: 0,
         Usuario_Creacion: 1,
         Usuario_Modificacion: 1,
@@ -280,6 +289,7 @@ export default {
     async initialize(){
       this.loadUsuarios();
       this.loadEmpresas();
+      //this.loadFunciones();
       this.loadRegions();
       this.loadCalendars();
       this.loadColaboradoresAreas();
@@ -375,7 +385,18 @@ export default {
           this.tiposDescripciones = response.data.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
         });
       },
-     
+      /*
+      loadFunciones(){
+        var prueba = []
+        axios.get("http://localhost:1337"+"/funciones/descripciones")
+        .then((response) => {
+          prueba = response.data
+          this.arrayOfItems = prueba;
+          console.log(prueba)
+          console.log(this.arrayOfItems)
+        });
+        */
+
     async guardar() {
           axios.delete(ip+"/colaboradores_funciones/"+this.colaborador.Colaborador_Key).then((response) => {
               console.log(response);
