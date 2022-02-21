@@ -69,7 +69,7 @@ export default {
         }),
         methods:{
             getUser(user){
-                axios.post(ip+"/autenticacion/autenticar/", user).then((response) => {
+                axios.post("https://planningbackdev.azurewebsites.net"+"/autenticacion/autenticar/", user).then((response) => {
                     this.userRecover = response.data.user;
                     if(this.userRecover.Usuario_Habilitado == 'X'){
                         this.getPermisos(user)

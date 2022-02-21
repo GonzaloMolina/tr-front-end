@@ -190,6 +190,7 @@ const ip = require('../../../ip/ip')
           var habilitado = {Usuario_Habilitado: ''}
           item.Usuario_Habilitado = ''
           this.desserts.splice(index, 1, item)
+          console.log(item.Usuario_Codigo)
           axios.patch(ip+"/usuarios/"+item.Usuario_Codigo, habilitado)
           .then(response => {
             console.log(response)

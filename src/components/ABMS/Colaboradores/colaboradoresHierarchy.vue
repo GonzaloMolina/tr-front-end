@@ -188,20 +188,23 @@ const ip = require('../../../ip/ip')
       },
       desactivarColaborador(item) { //Boton de borrado logico. Quita la marca visible del cliente
           var habilitado = {Visible: '', Colaborador_Estado: 2}
-          var inhabilitado = ''
+          var  user_habilitado = {Usuario_Habilitado : ''}
           item.visible = ''
+          console.log(item.id)
           this.selection[0].visible = ''
           axios.patch(ip+"/colaboradores/"+item.id, habilitado)
-          axios.patch(ip+"/usuarios/habilitado/"+item.id,inhabilitado)
+          axios.patch(ip+'/usuarios/habilitado/'+item.codigo_usuario,user_habilitado)
           .then(response => {
             console.log(response)
           })
               },
       activarColaborador(item){
         var habilitado = {Visible: 'X',Colaborador_Estado: 1}
+        var  user_habilitado = {Usuario_Habilitado : 'X'}
         this.selection[0].visible = 'X'
         
         axios.patch(ip+"/colaboradores/"+item.id, habilitado)
+        axios.patch(ip+'/usuarios/habilitado/'+item.codigo_usuario,user_habilitado)
         .then(response => {
           console.log(response)
         })
