@@ -222,11 +222,7 @@ export default {
 
     asignarKeys(){
         var tipoEmpresaKey = this.tiposEmpresas.filter((tipoEmpresa) => tipoEmpresa.Tipo_Empresa_Descripcion == this.empresa.Empresa_Tipo)[0].Tipo_Empresa_Key;
-        var keyRegion = this.regiones.filter((region) => region.Region_Descripcion == this.empresa.Empresa_Region)[0].Region_Key;
-        var unidadNegocioKey= this.unidades_Negocio.filter((unidadNegocio) => unidadNegocio.Unidad_Negocio_Descripcion == this.empresa.Empresa_Unidad_Negocio)[0].Unidad_Negocio_Key
         this.empresa.Empresa_Tipo = tipoEmpresaKey;
-        this.empresa.Empresa_Region = keyRegion;
-        this.empresa.Empresa_Unidad_Negocio = unidadNegocioKey;
     },
     mounted() {
       if(!localStorage.login){
