@@ -187,11 +187,14 @@ const ip = require('../../../ip/ip')
         const index = this.desserts.indexOf(item)
         // this.elementoEditado = Object.assign({}, item)
         // const item = this.elementoEditado
+         var habilitado_colaborador = {Visible: '', Colaborador_Estado: 2}
           var habilitado = {Usuario_Habilitado: ''}
           item.Usuario_Habilitado = ''
+          console.log(item)
           this.desserts.splice(index, 1, item)
           console.log(item.Usuario_Codigo)
           axios.patch(ip+"/usuarios/"+item.Usuario_Codigo, habilitado)
+          axios.patch(ip+"/colaboradores/"+item.Usuario_Key, habilitado_colaborador)
           .then(response => {
             console.log(response)
           })
@@ -205,10 +208,13 @@ const ip = require('../../../ip/ip')
 
       activarUsuario(item) { //Activa el cliente si se encuentra desactivado.
         const index = this.desserts.indexOf(item)
+        var habilitado_colaborador = {Visible: 'X',Colaborador_Estado: 1}
         var habilitado = {Usuario_Habilitado: 'X'}
         item.Usuario_Habilitado = 'X'
+        console.log(item)
         this.desserts.splice(index, 1, item)
         axios.patch(ip+"/usuarios/"+item.Usuario_Codigo, habilitado)
+        axios.patch(ip+"/colaboradores/"+item.Usuario_Key, habilitado_colaborador)
         .then(response => {
           console.log(response)
         })
