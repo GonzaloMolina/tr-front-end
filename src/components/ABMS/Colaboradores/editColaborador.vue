@@ -23,7 +23,7 @@
               outlined
               dense
               :disabled="permisoGuardar()"
-              v-model="colaborador.Colaborador_Codigo"
+              v-model = "colaborador.Colaborador_Codigo"
               label="Código"
               placeholder="Escribe..."
               style="display:inline-block; min-width:18rem;margin-left:1rem;margin-top:2rem"
@@ -38,16 +38,16 @@
               style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
             ></v-text-field>
 
-             </v-text-field>
-            <v-text-field
-              outlined
+            <v-select
               dense
               :disabled="permisoGuardar()"
+              outlined
               v-model="colaborador.Colaborador_Usuario"
+              :items="usuarioCodigos"
               label="Usuario"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
-            ></v-text-field>
+              placeholder="Selecciona..."
+              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+            ></v-select>
             
             <v-select
               dense
@@ -120,15 +120,14 @@
               placeholder="Selecciona..."
               style="max-width:20rem;min-width:20rem; display:inline-block;margin-left:1rem"
             ></v-select>
-            <v-text-field
-              outlined
-              dense
-              :disabled="permisoGuardar()"
-              v-model= 'arrayOfSelectedItems'
-              label="Funcion"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width:18rem; margin-left:1.8rem;margin-top:2rem"
-            ></v-text-field>
+            <div>
+            <div class='labelText'>
+            <h5 class ='labelT'>Funciones disponibles</h5>
+            </div>
+            <div class='labelText'>
+             <h5 class ='labelT2'>Funciones asignadas</h5> 
+             </div>
+             </div>
             <double-select
               :items="arrayOfItems"
               :selectedItems="arrayOfSelectedItems"
@@ -138,6 +137,7 @@
               value-field="id"
               style="width:740px;height:350px;margin-left:0rem"
             ></double-select>
+            </div>
 
 
 
@@ -192,21 +192,6 @@
   </v-content>
 </template>
 
-
-
-
-<style  scoped>
-.container {
-  margin-left: 1rem;
-  min-width: 100rem;
-}
-
-
-
-
-</style>
-
-
 <script>
 import axios from "axios";
 import loader from '../../Estado/loader'
@@ -220,8 +205,7 @@ export default {
   props: {
     colaborador_usuario: ""
   },
-  components: {loader,DoubleSelect
-              },
+  components: {loader,DoubleSelect},
   data: () => ({
     codigoViejo: '',
     //Reglas de agregado y editado
@@ -242,6 +226,7 @@ export default {
         Usuario_Creacion: 1,
         Usuario_Modificacion: 1,
     },
+    usuarioCodigos: [],
     colaboradores:[],
     colaboradoresDescripciones: [],
     empresas: [],
@@ -289,7 +274,6 @@ export default {
     async initialize(){
       this.loadUsuarios();
       this.loadEmpresas();
-      //this.loadFunciones();
       this.loadRegions();
       this.loadCalendars();
       this.loadColaboradoresAreas();
@@ -331,9 +315,12 @@ export default {
     loadUsuarios(){
       axios.get(ip+"/usuarios").then((response) => {
         this.usuarios = response.data;
+        this.usuarioCodigos = response.data.map((usuario) => usuario.Usuario_Mail).sort()
+        console.log(usuarioCodigos)
         this.usuariosDescripciones = response.data.map(
           (usuario) => usuario.Usuario_Codigo
         ).sort();
+        
     })
     },
 
@@ -385,17 +372,6 @@ export default {
           this.tiposDescripciones = response.data.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
         });
       },
-      /*
-      loadFunciones(){
-        var prueba = []
-        axios.get("http://localhost:1337"+"/funciones/descripciones")
-        .then((response) => {
-          prueba = response.data
-          this.arrayOfItems = prueba;
-          console.log(prueba)
-          console.log(this.arrayOfItems)
-        });
-        */
 
     async guardar() {
           axios.delete(ip+"/colaboradores_funciones/"+this.colaborador.Colaborador_Key).then((response) => {
@@ -461,7 +437,26 @@ export default {
       if(!localStorage.login){
         this.$router.push("/login");
       }
-        }
+    }
   },
 };
 </script>
+
+<style scoped>
+.labelT{
+  margin-left :30px;
+  
+}
+.labelT2{
+  margin-left:150px;
+}
+
+.labelText{
+  float: left;
+}
+
+.container {
+  margin-left: 1rem;
+  min-width: 100rem;
+}
+</style>
