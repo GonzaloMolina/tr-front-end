@@ -43,7 +43,7 @@
 
             <!--v-show="SeguridadAdministracionUsuarios()"-->
             <v-list-item link
-            
+            v-if="SeguridadColaboradores()"
             >
                 <v-list-item-action>
                   <v-icon>mdi-clipboard-account</v-icon>
@@ -229,7 +229,16 @@ export default {
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P33') || localStorage.Permisos.includes('P34')
+        return localStorage.Permisos.includes('P33') || localStorage.Permisos.includes('P34') 
+               
+      },
+
+      SeguridadColaboradores(){
+        if(!localStorage.login){
+          return false
+        } else
+        return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
+               
       },
 
       /*

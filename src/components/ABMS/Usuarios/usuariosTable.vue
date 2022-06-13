@@ -33,30 +33,9 @@
               class="shrink"
               style="margin-right:20rem"
               ></v-text-field>
-              <!--
-              <router-link to="/createCliente">
-                <v-btn v-if="permisoCrearCliente()" @click="sendClienteVacio" dark fab x-small color="#2991c6">
-                  <v-icon dark>mdi-plus</v-icon>
-                </v-btn>
-              </router-link>
-            -->
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-            <!--
-           <router-link to="editCliente/">
-          <v-icon
-            v-b-tooltip.hover title="Ver más"
-            v-if=" item.Visible == 'X' "
-            small
-            color="#2991c6"
-            class="mr-2"
-            @click="sendCliente(item)"
-          >
-            mdi-sunglasses
-          </v-icon>
-           </router-link>
-           -->
           <v-icon
             v-b-tooltip.hover title="Desactivar"
             v-if="permisoDesactivar() && item.Usuario_Habilitado == 'X'"
@@ -176,28 +155,19 @@ const ip = require('../../../ip/ip')
         }
       },
 
-      /*
-      permisoCrearCliente(){
-        return localStorage.Permisos.includes("P5")
-      }, 
-      */
-
-
-      desactivarUsuario(item) { //Boton de borrado logico. Quita la marca visible del cliente
+      async desactivarUsuario(item) { //Boton de borrado logico. Quita la marca visible del cliente
         const index = this.desserts.indexOf(item)
-        // this.elementoEditado = Object.assign({}, item)
-        // const item = this.elementoEditado
-         var habilitado_colaborador = {Visible: '', Colaborador_Estado: 2}
-          var habilitado = {Usuario_Habilitado: ''}
           item.Usuario_Habilitado = ''
           console.log(item)
           this.desserts.splice(index, 1, item)
-          console.log(item.Usuario_Codigo)
-          axios.patch(ip+"/usuarios/"+item.Usuario_Codigo, habilitado)
-          axios.patch(ip+"/colaboradores/"+item.Usuario_Key, habilitado_colaborador)
-          .then(response => {
-            console.log(response)
-          })
+          var visible = {
+            Usuario_Habilitado:'X',
+            Visible: 'X',
+            Colaborador_Estado: 1}
+          await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+item.Usuario_Codigo, visible)
+            .then((response) => {
+              alert('Colaborador Actualizado')
+        })
       },
 
       btnDesactivarVisualizacion(){

@@ -11,6 +11,7 @@ export default new Vuex.Store({
     clienteFiscal: [],
     proyecto: [],
     empresa: [],
+    colaborador: null,
     msalConfig: {
       auth: {
         clientId: '1c21317b-028d-4af7-90ec-d9563117a464',

@@ -143,21 +143,4 @@ const router = new VueRouter({
   routes
 })
 
-/*
-router.beforeEach( (to,from,next)=>{
-  console.log(localStorage.userIsAuthenticated)
-  if(to.matched.some(record=>record.meta.requireAuth)){
-    if(localStorage.userIsAuthenticated == true){
-      next();
-    } else{
-      //no autorizado
-      next({path: '/login'})
-    }
-  }else{
-    next();
-  }
-   
-})
-*/
-
 export default router
