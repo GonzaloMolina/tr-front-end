@@ -5,8 +5,8 @@
             <div class="example-wrapper">
                 <div style="margin-bottom: 5px;">
                     <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filter..." v-on:input="onFilterTextBoxChanged()">
-                    <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="!seguridadColaboradores()" style="40rem" @click="editColab" > EDITAR </v-btn>
-                    <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="!seguridadColaboradores()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
+                    <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisos()" style="40rem" @click="editColab" > EDITAR </v-btn>
+                    <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisos()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
                 </div>
                 <ag-grid-vue
                 
@@ -50,6 +50,7 @@ export default {
       columnDefs: null,
       gridApi: null,
       columnApi: null,
+      disableEditar : false,
       defaultColDef: {
         flex: 1,
       },
@@ -106,6 +107,21 @@ created() {
         } else
         return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
     },
+    async wait(time) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+        resolve();
+        }, time);
+      })
+    },
+
+    btnEditarPermisos(){
+      return !this.seguridadColaboradores() && this.btnEditarPermisoAccion()
+    },
+
+    btnEditarPermisoAccion(){
+      return this.disableEditar
+    },
     async enableorunable(){
       var colaborator = this.gridApi.getSelectedRows()[0]
       console.log(colaborator)
@@ -116,6 +132,7 @@ created() {
           Colaborador_Estado: 2}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, noVisible)
           .then((response) => {
+            this.lo
             alert('Colaborador Actualizado')
         })
         
@@ -129,7 +146,10 @@ created() {
             alert('Colaborador Actualizado')
         })
       }
+      this.disableEditar = true
       this.loadColaboradores()
+      this.disableEditar = false
+      
     }
     
   },

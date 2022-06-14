@@ -386,7 +386,7 @@ export default {
 
      async guardar() {
           this.asignarKeys()
-          this.guardarFunciones()
+         await this.guardarFunciones()
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
             this.alert = true
@@ -403,7 +403,7 @@ export default {
       async deleteFunciones(){
         
         await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
-           ;
+           
         })
       },
 
@@ -425,6 +425,7 @@ export default {
           
           for ( var i  = 0 ; i < this.selected.length ; i++){
             if(this.selected[i] == 'Vendedor'){
+              
               pedido.Colaborador_Funcion_Funcion_Key = 1 ;
               pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo+' - VEND'; 
               pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
@@ -432,6 +433,7 @@ export default {
               .then((response) => console.log(response) )
           }
           else {
+            
             pedido.Colaborador_Funcion_Funcion_Key = 2 ;
             pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo+' - RESP'; 
             pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key; 
@@ -476,9 +478,7 @@ export default {
       this.colaborador.Colaborador_Responsable = responsableKey
       this.colaborador.Colaborador_Usuario = usuarioKey
       
-    },
-    prueba2(){
-      console.log(this.$store.state.colaborador)
+      
     },
     asignarDescripciones(){
       this.colaborador = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador)[0]
@@ -501,8 +501,10 @@ export default {
     },
     asignarFunciones(){
       var funciones = []
-      if(this.colaborador.Funcion !== null){
-       var funciones = this.funciones.filter(f => f.id == this.colaborador.Funcion.Colaborador_Funcion_Funcion_Key)
+      if(this.colaborador.Funcion.length >= 1){
+        for(var i = 0 ; i < this.colaborador.Funcion.length ; i++){
+          funciones.push(this.funciones.filter(f => f.id == this.colaborador.Funcion[i].Colaborador_Funcion_Funcion_Key)[0])
+        }
        funciones = funciones.map( f => f.name)
        this.selected = funciones
       }
