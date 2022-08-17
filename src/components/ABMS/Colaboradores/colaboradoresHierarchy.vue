@@ -45,6 +45,7 @@ export default {
   },
     data: function () {
     return {
+      overlayLoadingTemplate: null,
       colaborator : null,
       rowSelection:null,
       columnDefs: null,
@@ -69,17 +70,22 @@ export default {
  
 beforeMount(){
   this.loadColaboradores();
+  
+  
 },
 created() {
+    this.overlayLoadingTemplate =
+      '<span class="ag-overlay-loading-center">Please wait while your rows are loading</span>';
     this.autoGroupColumnDef = {
       headerName: 'Codigo_usuario',
       minWidth: 300,
+      resizable: true,
       checkboxSelection:true,
       cellRendererParams: {
         suppressCount: true,
       },
     };
-    this.columnDefs = [ { field: 'region_usuario' },{ field: 'calendario_usuario' },{field: 'horas'},{field: 'name'},{field: 'visible'}],
+    this.columnDefs = [ {field: 'name', resizable: true},{ field: 'region_usuario' ,resizable: true},{ field: 'calendario_usuario',resizable: true },{field: 'horas',resizable: true},{field: 'visible',resizable: true}],
     this.groupDefaultExpanded = -1;
     this.getDataPath = (data) => {
       return data.orgHierarchy;
@@ -97,7 +103,7 @@ created() {
     },
     editColab(){
       var colaborator = this.gridApi.getSelectedRows()[0]
-      this.$store.state.colaborador = colaborator.id
+      this.$store.state.colaborador = {id: colaborator.id, horas: colaborator.horas}
       this.$router.push('editColaborador/')  
     },
 
@@ -122,6 +128,8 @@ created() {
     btnEditarPermisoAccion(){
       return this.disableEditar
     },
+
+  
     async enableorunable(){
       var colaborator = this.gridApi.getSelectedRows()[0]
       console.log(colaborator)
@@ -132,8 +140,12 @@ created() {
           Colaborador_Estado: 2}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, noVisible)
           .then((response) => {
-            this.lo
-            alert('Colaborador Actualizado')
+            this.disableEditar = true
+            this.loadColaboradores()
+            this.gridApi.showLoadingOverlay()
+            
+            this.disableEditar = false
+      
         })
         
       } else {
@@ -143,13 +155,15 @@ created() {
             Colaborador_Estado: 1}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, visible)
           .then((response) => {
-            alert('Colaborador Actualizado')
+            this.disableEditar = true
+            this.loadColaboradores()
+            this.gridApi.showLoadingOverlay()
+            
+            this.disableEditar = false
+            
         })
       }
-      this.disableEditar = true
-      this.loadColaboradores()
-      this.disableEditar = false
-      
+      alert('Colaborador Actualizado')
     }
     
   },
@@ -163,8 +177,8 @@ created() {
    .example-wrapper {
   display: flex;
   flex-direction: column;
-  margin-left:200px;
-  margin-top:200px;
+  margin-left:300px;
+  margin-top:100px;
   height: 1000px;
   width: 1000px;
 }

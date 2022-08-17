@@ -15,7 +15,7 @@
       <v-row>
         <v-col cols="12" style="max-width:82rem; margin-top:-0.5rem">
           <v-title style="font-size:1.5rem; padding-left:1rem;">Datos Generales</v-title>
-          <v-btn @click="guardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark style="margin-left:53rem">Guardar</v-btn>
+          <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark style="margin-left:53rem">Guardar</v-btn>
           <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark style="margin-left:1rem">Volver</v-btn>
           <v-card class="pa-2" outlined tile style="margin-top:1rem;min-height:30rem">
             <v-text-field
@@ -120,6 +120,16 @@
               placeholder="Selecciona..."
               style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
             ></v-select>
+            <v-text-field
+              :disabled="!seguridadColaboradores()"
+              label="Horas Diarias"
+              v-model="colaborador_hora"
+              type="number"
+              outlined
+              min="0"
+              dense
+              style="display:inline-block; max-width:8rem;margin-left:1rem;margin-top:1rem"
+            ></v-text-field>
            
            <v-col cols="4" style = "max-width:82rem; margin-top:-0.5rem" >
               <div class="labelText3" style="">
@@ -137,7 +147,9 @@
               </div>
               <div class="labelText4">
                 <h5 class ='labelT2'>Funciones asignadas</h5> 
-                <p>{{ selected }}</p>
+                  <b-button variant="outline-primary"  class="mr-1" v-if="selected[0]!=null">{{ selected[0] }}</b-button>
+                  <b-button variant="outline-primary" class="ml-1" v-if="selected[1]!=null">{{ selected[1] }}</b-button>
+                <p ></p>
                  </div>
                  </v-col>
            
@@ -221,6 +233,7 @@
 
 <script>
 import axios from "axios";
+import { runInThisContext } from "vm";
 import loader from '../../Estado/loader'
 const ip = require('../../../ip/ip')
 export default {
@@ -249,9 +262,11 @@ export default {
         Colaborador_Funcion : 'no aplica',
         Colaborador_Hora: 0,
         Usuario_Creacion: 1,
-        Usuario_Modificacion: 1,
     },
     usuarioCodigos : [],
+    originalCodigo: "",
+    originalKeyUser: 0,
+    colaboradoresCodigos: [],
     colaboradores:[],
     colaboradoresDescripciones: [],
     empresas: [],
@@ -264,6 +279,7 @@ export default {
     colaboradoresAreasDescripciones: [],
     colaboradoresPuestos: [],
     colaboradoresPuestosDescripciones: [],
+    colaborador_hora: 0,
     responsables:[],
     responsablesDescripciones: [],
     usuarios: [],
@@ -290,16 +306,19 @@ export default {
 //Definicion de metodos 
   methods: {
     async initialize(){
+      
       this.loadUsuarios()
       this.loadEmpresas()
       this.loadRegions()
       this.loadCalendars()
+      this.loadColaboradoresTipos()
       this.loadColaboradoresAreas()
       this.loadColaboradoresPuestos()
-      this.loadColaboradoresTipos()
+      
       this.loadColaboradores()
       this.loadColaboradoresFunciones()
-      await this.wait(3000)
+    
+      await this.wait(4500)
       this.asignarDescripciones();
       this.asignarFunciones()
       this.loader = false
@@ -315,6 +334,7 @@ export default {
     async loadColaboradores(){
         await axios.get(ip+"/colaboradores").then((response) => {
         this.colaboradores = response.data;
+        this.colaboradoresCodigos = _.cloneDeep(this.colaboradores.map(colaborador => colaborador.Colaborador_Codigo))
         this.colaboradoresDescripciones = response.data.map(
           (colaborador) => colaborador.Colaborador_Descripcion
         ).sort()
@@ -384,9 +404,28 @@ export default {
         });
       },
 
-     async guardar() {
+      evalGuardar() {
+          if(this.colaborador.Colaborador_Codigo != this.originalCodigo){
+            if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
+              alert("El código ya existe")
+            } else{
+              console.log(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo))
+              this.guardar()
+            }
+          } else this.guardar()
+     },
+
+      async guardar() {
+          await this.guardarHoras()
+          var newUserMail = {
+            Usuario_Mail : this.colaborador.Colaborador_Usuario
+          }
+          await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newUserMail).then((response) =>{
+
+          })
           this.asignarKeys()
-         await this.guardarFunciones()
+          await this.guardarFunciones()
+
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
             this.alert = true
@@ -401,9 +440,20 @@ export default {
       },
 
       async deleteFunciones(){
-        
+        if(this.colaborador.Funcion.length > 0){
         await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
            
+        })
+        }
+      },
+
+      async guardarHoras(){
+        var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
+        let hora = {Colaborador_Hora_Usuario : usuarioKey,
+                    Colaborador_Hora_Dia : parseInt(this.colaborador_hora)}
+        await axios.patch(ip+"/colaboradores_horas/"+usuarioKey, hora)
+          .then((response) => {
+           console.log(response)
         })
       },
 
@@ -419,9 +469,8 @@ export default {
           Usuario_Modificacion : 1,
           Visible : 'X'
           }
-          if(this.selected.length > 0){
-            this.deleteFunciones();
-          }
+          this.deleteFunciones();
+        
           
           for ( var i  = 0 ; i < this.selected.length ; i++){
             if(this.selected[i] == 'Vendedor'){
@@ -467,8 +516,8 @@ export default {
       var empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.colaborador.Colaborador_Empresa)[0].Empresa_Key;
       var calendarioKey = this.calendarios.filter(calendario => calendario.Calendario_Descripcion == this.colaborador.Colaborador_Calendario)[0].Calendario_Key;
       var tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
-      var responsableKey = this.colaboradores.filter(responsable => responsable.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
-      var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
+      var responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
+      //var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
       this.colaborador.Colaborador_Region = regionKey;
       this.colaborador.Colaborador_Area = areaKey;
       this.colaborador.Colaborador_Empresa = empresaKey;
@@ -476,20 +525,19 @@ export default {
       this.colaborador.Colaborador_Calendario = calendarioKey
       this.colaborador.Colaborador_Tipo = tipoKey
       this.colaborador.Colaborador_Responsable = responsableKey
-      this.colaborador.Colaborador_Usuario = usuarioKey
-      
-      
+      this.colaborador.Colaborador_Usuario = this.originalKeyUser
     },
     asignarDescripciones(){
-      this.colaborador = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador)[0]
+      this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
+      this.originalKeyUser = this.colaborador.Colaborador_Usuario
       var regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
       var colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;
       var colaboradorPuestoDescripcion = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Key == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Descripcion;
       var empresaDescripcion = this.empresas.filter(empresa => empresa.Empresa_Key == this.colaborador.Colaborador_Empresa)[0].Empresa_Descripcion;
       var calendarioDescripcion = this.calendarios.filter(calendario => calendario.Calendario_Key == this.colaborador.Colaborador_Calendario)[0].Calendario_Descripcion;
       var tipoDescripcion = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Key == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Descripcion;
-      var responsableDescripcion = this.colaboradores.filter(responsable => responsable.Colaborador_Key == this.colaborador.Colaborador_Responsable)[0].Colaborador_Descripcion;
-      var usuarioDescripcion = this.usuarios.filter(usuario => usuario.Usuario_Key == this.colaborador.Colaborador_Usuario)[0].Usuario_Codigo
+      var responsableDescripcion = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.colaborador.Colaborador_Responsable)[0].Colaborador_Descripcion;
+      var usuarioDescripcion = this.usuarios.filter(usuario => usuario.Usuario_Key == this.colaborador.Colaborador_Usuario)[0].Usuario_Mail
       this.colaborador.Colaborador_Region = regionDescripcion;
       this.colaborador.Colaborador_Area = colaboradorAreaDescripcion;
       this.colaborador.Colaborador_Empresa = empresaDescripcion;
@@ -498,6 +546,9 @@ export default {
       this.colaborador.Colaborador_Tipo = tipoDescripcion
       this.colaborador.Colaborador_Responsable = responsableDescripcion
       this.colaborador.Colaborador_Usuario = usuarioDescripcion
+      this.colaborador_hora = this.$store.state.colaborador.horas
+      this.colaborador.Usuario_Modificacion = localStorage.usuario_id
+      this.originalCodigo = this.colaborador.Colaborador_Codigo
     },
     asignarFunciones(){
       var funciones = []
