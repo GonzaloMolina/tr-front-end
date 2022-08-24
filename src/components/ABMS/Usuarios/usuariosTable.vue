@@ -35,29 +35,33 @@
               ></v-text-field>
           </v-toolbar>
         </template>
+
+
         <template v-slot:[`item.actions`]="{ item }">
+         
           <v-icon
             v-b-tooltip.hover title="Desactivar"
             v-if="permisoDesactivar() && item.Usuario_Habilitado == 'X'"
             medium
             color= "#2991c6"
-            @click="desactivarUsuario(item)"
+            @click="enableorunable(item)"
           >
             mdi-eye-off
           </v-icon>
+          
           <v-icon
             v-b-tooltip.hover title="Activar"
             v-if="item.Usuario_Habilitado == ''"
             medium
             color="#2991c6"
-            @click="activarUsuario(item)"
+            @click="enableorunable(item)"
           >
             mdi-eye
           </v-icon>
         </template>
       </v-data-table>
 
-        <v-dialog v-model="dialogDelete" width="520px">
+        <!-- <v-dialog v-model="dialogDelete" width="520px">
             <v-card>
               <v-card-title>Este elemento se desactivará. ¿Deseas continuar?</v-card-title>
               <v-card-actions>
@@ -65,7 +69,7 @@
               <v-btn @click="closeDelete" color="#ffa025" dark style="margin-left:1rem">Cancelar</v-btn>
               </v-card-actions>
             </v-card>
-          </v-dialog>
+          </v-dialog> -->
 
     </v-container>
   </v-content>
@@ -155,40 +159,45 @@ const ip = require('../../../ip/ip')
         }
       },
 
-      async desactivarUsuario(item) { //Boton de borrado logico. Quita la marca visible del cliente
-        const index = this.desserts.indexOf(item)
-          item.Usuario_Habilitado = ''
-          console.log(item)
-          this.desserts.splice(index, 1, item)
-          var visible = {
-            Usuario_Habilitado:'X',
-            Visible: 'X',
-            Colaborador_Estado: 1}
-          await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+item.Usuario_Codigo, visible)
-            .then((response) => {
-              alert('Colaborador Actualizado')
-        })
-      },
-
       btnDesactivarVisualizacion(){
         if(this.habilitado = {Usuario_Habilitado: 'X'}){
           return true
         }
       },
 
-      activarUsuario(item) { //Activa el cliente si se encuentra desactivado.
-        const index = this.desserts.indexOf(item)
-        var habilitado_colaborador = {Visible: 'X',Colaborador_Estado: 1}
-        var habilitado = {Usuario_Habilitado: 'X'}
-        item.Usuario_Habilitado = 'X'
-        console.log(item)
-        this.desserts.splice(index, 1, item)
-        axios.patch(ip+"/usuarios/"+item.Usuario_Codigo, habilitado)
-        axios.patch(ip+"/colaboradores/"+item.Usuario_Key, habilitado_colaborador)
-        .then(response => {
-          console.log(response)
+      //nueva funcion para dar de baja a los usuarios 
+      async enableorunable(colab){
+      console.log(colab)
+      //var colab =  this.desserts.indexOf(colab)
+      console.log(colab)
+      if(colab.Usuario_Habilitado == 'X'){
+        var noVisible = {
+          Usuario_Habilitado:'',
+          Visible: '',
+          Colaborador_Estado: 2}
+        await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, noVisible)
+          .then((response) => {
+            console.log(response)
+      
         })
-      },
+        
+      } else {
+        var visible = {
+            Usuario_Habilitado:'X',
+            Visible: 'X',
+            Colaborador_Estado: 1}
+        await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, visible)
+          .then((response) => {
+            console.log(response)
+            
+        })
+      }
+      alert('Colaborador Actualizado')
+      this.initialize()
+      
+    }
+    
+  },
 
       closeDelete () {
         this.dialogDelete = false
@@ -207,11 +216,7 @@ const ip = require('../../../ip/ip')
         } else {
           return "orange";
         }
+    },
     }
-    
-    }
-  
-}
+
 </script>
-
-
