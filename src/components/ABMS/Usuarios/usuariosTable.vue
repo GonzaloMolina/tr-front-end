@@ -51,7 +51,7 @@
           
           <v-icon
             v-b-tooltip.hover title="Activar"
-            v-if="item.Usuario_Habilitado == ''"
+            v-else
             medium
             color="#2991c6"
             @click="enableorunable(item)"
@@ -82,11 +82,9 @@
 .container{
   margin-left:5rem;
 }
-
 .v-application--is-ltr .v-data-footer__select{
   display: none;
 }
-
 </style>
 
 <script>
@@ -127,22 +125,18 @@ const ip = require('../../../ip/ip')
                     'itemsPerPageText': 'Clientes por página:',},
       loader: true,
     }),
-
     watch:{
       dialogDelete (val) {
         val || this.closeDelete()
       },
     },
-
     beforeMount(){
       this.initialize()
       //this.cleanStore();
       this.$forceUpdate();
     },
-
     created(){
     },
-
     methods: {
       initialize () { //Pido todos los usuarios al backend
         axios.get(ip+"/usuarios")
@@ -152,19 +146,16 @@ const ip = require('../../../ip/ip')
           this.tableshow = true
         })
       },
-
       permisoDesactivar(){
         if(localStorage.Permisos.includes("P34")){
           return true
         }
       },
-
       btnDesactivarVisualizacion(){
         if(this.habilitado = {Usuario_Habilitado: 'X'}){
           return true
         }
       },
-
       //nueva funcion para dar de baja a los usuarios 
       async enableorunable(colab){
       console.log(colab)
@@ -198,7 +189,6 @@ const ip = require('../../../ip/ip')
     }
     
   },
-
       closeDelete () {
         this.dialogDelete = false
         this.elementoEditado= {}
@@ -218,5 +208,4 @@ const ip = require('../../../ip/ip')
         }
     },
     }
-
 </script>

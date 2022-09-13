@@ -36,12 +36,12 @@ import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { AgGridVue } from "ag-grid-vue";
-import TotalValueRenderer from './totalValueRendererVue.js';
+
 const ip = require('../../../ip/ip')
 export default {
   components: {
     'ag-grid-vue': AgGridVue,
-    totalValueRenderer: TotalValueRenderer,
+    
   },
     data: function () {
     return {
@@ -60,7 +60,7 @@ export default {
       groupDefaultExpanded: null,
       getDataPath: null,
       async loadColaboradores(){
-        await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
+        await axios.get(ip+"/colaboradores/listadojerarquia/46").then((response) => {
         this.rowData = response.data;
       })
     }, 
@@ -106,7 +106,6 @@ created() {
       this.$store.state.colaborador = {id: colaborator.id, horas: colaborator.horas}
       this.$router.push('editColaborador/')  
     },
-
     seguridadColaboradores(){
        if(!localStorage.login){
           return false
@@ -120,15 +119,12 @@ created() {
         }, time);
       })
     },
-
     btnEditarPermisos(){
       return !this.seguridadColaboradores() && this.btnEditarPermisoAccion()
     },
-
     btnEditarPermisoAccion(){
       return this.disableEditar
     },
-
   
     async enableorunable(){
       var colaborator = this.gridApi.getSelectedRows()[0]

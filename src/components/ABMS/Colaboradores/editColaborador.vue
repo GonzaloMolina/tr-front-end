@@ -128,7 +128,7 @@
               outlined
               min="0"
               dense
-              style="display:inline-block; max-width:8rem;margin-left:1rem;margin-top:1rem"
+              style="display:inline-block; min-width:20rem;margin-left:1rem;margin-top:1rem"
             ></v-text-field>
            
            <v-col cols="4" style = "max-width:82rem; margin-top:-0.5rem" >
@@ -145,7 +145,7 @@
                 value="Responsable"
                 ></v-checkbox>
               </div>
-              <div class="labelText4">
+              <div class="labelText4" v-if="selected[0]!=null || selected[1]!=null "  >
                 <h5 class ='labelT2'>Funciones asignadas</h5> 
                   <b-button variant="outline-primary"  class="mr-1" v-if="selected[0]!=null">{{ selected[0] }}</b-button>
                   <b-button variant="outline-primary" class="ml-1" v-if="selected[1]!=null">{{ selected[1] }}</b-button>
@@ -223,7 +223,6 @@
   margin-top: 1rem;
   margin-left:7rem;
 }
-
 .labelTextv2{
   float: left;
   margin-right: 25px;
@@ -403,7 +402,6 @@ export default {
           this.funcionesDescripciones = response.data.map((funcion) => funcion.name);
         });
       },
-
       evalGuardar() {
           if(this.colaborador.Colaborador_Codigo != this.originalCodigo){
             if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
@@ -414,18 +412,15 @@ export default {
             }
           } else this.guardar()
      },
-
       async guardar() {
           await this.guardarHoras()
           var newUserMail = {
             Usuario_Mail : this.colaborador.Colaborador_Usuario
           }
           await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newUserMail).then((response) =>{
-
           })
           this.asignarKeys()
           await this.guardarFunciones()
-
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
             this.alert = true
@@ -438,7 +433,6 @@ export default {
             throw new Error('El colaborador ya existe')
           })
       },
-
       async deleteFunciones(){
         if(this.colaborador.Funcion.length > 0){
         await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
@@ -446,7 +440,6 @@ export default {
         })
         }
       },
-
       async guardarHoras(){
         var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
         let hora = {Colaborador_Hora_Usuario : usuarioKey,
@@ -456,10 +449,7 @@ export default {
            console.log(response)
         })
       },
-
       async guardarFunciones(){
-
-
       var pedido =
          {
           Colaborador_Funcion_Funcion_Key  : '',
@@ -489,7 +479,6 @@ export default {
             await axios.post(ip+'/colaboradores_funciones/',pedido)
              .then((response) => console.log(response) )
           }
-
         }
         
        
@@ -510,13 +499,13 @@ export default {
         return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
     },
     asignarKeys(){
-      var regionKey = this.regiones.filter(region => region.Region_Descripcion == this.colaborador.Colaborador_Region)[0].Region_Key
-      var areaKey = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Descripcion == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Key
-      var puestoKey = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Descripcion == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Key
-      var empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.colaborador.Colaborador_Empresa)[0].Empresa_Key;
-      var calendarioKey = this.calendarios.filter(calendario => calendario.Calendario_Descripcion == this.colaborador.Colaborador_Calendario)[0].Calendario_Key;
-      var tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
-      var responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
+      let regionKey = this.regiones.filter(region => region.Region_Descripcion == this.colaborador.Colaborador_Region)[0].Region_Key
+      let areaKey = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Descripcion == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Key
+      let puestoKey = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Descripcion == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Key
+      let empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.colaborador.Colaborador_Empresa)[0].Empresa_Key;
+      let calendarioKey = this.calendarios.filter(calendario => calendario.Calendario_Descripcion == this.colaborador.Colaborador_Calendario)[0].Calendario_Key;
+      let tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
+      let responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
       //var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
       this.colaborador.Colaborador_Region = regionKey;
       this.colaborador.Colaborador_Area = areaKey;
@@ -530,14 +519,15 @@ export default {
     asignarDescripciones(){
       this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
       this.originalKeyUser = this.colaborador.Colaborador_Usuario
-      var regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
-      var colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;
-      var colaboradorPuestoDescripcion = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Key == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Descripcion;
-      var empresaDescripcion = this.empresas.filter(empresa => empresa.Empresa_Key == this.colaborador.Colaborador_Empresa)[0].Empresa_Descripcion;
-      var calendarioDescripcion = this.calendarios.filter(calendario => calendario.Calendario_Key == this.colaborador.Colaborador_Calendario)[0].Calendario_Descripcion;
-      var tipoDescripcion = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Key == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Descripcion;
-      var responsableDescripcion = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.colaborador.Colaborador_Responsable)[0].Colaborador_Descripcion;
-      var usuarioDescripcion = this.usuarios.filter(usuario => usuario.Usuario_Key == this.colaborador.Colaborador_Usuario)[0].Usuario_Mail
+      let regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
+      let colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;
+      let colaboradorPuestoDescripcion = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Key == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Descripcion;
+      let empresaDescripcion = this.empresas.filter(empresa => empresa.Empresa_Key == this.colaborador.Colaborador_Empresa)[0].Empresa_Descripcion;
+      let calendarioDescripcion = this.calendarios.filter(calendario => calendario.Calendario_Key == this.colaborador.Colaborador_Calendario)[0].Calendario_Descripcion;
+      let tipoDescripcion = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Key == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Descripcion;
+      let responsableDescripcion = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.colaborador.Colaborador_Responsable)[0].Colaborador_Descripcion;
+      let usuarioDescripcion = this.usuarios.filter(usuario => usuario.Usuario_Key == this.colaborador.Colaborador_Usuario)[0].Usuario_Mail
+      
       this.colaborador.Colaborador_Region = regionDescripcion;
       this.colaborador.Colaborador_Area = colaboradorAreaDescripcion;
       this.colaborador.Colaborador_Empresa = empresaDescripcion;
