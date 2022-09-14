@@ -1,17 +1,17 @@
 <template>
 
-       <div style="height: 100%">
+       <div  style="height: 100%; width: auto;">
          
             <div class="example-wrapper">
                 <div style="margin-bottom: 5px;">
-                    <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filter..." v-on:input="onFilterTextBoxChanged()">
+                    <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filtro..." v-on:input="onFilterTextBoxChanged()">
                     <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisos()" style="40rem" @click="editColab" > EDITAR </v-btn>
                     <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisos()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
                 </div>
                 <ag-grid-vue
                 
-                style="width: 100%; height: 100%;"
-                class="ag-theme-alpine"
+                style="width: 80vw; height: 100%"
+                class="ag-theme-alpine a"
                 
                 :columnDefs="columnDefs"
                 @grid-ready="onGridReady"
@@ -36,12 +36,12 @@ import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import { AgGridVue } from "ag-grid-vue";
-
+import TotalValueRenderer from './totalValueRendererVue.js';
 const ip = require('../../../ip/ip')
 export default {
   components: {
     'ag-grid-vue': AgGridVue,
-    
+    totalValueRenderer: TotalValueRenderer,
   },
     data: function () {
     return {
@@ -60,7 +60,7 @@ export default {
       groupDefaultExpanded: null,
       getDataPath: null,
       async loadColaboradores(){
-        await axios.get(ip+"/colaboradores/listadojerarquia/46").then((response) => {
+        await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
         this.rowData = response.data;
       })
     }, 
@@ -75,9 +75,9 @@ beforeMount(){
 },
 created() {
     this.overlayLoadingTemplate =
-      '<span class="ag-overlay-loading-center">Please wait while your rows are loading</span>';
+      '<span class="ag-overlay-loading-center">Cargando.......</span>';
     this.autoGroupColumnDef = {
-      headerName: 'Codigo_usuario',
+      headerName: 'Codigo Usuario',
       minWidth: 300,
       resizable: true,
       checkboxSelection:true,
@@ -85,7 +85,7 @@ created() {
         suppressCount: true,
       },
     };
-    this.columnDefs = [ {field: 'name', resizable: true},{ field: 'region_usuario' ,resizable: true},{ field: 'calendario_usuario',resizable: true },{field: 'horas',resizable: true},{field: 'visible',resizable: true}],
+    this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290, resizable: true},{ filter:true,field:'region_usuario',minWidth:80,headerName:'Region',resizable: true},{ filter:true,field: 'calendario_usuario',headerName:'Calendario',resizable: true },{filter:true,field: 'horas',headerName:'Horas',resizable: true},{filter:true, field: 'visible',resizable: true,headerName:'Activo'}],
     this.groupDefaultExpanded = -1;
     this.getDataPath = (data) => {
       return data.orgHierarchy;
@@ -102,10 +102,12 @@ created() {
       this.gridColumnApi = params.columnApi;
     },
     editColab(){
-      var colaborator = this.gridApi.getSelectedRows()[0]
+      let colaborator = this.gridApi.getSelectedRows()[0]
       this.$store.state.colaborador = {id: colaborator.id, horas: colaborator.horas}
+      console.log(colaborator)
       this.$router.push('editColaborador/')  
     },
+
     seguridadColaboradores(){
        if(!localStorage.login){
           return false
@@ -119,12 +121,15 @@ created() {
         }, time);
       })
     },
+
     btnEditarPermisos(){
       return !this.seguridadColaboradores() && this.btnEditarPermisoAccion()
     },
+
     btnEditarPermisoAccion(){
       return this.disableEditar
     },
+
   
     async enableorunable(){
       var colaborator = this.gridApi.getSelectedRows()[0]
@@ -172,8 +177,10 @@ created() {
    @import "~ag-grid-community/dist/styles/ag-theme-alpine.css";
    .example-wrapper {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  margin-left:300px;
+  margin-left:450px;
   margin-top:100px;
   height: 1000px;
   width: 1000px;

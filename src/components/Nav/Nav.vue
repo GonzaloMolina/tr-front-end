@@ -43,7 +43,7 @@
 
             <!--v-show="SeguridadAdministracionUsuarios()"-->
             <v-list-item link
-            
+            v-if="SeguridadColaboradores()"
             >
                 <v-list-item-action>
                   <v-icon>mdi-clipboard-account</v-icon>
@@ -176,8 +176,7 @@ export default {
         localStorage.Permisos.includes('P26') ||
         localStorage.Permisos.includes('P27') || localStorage.Permisos.includes('P28') ||
         localStorage.Permisos.includes('P29') || localStorage.Permisos.includes('P30') ||
-        localStorage.Permisos.includes('P31') || localStorage.Permisos.includes('P32') ||
-        localStorage.Permisos.includes('P40')
+        localStorage.Permisos.includes('P31') || localStorage.Permisos.includes('P32')
       },
 
       SeguridadAdministracionCliente(){
@@ -230,7 +229,16 @@ export default {
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('40')
+        return localStorage.Permisos.includes('P33') || localStorage.Permisos.includes('P34') 
+               
+      },
+
+      SeguridadColaboradores(){
+        if(!localStorage.login){
+          return false
+        } else
+        return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
+               
       },
 
       /*

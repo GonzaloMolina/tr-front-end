@@ -223,6 +223,7 @@
   margin-top: 1rem;
   margin-left:7rem;
 }
+
 .labelTextv2{
   float: left;
   margin-right: 25px;
@@ -402,6 +403,7 @@ export default {
           this.funcionesDescripciones = response.data.map((funcion) => funcion.name);
         });
       },
+
       evalGuardar() {
           if(this.colaborador.Colaborador_Codigo != this.originalCodigo){
             if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
@@ -412,15 +414,18 @@ export default {
             }
           } else this.guardar()
      },
+
       async guardar() {
           await this.guardarHoras()
           var newUserMail = {
             Usuario_Mail : this.colaborador.Colaborador_Usuario
           }
           await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newUserMail).then((response) =>{
+
           })
           this.asignarKeys()
           await this.guardarFunciones()
+
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
             this.alert = true
@@ -433,6 +438,7 @@ export default {
             throw new Error('El colaborador ya existe')
           })
       },
+
       async deleteFunciones(){
         if(this.colaborador.Funcion.length > 0){
         await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
@@ -440,6 +446,7 @@ export default {
         })
         }
       },
+
       async guardarHoras(){
         var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
         let hora = {Colaborador_Hora_Usuario : usuarioKey,
@@ -449,7 +456,10 @@ export default {
            console.log(response)
         })
       },
+
       async guardarFunciones(){
+
+
       var pedido =
          {
           Colaborador_Funcion_Funcion_Key  : '',
@@ -479,6 +489,7 @@ export default {
             await axios.post(ip+'/colaboradores_funciones/',pedido)
              .then((response) => console.log(response) )
           }
+
         }
         
        

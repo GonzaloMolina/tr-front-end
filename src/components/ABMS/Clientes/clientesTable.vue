@@ -40,7 +40,7 @@
           </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-           <router-link to="editCliente/">
+          <router-link to="editCliente/">
           <v-icon
             v-b-tooltip.hover title="Ver más"
             v-if=" item.Visible == 'X' "
