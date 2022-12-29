@@ -1,6 +1,6 @@
 <template>
   <v-content>
-    <v-container fluid>
+    <v-container fluid >
       <loader :loader="loader" style="position: fixed;"/>
                 <v-alert
                 :value="alert"
@@ -13,11 +13,11 @@
               </v-alert>
       <v-form ref="form">
       <v-row>
-        <v-col cols="12" style="max-width:82rem; margin-top:-0.5rem">
+        <v-col cols="12" style="max-width:80%; min-width:87%; margin-top:-0.5rem">
           <v-title style="font-size:1.5rem; padding-left:1rem;">Datos Generales</v-title>
-          <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark style="margin-left:53rem">Guardar</v-btn>
-          <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark style="margin-left:1rem">Volver</v-btn>
-          <v-card class="pa-2" outlined tile style="margin-top:1rem;min-height:30rem">
+          <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark style="position: relative; margin-left: 63vw;">Guardar</v-btn>
+          <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark style="margin-left:1vw">Volver</v-btn>
+          <v-card class="pa-2" outlined tile style="margin-top:1rem;min-height:30rem;min-width: 86%;max-width: 100%;">
             <v-text-field
               outlined
               dense
@@ -25,7 +25,7 @@
               v-model="colaborador.Colaborador_Codigo"
               label="Código"
               placeholder="Escribe..."
-              style="display:inline-block; min-width:18rem;margin-left:1rem;margin-top:1rem"
+              style="display:inline-block; min-width:18vw;margin-left:1rem;margin-top:1rem"
             ></v-text-field>
             <v-text-field
               outlined
@@ -34,7 +34,7 @@
               v-model="colaborador.Colaborador_Descripcion"
               label="Nombre Completo"
               placeholder="Escribe..."
-              style="display:inline-block; min-width:18rem; margin-left:1rem;margin-top:1rem"
+              style="display:inline-block; min-width:18vw; margin-left:1rem;margin-top:1rem"
             ></v-text-field>
 
             <v-select
@@ -45,7 +45,7 @@
               :items="usuarioCodigos"
               label="Usuario"
               placeholder="Selecciona..."
-              style="max-width:20rem;min-width:20rem; display:inline-block;margin-left:1rem"
+              style="max-width:20vw;min-width:20vw; display:inline-block;margin-left:1rem"
             >
             </v-select>
             
@@ -57,7 +57,7 @@
               :items="colaboradoresDescripciones"
               label="Responsable"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
             ></v-select>
             <v-select
               dense
@@ -67,7 +67,7 @@
               :items="regionesDescripciones"
               label="Región"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
             ></v-select>
             <v-select
               dense
@@ -77,8 +77,10 @@
               :items="calendariosDescripciones"
               label="Calendario"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
             ></v-select>
+
+
             <v-select
               dense
               :disabled="!seguridadColaboradores()"
@@ -87,8 +89,23 @@
               :items="colaboradoresAreasDescripciones"
               label="Área"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:20rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:20vw; display:inline-block;margin-left:1rem"
             ></v-select>
+
+            <v-select
+              dense
+              :disabled="!seguridadColaboradores()"
+              outlined
+              v-model="colaborador.Colaborador_Ceco"
+              :items="Cecoitems"
+              item-text="ceco"
+              item-value="cod"
+              label="Ceco"
+              placeholder="Selecciona..."
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
+            ></v-select>
+
+            <v-row style="margin-left: 0.1rem;">
             <v-select
               dense
               :disabled="!seguridadColaboradores()"
@@ -97,9 +114,22 @@
               :items="colaboradoresPuestosDescripciones"
               label="Puesto"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
             ></v-select>
-
+          
+            <v-select
+              dense
+              :disabled="!seguridadColaboradores()"
+              outlined
+              v-model="colaborador.Colaborador_Categoria"
+              :items="Catitems"
+              item-text="cat"
+              item-value="cod"
+              label="Categoría"
+              placeholder="Selecciona..."
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
+            ></v-select>
+          
              <v-select
               dense
               :disabled="!seguridadColaboradores()"
@@ -108,7 +138,7 @@
               :items="tiposDescripciones"
               label="Tipo"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:20vw;min-width:20vw; display:inline-block;margin-left:1rem"
             ></v-select>
             <v-select
               dense
@@ -118,8 +148,9 @@
               :items="empresasDescripciones"
               label="Empresa"
               placeholder="Selecciona..."
-              style="max-width:18rem;min-width:18rem; display:inline-block;margin-left:1rem"
+              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
             ></v-select>
+          </v-row>
             <v-text-field
               :disabled="!seguridadColaboradores()"
               label="Horas Diarias"
@@ -128,24 +159,29 @@
               outlined
               min="0"
               dense
-              style="display:inline-block; min-width:20rem;margin-left:1rem;margin-top:1rem"
+              style="display:inline-block; min-width:20vw;margin-left:1rem;margin-top:1rem"
             ></v-text-field>
-           
-           <v-col cols="4" style = "max-width:82rem; margin-top:-0.5rem" >
-              <div class="labelText3" style="">
+
+           <v-col cols="4" style = "max-width:82rem; margin-top:-0.5rem">
+              <div class="labelText3" >
              <h5 class ='labelT2'>Funciones disponibles</h5>
-              <v-checkbox
+            <v-row  style="margin-bottom:-2rem; margin-left: 2rem; margin-top: -0.5rem;">
+              <v-checkbox 
                 v-model="selected"
                 label="VENDEDOR"
                 value="Vendedor"
-                ></v-checkbox>
-                <v-checkbox
+                ></v-checkbox>    
+             </v-row>
+             <v-row  style="margin-bottom:-2rem; margin-left: 2rem;">
+                <v-checkbox          
                 v-model="selected"
                  label="RESPONSABLE"
                 value="Responsable"
                 ></v-checkbox>
+              </v-row>
+              
               </div>
-              <div class="labelText4" v-if="selected[0]!=null || selected[1]!=null "  >
+              <div class="labelText4" v-if="selected[0]!=null || selected[1]!=null " >
                 <h5 class ='labelT2'>Funciones asignadas</h5> 
                   <b-button variant="outline-primary"  class="mr-1" v-if="selected[0]!=null">{{ selected[0] }}</b-button>
                   <b-button variant="outline-primary" class="ml-1" v-if="selected[1]!=null">{{ selected[1] }}</b-button>
@@ -200,7 +236,7 @@
 <style  scoped>
 .container {
   margin-left: 1rem;
-  min-width: 100rem;
+  min-width: 100vw;
 }
 .labelT{
   margin-left :30px;
@@ -236,6 +272,7 @@ import axios from "axios";
 import { runInThisContext } from "vm";
 import loader from '../../Estado/loader'
 const ip = require('../../../ip/ip')
+
 export default {
   name: "editColaborador",
   props: {
@@ -244,6 +281,33 @@ export default {
   components: {loader
               },
   data: () => ({
+
+    // Enums para Ceco y Categoria
+    Cecoitems: [
+          { ceco: 'No Aplica', cod: 1 },
+          { ceco: 'Administracion', cod: 2 },
+          { ceco: 'Preventa', cod: 3 },
+          { ceco: 'Comercial', cod: 4 },
+          { ceco: 'Controlling', cod: 5 },
+          { ceco: 'IT', cod: 6 },
+          { ceco: 'RRHH', cod: 7 },
+          { ceco: 'Estructura', cod: 8 },
+          { ceco: 'Marketing', cod: 9 },
+          { ceco: 'Consultoria', cod: 10 },
+          { ceco: 'Innovacion', cod: 11 },
+        ],
+    
+ 
+    Catitems: [
+          { cat: 'Gerente', cod: 1 },
+          { cat: 'Lider', cod: 2 },
+          { cat: 'Consultor', cod: 3 },
+          { cat: 'Analista', cod: 4 },
+          { cat: 'Preventa', cod: 5 },
+          { cat: 'No aplica', cod: 6 },
+        ],
+          
+          
     codigoViejo: '',
     //Reglas de agregado y editado
     //Elemento que se va a guardar con el UPDATE
@@ -262,6 +326,8 @@ export default {
         Colaborador_Funcion : 'no aplica',
         Colaborador_Hora: 0,
         Usuario_Creacion: 1,
+        Colaborador_Ceco: '',
+        Colaborador_Categoria: ''
     },
     usuarioCodigos : [],
     originalCodigo: "",
@@ -303,6 +369,7 @@ export default {
         this.$router.push("/login");
       }
   },
+
 //Definicion de metodos 
   methods: {
     async initialize(){
@@ -332,21 +399,24 @@ export default {
       })
     },
     async loadColaboradores(){
+        
         await axios.get(ip+"/colaboradores").then((response) => {
         this.colaboradores = response.data;
-        this.colaboradoresCodigos = _.cloneDeep(this.colaboradores.map(colaborador => colaborador.Colaborador_Codigo))
-        this.colaboradoresDescripciones = response.data.map(
+        this.colaboradoresFiltrado = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key != this.$store.state.colaborador.id).filter(colaborador => colaborador.Visible === 'X')
+        this.colaboradoresCodigos = _.cloneDeep(this.colaboradoresFiltrado.map(colaborador => colaborador.Colaborador_Codigo))
+        
+        this.colaboradoresDescripciones = this.colaboradoresFiltrado.map(
           (colaborador) => colaborador.Colaborador_Descripcion
         ).sort()
-        })
-     
-        
+        })            
     },
+
     async loadUsuarios(){
       await axios.get(ip+"/usuarios").then((response) => {
         this.usuarios = response.data;
-        this.usuarioCodigos = response.data.map((usuario) => usuario.Usuario_Mail).sort()
-        this.usuariosDescripciones = response.data.map(
+        this.usuariosFiltrado = this.usuarios.filter(usuario => usuario.Usuario_Habilitado === 'X')
+        this.usuarioCodigos = this.usuariosFiltrado.map((usuario) => usuario.Usuario_Mail).sort()
+        this.usuariosDescripciones = this.usuariosFiltrado.map(
           (usuario) => usuario.Usuario_Codigo
         ).sort();
       })
@@ -416,6 +486,7 @@ export default {
      },
 
       async guardar() {
+          
           await this.guardarHoras()
           var newUserMail = {
             Usuario_Mail : this.colaborador.Colaborador_Usuario
@@ -425,7 +496,7 @@ export default {
           })
           this.asignarKeys()
           await this.guardarFunciones()
-
+          
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
             this.alert = true
@@ -518,6 +589,7 @@ export default {
       let tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
       let responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
       //var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
+     
       this.colaborador.Colaborador_Region = regionKey;
       this.colaborador.Colaborador_Area = areaKey;
       this.colaborador.Colaborador_Empresa = empresaKey;
@@ -526,6 +598,24 @@ export default {
       this.colaborador.Colaborador_Tipo = tipoKey
       this.colaborador.Colaborador_Responsable = responsableKey
       this.colaborador.Colaborador_Usuario = this.originalKeyUser
+      
+      //Formateo de datos de enums
+      //(Si no se modifica el Ceco, el tipo de datos asignado al select es un diccionario)
+      if (typeof(this.colaborador.Colaborador_Ceco) === "number"){
+        this.colaborador.Ceco_Key = this.colaborador.Colaborador_Ceco
+      }
+      else{
+        this.colaborador.Ceco_Key = this.colaborador.Colaborador_Ceco.cod
+      }
+
+      //(Si no se modifica la categoría, el tipo de datos asignado al select es un diccionario)
+      if (typeof(this.colaborador.Colaborador_Categoria) === "number"){
+        this.colaborador.Colaborador_Categoria_Key = this.colaborador.Colaborador_Categoria
+      }
+      else{
+        this.colaborador.Colaborador_Categoria_Key  = this.colaborador.Colaborador_Categoria.cod
+      }
+      
     },
     asignarDescripciones(){
       this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
@@ -550,6 +640,8 @@ export default {
       this.colaborador_hora = this.$store.state.colaborador.horas
       this.colaborador.Usuario_Modificacion = localStorage.usuario_id
       this.originalCodigo = this.colaborador.Colaborador_Codigo
+      this.colaborador.Colaborador_Ceco = { ceco: this.Cecoitems[this.colaborador.Ceco_Key - 1].ceco, cod: this.colaborador.Ceco_Key }
+      this.colaborador.Colaborador_Categoria = { cat: this.Catitems[this.colaborador.Colaborador_Categoria_Key - 1].cat, cod: this.colaborador.Colaborador_Categoria_Key }
     },
     asignarFunciones(){
       var funciones = []

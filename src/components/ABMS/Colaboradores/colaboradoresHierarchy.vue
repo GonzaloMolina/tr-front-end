@@ -2,12 +2,13 @@
 
        <div  style="height: 100%; width: auto;">
          
-            <div class="example-wrapper">
-                <div style="margin-bottom: 5px;">
+            <div class="example-wrapper" style="">
+                <div style="margin-bottom: 5px; ">
                     <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filtro..." v-on:input="onFilterTextBoxChanged()">
                     <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisos()" style="40rem" @click="editColab" > EDITAR </v-btn>
                     <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisos()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
                 </div>
+
                 <ag-grid-vue
                 
                 style="width: 80vw; height: 100%"
@@ -85,7 +86,7 @@ created() {
         suppressCount: true,
       },
     };
-    this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290, resizable: true},{ filter:true,field:'region_usuario',minWidth:80,headerName:'Region',resizable: true},{ filter:true,field: 'calendario_usuario',headerName:'Calendario',resizable: true },{filter:true,field: 'horas',headerName:'Horas',resizable: true},{filter:true, field: 'visible',resizable: true,headerName:'Activo'}],
+    this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290, resizable: true},{ filter:true,field:'region_usuario',minWidth:80,headerName:'Region',resizable: true},{ filter:true,field: 'calendario_usuario',headerName:'Calendario',resizable: true },{filter:true,field: 'horas',headerName:'Horas',resizable: true},{filter:true, field: 'visible',resizable: true,headerName:'Activo'},{field: 'categoria'}, { field: 'ceco'}],
     this.groupDefaultExpanded = -1;
     this.getDataPath = (data) => {
       return data.orgHierarchy;
@@ -100,6 +101,10 @@ created() {
     onGridReady(params) {
       this.gridApi = params.api;
       this.gridColumnApi = params.columnApi;
+
+      //Oculta columnas agregadas
+      this.gridColumnApi.setColumnVisible('ceco', false)
+      this.gridColumnApi.setColumnVisible('categoria', false)
     },
     editColab(){
       let colaborator = this.gridApi.getSelectedRows()[0]
@@ -180,10 +185,9 @@ created() {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-left:450px;
   margin-top:100px;
-  height: 1000px;
-  width: 1000px;
+  height: 100vh;
+  width: 100vw;
 }
 #myGrid {
   flex: 1 1 0px;
