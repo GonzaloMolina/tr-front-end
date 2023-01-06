@@ -58,6 +58,19 @@
           >
             mdi-eye
           </v-icon>
+
+          <router-link to="/editUsuario">
+          <v-icon        
+            v-b-tooltip.hover title="Editar"
+            medium
+            color= "#2991c6"
+            @click="sendUsuario(item)"
+            style="margin-left: 1vw"
+          >
+            mdi-account-edit
+          
+          </v-icon>
+        </router-link>
         </template>
       </v-data-table>
 
@@ -82,11 +95,9 @@
 .container{
   margin-left:5rem;
 }
-
 .v-application--is-ltr .v-data-footer__select{
   display: none;
 }
-
 </style>
 
 <script>
@@ -127,22 +138,18 @@ const ip = require('../../../ip/ip')
                     'itemsPerPageText': 'Clientes por página:',},
       loader: true,
     }),
-
     watch:{
       dialogDelete (val) {
         val || this.closeDelete()
       },
     },
-
     beforeMount(){
       this.initialize()
       //this.cleanStore();
       this.$forceUpdate();
     },
-
     created(){
     },
-
     methods: {
       initialize () { //Pido todos los usuarios al backend
         axios.get(ip+"/usuarios")
@@ -152,19 +159,16 @@ const ip = require('../../../ip/ip')
           this.tableshow = true
         })
       },
-
       permisoDesactivar(){
         if(localStorage.Permisos.includes("P34")){
           return true
         }
       },
-
       btnDesactivarVisualizacion(){
         if(this.habilitado = {Usuario_Habilitado: 'X'}){
           return true
         }
       },
-
       //nueva funcion para dar de baja a los usuarios 
       async enableorunable(colab){
       console.log(colab)
@@ -195,10 +199,14 @@ const ip = require('../../../ip/ip')
       alert('Colaborador Actualizado')
       this.initialize()
       
-    }
+      },
+      
+      async sendUsuario(item){
+        this.$store.state.usuario_id = item.Usuario_Key;
+        console.log(item)
+      }
     
   },
-
       closeDelete () {
         this.dialogDelete = false
         this.elementoEditado= {}
@@ -218,5 +226,4 @@ const ip = require('../../../ip/ip')
         }
     },
     }
-
 </script>

@@ -11,191 +11,256 @@
                 type="success"
               > Se han guardado los cambios.
               </v-alert>
-      <v-form ref="form">
-      <v-row>
-        <v-col cols="12" style="max-width:80%; min-width:87%; margin-top:-0.5rem">
-          <v-title style="font-size:1.5rem; padding-left:1rem;">Datos Generales</v-title>
-          <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark style="position: relative; margin-left: 63vw;">Guardar</v-btn>
-          <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark style="margin-left:1vw">Volver</v-btn>
-          <v-card class="pa-2" outlined tile style="margin-top:1rem;min-height:30rem;min-width: 86%;max-width: 100%;">
-            <v-text-field
-              outlined
-              dense
-              :disabled="!seguridadColaboradores()"
-              v-model="colaborador.Colaborador_Codigo"
-              label="Código"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width:18vw;margin-left:1rem;margin-top:1rem"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              :disabled="!seguridadColaboradores()"
-              v-model="colaborador.Colaborador_Descripcion"
-              label="Nombre Completo"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width:18vw; margin-left:1rem;margin-top:1rem"
-            ></v-text-field>
-
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Usuario"
-              :items="usuarioCodigos"
-              label="Usuario"
-              placeholder="Selecciona..."
-              style="max-width:20vw;min-width:20vw; display:inline-block;margin-left:1rem"
-            >
-            </v-select>
-            
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Responsable"
-              :items="colaboradoresDescripciones"
-              label="Responsable"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Region"
-              :items="regionesDescripciones"
-              label="Región"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Calendario"
-              :items="calendariosDescripciones"
-              label="Calendario"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-
-
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Area"
-              :items="colaboradoresAreasDescripciones"
-              label="Área"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:20vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Ceco"
-              :items="Cecoitems"
-              item-text="ceco"
-              item-value="cod"
-              label="Ceco"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-
-            <v-row style="margin-left: 0.1rem;">
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Puesto"
-              :items="colaboradoresPuestosDescripciones"
-              label="Puesto"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
           
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Categoria"
-              :items="Catitems"
-              item-text="cat"
-              item-value="cod"
-              label="Categoría"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-          
-             <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Tipo"
-              :items="tiposDescripciones"
-              label="Tipo"
-              placeholder="Selecciona..."
-              style="max-width:20vw;min-width:20vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-            <v-select
-              dense
-              :disabled="!seguridadColaboradores()"
-              outlined
-              v-model="colaborador.Colaborador_Empresa"
-              :items="empresasDescripciones"
-              label="Empresa"
-              placeholder="Selecciona..."
-              style="max-width:18vw;min-width:18vw; display:inline-block;margin-left:1rem"
-            ></v-select>
-          </v-row>
-            <v-text-field
-              :disabled="!seguridadColaboradores()"
-              label="Horas Diarias"
-              v-model="colaborador_hora"
-              type="number"
-              outlined
-              min="0"
-              dense
-              style="display:inline-block; min-width:20vw;margin-left:1rem;margin-top:1rem"
-            ></v-text-field>
+          <b-form-row>
+            <b-col class="col-9">
+              <v-title style="font-size:1.5rem; padding-left:1rem;">Datos Generales</v-title>
+            </b-col>
+            <b-col class="col-2 ">
+              <b-row>
+              <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark >Guardar</v-btn>
+              <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark class="ml-3">Volver</v-btn>
+              </b-row>
+            </b-col>             
+          </b-form-row>
 
-           <v-col cols="4" style = "max-width:82rem; margin-top:-0.5rem">
-              <div class="labelText3" >
-             <h5 class ='labelT2'>Funciones disponibles</h5>
-            <v-row  style="margin-bottom:-2rem; margin-left: 2rem; margin-top: -0.5rem;">
-              <v-checkbox 
-                v-model="selected"
-                label="VENDEDOR"
-                value="Vendedor"
-                ></v-checkbox>    
-             </v-row>
-             <v-row  style="margin-bottom:-2rem; margin-left: 2rem;">
-                <v-checkbox          
-                v-model="selected"
-                 label="RESPONSABLE"
-                value="Responsable"
-                ></v-checkbox>
-              </v-row>
-              
-              </div>
-              <div class="labelText4" v-if="selected[0]!=null || selected[1]!=null " >
-                <h5 class ='labelT2'>Funciones asignadas</h5> 
-                  <b-button variant="outline-primary"  class="mr-1" v-if="selected[0]!=null">{{ selected[0] }}</b-button>
-                  <b-button variant="outline-primary" class="ml-1" v-if="selected[1]!=null">{{ selected[1] }}</b-button>
-                <p ></p>
-                 </div>
-                 </v-col>
-           
-            
+          <v-card class="pa-2 mt-4 mr-10 " max-width="1650" outlined tile>
+            <v-form ref="form">
+            <b-form-row class="ml-1 mr-1">
+              <b-col class="col-1">
+                <v-text-field
+                  outlined
+                  dense
+                  :disabled="!seguridadColaboradores()"
+                  v-model="colaborador.Colaborador_Codigo"
+                  label="Código"
+                  placeholder="Escribe..."
+                  style="margin-top:1rem">
+                </v-text-field>
+              </b-col>
+              <b-col>
+                <v-text-field
+                  outlined
+                  dense
+                  :disabled="!seguridadColaboradores()"
+                  v-model="colaborador.Colaborador_Descripcion"
+                  label="Nombre Completo"
+                  placeholder="Escribe..."
+                  style="margin-top:1rem">
+                </v-text-field>
+              </b-col>
+              <b-col>
+                <v-autocomplete
+                  dense
+                  :disabled="!seguridadColaboradores()"
+                  outlined
+                  v-model="colaborador.Colaborador_Usuario"
+                  :items="usuarioCodigos"
+                  label="Usuario Asociado"
+                  style="margin-top:1rem">
+                </v-autocomplete>
+              </b-col>
+              <b-col>
+                <v-autocomplete
+                  dense
+                  :disabled="!seguridadColaboradores()"
+                  outlined
+                  v-model="colaborador.Colaborador_Responsable"
+                  :items="colaboradoresDescripciones"
+                  label="Responsable"
+                  style="margin-top:1rem">
+                </v-autocomplete>
+              </b-col>          
+          </b-form-row>
+
+          <b-form-row class="ml-1 mr-1 mt-n6">
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Region"
+                :items="regionesDescripciones"
+                label="Región"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Calendario"
+                :items="calendariosDescripciones"
+                label="Calendario"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Area"
+                :items="colaboradoresAreasDescripciones"
+                label="Área"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Ceco"
+                :items="Cecoitems"
+                item-text="ceco"
+                item-value="cod"
+                label="Ceco"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+          </b-form-row>
+          <b-form-row class="ml-1 mr-1 mt-n6">
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Puesto"
+                :items="colaboradoresPuestosDescripciones"
+                label="Puesto"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Categoria"
+                :items="Catitems"
+                item-text="cat"
+                item-value="cod"
+                label="Categoría"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Tipo"
+                :items="tiposDescripciones"
+                label="Tipo"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-autocomplete
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Empresa"
+                :items="empresasDescripciones"
+                label="Empresa">
+              </v-autocomplete>
+            </b-col>
+          </b-form-row>
+          <b-form-row class="ml-1 mr-1 mt-n6">
+            <b-col class="col-3">
+              <v-text-field
+                :disabled="!seguridadColaboradores()"
+                label="Horas Diarias"
+                v-model="colaborador_hora"
+                type="number"
+                outlined
+                min="0"
+                dense>
+              </v-text-field>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Unidad_Negocio"
+                :items="[{un:'No aplica', cod:1}, {un:'SAP', cod:2},{un:'SDM', cod:3}, {un:'Tableau', cod:4}, {un:'Volume Distributor', cod:5}, {un:'Nuvol', cod:6}, {un:'Soluciones Cloud', cod:7}, {un:'Innovación', cod:8}]"
+                item-text="un"
+                item-value="cod"
+                label="Unidad de Negocio"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col class="col-3">
+              <v-select
+                dense
+                :disabled="!seguridadColaboradores()"
+                outlined
+                v-model="colaborador.Colaborador_Estado"
+                :items="[{est:'Activo', cod:1}, {est:'Inactivo', cod:2}]"
+                item-text="est"
+                item-value="cod"
+                label="Estado"
+                placeholder="Selecciona...">
+              </v-select>
+            </b-col>
+            <b-col>
+              <v-text-field
+                :disabled="!seguridadColaboradores()"
+                label="ID Externo"
+                v-model="colaborador.Colaborador_ID_Externo"
+                outlined
+                placeholder="Escribe..."
+                dense>
+              </v-text-field>
+            </b-col>
+          </b-form-row>
+          <b-form-row class="ml-1 mr-1 mt-n6">
+            <b-col class="col-7">
+              <v-textarea
+                outlined
+                v-model="colaborador.Colaborador_Observacion"
+                name="input-7-4"
+                label="Observaciones"
+                placeholder="Escribe..."
+                auto-grow
+                rows="6"
+                row-height="20"
+                counter="1000"
+                max-length="1000"
+              ></v-textarea>
+            </b-col>
+            <b-col class="col-4 ml-10">    
+              <b-row class="mt-1 mb-3">            
+                <h6 class="mr-3 mt-2" >Habilitar/Deshabilitar</h6>
+                    <v-switch 
+                      class="mt-n1 p-2"
+                      v-model="switch1"
+                      inset
+                    ></v-switch>
+              </b-row>
+              <b-row class="mt-n3">
+                <v-select
+                    v-model="colaborador.Colaborador_Funciones"
+                    :items="this.funciones"
+                    item-text="name"
+                    item-value="id"
+                    chips
+                    label="Funciones Asignadas"
+                    placeholder="El colaborador no tiene funciones asignadas"
+                    multiple
+                    outlined
+              ></v-select>
+              </b-row>
+            </b-col>         
+          </b-form-row> 
+            </v-form>         
           </v-card>
-        </v-col>
-      </v-row>
-      </v-form>
 
-    <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
+
+          <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
             <v-card>
               <v-toolbar
                 dark
@@ -306,7 +371,18 @@ export default {
           { cat: 'Preventa', cod: 5 },
           { cat: 'No aplica', cod: 6 },
         ],
-          
+    
+              
+    Unitems: [
+      {un:'No aplica', cod:1},
+      {un:'SAP', cod:2},
+      {un:'SDM', cod:3}, 
+      {un:'Tableau', cod:4}, 
+      {un:'Volume Distributor', cod:5}, 
+      {un:'Nuvol', cod:6}, 
+      {un:'Soluciones Cloud', cod:7}, 
+      {un:'Innovación', cod:8}
+    ],
           
     codigoViejo: '',
     //Reglas de agregado y editado
@@ -327,7 +403,11 @@ export default {
         Colaborador_Hora: 0,
         Usuario_Creacion: 1,
         Colaborador_Ceco: '',
-        Colaborador_Categoria: ''
+        Colaborador_Categoria: '',
+        Colaborador_Estado: '',
+        Colaborador_Unidad_Negocio: '',
+        Colaborador_ID_Externo: '',
+        Colaborador_Observacion: '',
     },
     usuarioCodigos : [],
     originalCodigo: "",
@@ -358,6 +438,7 @@ export default {
     alert: false,
     dialogCancelar: false,
     loader: true,
+    switch1: false,
     }),
   
   //Ciclo de vida del componente
@@ -424,7 +505,8 @@ export default {
     async loadEmpresas(){
       await axios.get(ip+"/empresas").then((response) => {
         this.empresas = response.data;
-        this.empresasDescripciones = response.data.map(
+        this.empresasFiltrado = this.empresas.filter(empresa => empresa.Visible === 'X')
+        this.empresasDescripciones = this.empresasFiltrado.map(
           (empresa) => empresa.Empresa_Descripcion
         ).sort();
       })
@@ -445,6 +527,7 @@ export default {
           this.calendariosDescripciones = response.data.map((calendario) => calendario.Calendario_Descripcion);
         });
       },
+
       async loadColaboradoresAreas() {
         await axios.get(ip+"/colaboradores_areas/descripciones")
           .then((response) => {
@@ -463,7 +546,7 @@ export default {
       await axios.get(ip+"/tipos_colaboradores/descripciones")
         .then((response) => {
           this.tipos = response.data;
-          this.tiposDescripciones = response.data.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
+          this.tiposDescripciones = this.tipos.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
         });
       },
       async loadColaboradoresFunciones(){
@@ -484,6 +567,7 @@ export default {
             }
           } else this.guardar()
      },
+
 
       async guardar() {
           
@@ -529,8 +613,7 @@ export default {
       },
 
       async guardarFunciones(){
-
-
+        
       var pedido =
          {
           Colaborador_Funcion_Funcion_Key  : '',
@@ -540,30 +623,17 @@ export default {
           Usuario_Modificacion : 1,
           Visible : 'X'
           }
-          this.deleteFunciones();
-        
-          
-          for ( var i  = 0 ; i < this.selected.length ; i++){
-            if(this.selected[i] == 'Vendedor'){
-              
-              pedido.Colaborador_Funcion_Funcion_Key = 1 ;
-              pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo+' - VEND'; 
-              pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
-              await axios.post(ip+'/colaboradores_funciones/',pedido)
-              .then((response) => console.log(response) )
-          }
-          else {
-            
-            pedido.Colaborador_Funcion_Funcion_Key = 2 ;
-            pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo+' - RESP'; 
-            pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key; 
-            await axios.post(ip+'/colaboradores_funciones/',pedido)
-             .then((response) => console.log(response) )
-          }
+          await this.deleteFunciones();
 
-        }
-        
-       
+          for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
+            var key = this.colaborador.Colaborador_Funciones[i]
+            pedido.Colaborador_Funcion_Funcion_Key = key,
+            pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
+            pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
+            await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => console.log(response) )
+           }    
+           
+          console.log(pedido)
       },
     
     cleanStore(){
@@ -587,9 +657,7 @@ export default {
       let empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.colaborador.Colaborador_Empresa)[0].Empresa_Key;
       let calendarioKey = this.calendarios.filter(calendario => calendario.Calendario_Descripcion == this.colaborador.Colaborador_Calendario)[0].Calendario_Key;
       let tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
-      let responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;
-      //var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
-     
+      let responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;     
       this.colaborador.Colaborador_Region = regionKey;
       this.colaborador.Colaborador_Area = areaKey;
       this.colaborador.Colaborador_Empresa = empresaKey;
@@ -614,6 +682,14 @@ export default {
       }
       else{
         this.colaborador.Colaborador_Categoria_Key  = this.colaborador.Colaborador_Categoria.cod
+      }
+
+      //Habilitar/Deshabilitar
+      if(this.switch1){
+        this.colaborador.Visible = 'X'
+      }
+      else{
+        this.colaborador.Visible = null
       }
       
     },
@@ -642,6 +718,10 @@ export default {
       this.originalCodigo = this.colaborador.Colaborador_Codigo
       this.colaborador.Colaborador_Ceco = { ceco: this.Cecoitems[this.colaborador.Ceco_Key - 1].ceco, cod: this.colaborador.Ceco_Key }
       this.colaborador.Colaborador_Categoria = { cat: this.Catitems[this.colaborador.Colaborador_Categoria_Key - 1].cat, cod: this.colaborador.Colaborador_Categoria_Key }
+      
+      if(this.colaborador.Visible === 'X'){
+        this.switch1 = true;
+      }     
     },
     asignarFunciones(){
       var funciones = []
@@ -649,10 +729,10 @@ export default {
         for(var i = 0 ; i < this.colaborador.Funcion.length ; i++){
           funciones.push(this.funciones.filter(f => f.id == this.colaborador.Funcion[i].Colaborador_Funcion_Funcion_Key)[0])
         }
-       funciones = funciones.map( f => f.name)
-       this.selected = funciones
+       this.colaborador.Colaborador_Funciones = funciones
       }
     },
+
     back(){
       this.$router.push({path:'/colaboradoresHierarchy'})
     }

@@ -16,6 +16,7 @@ import VistaUsuario from '../components/Usuario/VistaUsuario.vue'
 import usuariosTable from '../components/ABMS/Usuarios/usuariosTable.vue'
 import colaboradoresHierarchy from '../components/ABMS/Colaboradores/colaboradoresHierarchy.vue'
 import editColaborador from '../components/ABMS/Colaboradores/editColaborador.vue'
+import editUsuario from '../components/ABMS/Usuarios/editUsuario.vue'
 
 Vue.use(VueRouter)
 
@@ -131,6 +132,12 @@ Vue.use(VueRouter)
     path: '/editColaborador',
     name: 'editColaborador',
     component: editColaborador,
+    props: true
+  },
+  {
+    path: '/editUsuario',
+    name: 'editUsuario',
+    component: editUsuario,
     props: true
   },
 
