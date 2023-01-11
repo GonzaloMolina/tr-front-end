@@ -82,9 +82,10 @@
                 outlined
                 v-model="usuario.Usuario_Rol"
                 :items="Rolitems"
-                item-text="rol"
-                item-value="cod"
+                item-text="Rol_Descripcion"
+                item-value="Rol_Key"
                 label="Rol"
+                placeholder="Sin asignar"
                 >
               </v-autocomplete> 
             </b-col>
@@ -191,17 +192,6 @@ export default{
     alert: false,
     button: false,
     alert_mail: false,
-    // Enum para rol
-        Rolitems: [
-          { rol: 'Sin Asignar', cod:0 }, //no existe en la base de datos
-          { rol: 'Analista BI', cod: 1 },
-          { rol: 'Consultor Senior', cod: 2 },
-          { rol: 'Líder de Proyecto', cod: 3 },
-          { rol: 'Gerente Consultoría', cod: 4 },
-          { rol: 'Gerente Regional', cod: 5 },
-          { rol: 'Director', cod: 6 },
-          { rol: 'Visualización', cod: 7 },
-        ],
     usuario: {
       Usuario_Key:'',
       Usuario_Codigo: '',
@@ -217,10 +207,13 @@ export default{
       Usuario_Mail_Alternativo: '',
     },
     switch1: false,
+    roles:[]
    
   }),
   created(){
-      this.loadUsuario();
+    this.loadRoles();
+    this.loadUsuario();
+
   },
   rules: {
       checkEmail: checkEmail,
@@ -228,6 +221,13 @@ export default{
     },
   methods:
   {
+
+    loadRoles(){
+      axios.get(ip+"/seguridad/").then((response) => {
+        this.Rolitems = response.data;
+      })
+    },
+
       async loadUsuario(){       
         this.usuario_id = this.$store.state.usuario_id;   
         axios.get(ip+"/usuarios/user/"+this.usuario_id).then((response) => {
@@ -240,6 +240,7 @@ export default{
           this.usuario.Usuario_Mail_Alternativo = response.data.Usuario_Mail_Alternativo;
           this.usuario.Usuario_TokenID = response.data.Usuario_TokenID;
           this.usuario.Usuario_Habilitado = response.data.Usuario_Habilitado;
+          this.usuario.Usuario_Rol = response.data.Usuario_Rol;
           //Validación mail
           if (response.data.Usuario_Mail === ""){
             this.usuario.Usuario_Mail = "Sin asignar";
@@ -247,22 +248,7 @@ export default{
           else{
             this.usuario.Usuario_Mail = response.data.Usuario_Mail;
           }
-          //Validacion Rol
-          if (response.data.Rol === null){
-            this.usuario.Usuario_Cod_Rol = 0;
-            this.usuario.Usuario_Rol = "Sin asignar"
-          }
-          else{
-            this.usuario.Usuario_Cod_Rol = response.data.Rol.Rol_Codigo;
-            let codigo = 0
-            //Busca el codigo según la descripción del Rol
-            for (var i=0; i<(this.Rolitems).length;i++){
-              if (this.Rolitems[i].rol === response.data.Rol.Rol_Descripcion){
-                codigo = this.Rolitems[i].cod;
-              }
-            }
-            this.usuario.Usuario_Rol = {rol: response.data.Rol.Rol_Descripcion, cod: codigo};
-          }
+
           if(this.usuario.Usuario_Habilitado === 'X'){
             this.switch1 = true;
           }
@@ -272,15 +258,7 @@ export default{
     },
 
     async saveUser(){
-        // Validación rol sin asignar
-        if(this.usuario.Usuario_Rol === 0){
-          this.usuario.Usuario_Rol = null
-        }
-
-        if (typeof(this.usuario.Usuario_Rol) != "number"){
-          this.usuario.Usuario_Rol  = this.usuario.Usuario_Rol.cod
-        }
-
+        console.log(this.usuario)
         //Habilitar/deshabilitar
         if(this.switch1){
           this.usuario.Usuario_Habilitado = 'X'

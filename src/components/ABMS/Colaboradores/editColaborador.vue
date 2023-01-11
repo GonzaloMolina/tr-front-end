@@ -324,7 +324,6 @@
   margin-top: 1rem;
   margin-left:7rem;
 }
-
 .labelTextv2{
   float: left;
   margin-right: 25px;
@@ -337,7 +336,6 @@ import axios from "axios";
 import { runInThisContext } from "vm";
 import loader from '../../Estado/loader'
 const ip = require('../../../ip/ip')
-
 export default {
   name: "editColaborador",
   props: {
@@ -346,7 +344,6 @@ export default {
   components: {loader
               },
   data: () => ({
-
     // Enums para Ceco y Categoria
     Cecoitems: [
           { ceco: 'No Aplica', cod: 1 },
@@ -439,6 +436,7 @@ export default {
     dialogCancelar: false,
     loader: true,
     switch1: false,
+    isloading: false
     }),
   
   //Ciclo de vida del componente
@@ -450,23 +448,19 @@ export default {
         this.$router.push("/login");
       }
   },
-
 //Definicion de metodos 
   methods: {
     async initialize(){
+      await      this.loadUsuarios()
+      await     this.loadEmpresas()
+      await     this.loadRegions()
+      await     this.loadCalendars()
+      await    this.loadColaboradoresTipos()
+      await   this.loadColaboradoresAreas()
+      await      this.loadColaboradoresPuestos()
+      await this.loadColaboradores()
+      await this.loadColaboradoresFunciones()
       
-      this.loadUsuarios()
-      this.loadEmpresas()
-      this.loadRegions()
-      this.loadCalendars()
-      this.loadColaboradoresTipos()
-      this.loadColaboradoresAreas()
-      this.loadColaboradoresPuestos()
-      
-      this.loadColaboradores()
-      this.loadColaboradoresFunciones()
-    
-      await this.wait(4500)
       this.asignarDescripciones();
       this.asignarFunciones()
       this.loader = false
@@ -480,7 +474,7 @@ export default {
       })
     },
     async loadColaboradores(){
-        
+        this.isloading = true
         await axios.get(ip+"/colaboradores").then((response) => {
         this.colaboradores = response.data;
         this.colaboradoresFiltrado = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key != this.$store.state.colaborador.id).filter(colaborador => colaborador.Visible === 'X')
@@ -489,9 +483,9 @@ export default {
         this.colaboradoresDescripciones = this.colaboradoresFiltrado.map(
           (colaborador) => colaborador.Colaborador_Descripcion
         ).sort()
-        })            
+        })       
+        this.isloading = false     
     },
-
     async loadUsuarios(){
       await axios.get(ip+"/usuarios").then((response) => {
         this.usuarios = response.data;
@@ -527,7 +521,6 @@ export default {
           this.calendariosDescripciones = response.data.map((calendario) => calendario.Calendario_Descripcion);
         });
       },
-
       async loadColaboradoresAreas() {
         await axios.get(ip+"/colaboradores_areas/descripciones")
           .then((response) => {
@@ -556,7 +549,6 @@ export default {
           this.funcionesDescripciones = response.data.map((funcion) => funcion.name);
         });
       },
-
       evalGuardar() {
           if(this.colaborador.Colaborador_Codigo != this.originalCodigo){
             if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
@@ -567,19 +559,17 @@ export default {
             }
           } else this.guardar()
      },
-
-
       async guardar() {
-          
           await this.guardarHoras()
           var newUserMail = {
             Usuario_Mail : this.colaborador.Colaborador_Usuario
           }
           await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newUserMail).then((response) =>{
-
           })
           this.asignarKeys()
           await this.guardarFunciones()
+          var newEstado = {Usuario_Habilitado : this.colaborador.Visible}         
+          await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newEstado).then((response) =>{})
           
           await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
           .then((response) => {
@@ -593,7 +583,6 @@ export default {
             throw new Error('El colaborador ya existe')
           })
       },
-
       async deleteFunciones(){
         if(this.colaborador.Funcion.length > 0){
         await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
@@ -601,7 +590,6 @@ export default {
         })
         }
       },
-
       async guardarHoras(){
         var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
         let hora = {Colaborador_Hora_Usuario : usuarioKey,
@@ -611,7 +599,6 @@ export default {
            console.log(response)
         })
       },
-
       async guardarFunciones(){
         
       var pedido =
@@ -623,17 +610,23 @@ export default {
           Usuario_Modificacion : 1,
           Visible : 'X'
           }
-          await this.deleteFunciones();
-
-          for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
-            var key = this.colaborador.Colaborador_Funciones[i]
-            pedido.Colaborador_Funcion_Funcion_Key = key,
-            pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
-            pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
-            await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => console.log(response) )
-           }    
-           
-          console.log(pedido)
+          this.deleteFunciones();
+          	
+          console.log(this.colaborador)
+          if (this.colaborador.Colaborador_Funciones != null){
+            for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
+              if(typeof(this.colaborador.Colaborador_Categoria) === "number"){
+                var key = this.colaborador.Colaborador_Funciones[i].id
+              }
+              else{
+                var key = this.colaborador.Colaborador_Funciones[i]
+              }
+              pedido.Colaborador_Funcion_Funcion_Key = key,
+              pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
+              pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
+              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => console.log(response) )
+            }            
+          }
       },
     
     cleanStore(){
@@ -675,7 +668,6 @@ export default {
       else{
         this.colaborador.Ceco_Key = this.colaborador.Colaborador_Ceco.cod
       }
-
       //(Si no se modifica la categoría, el tipo de datos asignado al select es un diccionario)
       if (typeof(this.colaborador.Colaborador_Categoria) === "number"){
         this.colaborador.Colaborador_Categoria_Key = this.colaborador.Colaborador_Categoria
@@ -683,7 +675,6 @@ export default {
       else{
         this.colaborador.Colaborador_Categoria_Key  = this.colaborador.Colaborador_Categoria.cod
       }
-
       //Habilitar/Deshabilitar
       if(this.switch1){
         this.colaborador.Visible = 'X'
@@ -732,7 +723,6 @@ export default {
        this.colaborador.Colaborador_Funciones = funciones
       }
     },
-
     back(){
       this.$router.push({path:'/colaboradoresHierarchy'})
     }
