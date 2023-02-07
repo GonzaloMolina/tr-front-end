@@ -429,10 +429,10 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         validarPorcentaje(){
           if(this.$store.state.proyecto[0].Tecnologias === 0){
             var tecnologias = this.$store.state.proyecto[0].Tecnologias
-            console.log(tecnologias)
+            
             let contador = 0
             let flag = false
-            console.log(tecnologias)
+         
             for (let tecnologia of tecnologias){
               contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
             }
@@ -471,9 +471,9 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         },
 
         loadProyectoDescripciones(){
-          console.log('Cargo proyecto con descripciones')
+          
           this.proyectoConDescripciones = _.cloneDeep(this.proyecto)
-          console.log('Cargo proyecto con descripciones')
+         
         },
 
         loadMonedas(){
@@ -608,19 +608,18 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         guardarTecnologias(){
           if(this.tecnologiasOriginal.length > 0){
               axios.delete(ip+"/proyectos_tecnologias/"+this.proyecto.Proyecto_Key).then((response) => {
-              console.log(response);
+              
           })
           }
           var tecnologiasAGuardar = this.$store.state.proyecto[0].Tecnologias
-          console.log(tecnologiasAGuardar)
-          console.log(this.$store.state.proyecto[0].Tecnologias)
+         
           for(let i = 0; i< tecnologiasAGuardar.length; i++){
             this.asignarKey(tecnologiasAGuardar[i])
             tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
             tecnologiasAGuardar[i].Usuario_Modificacion = localStorage.usuario_id
             axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
             .then((response) => {
-              console.log(response);
+              
             })
           }
           /*

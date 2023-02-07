@@ -488,7 +488,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then(response => {
-        console.log(response)
+        //console.log(response)
       })
       this.closeDialogProyecto()
     },
@@ -501,7 +501,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
       });
     },
 
@@ -513,7 +513,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then(response => {
-        console.log(response)
+        //console.log(response)
       })
       this.closeDialogClienteFiscal()
     },
@@ -526,7 +526,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
       });
     },
 
@@ -709,7 +709,7 @@ export default {
             clienteFiscal.Usuario_Modificacion = localStorage.usuario_id
             axios.post(ip+"/clientes_fiscales", clienteFiscal)
             .then((response) => {
-              console.log(res.data)
+              //console.log(res.data)
             })
             .catch(err => {
               alert('Cliente Fiscal'+clienteFiscal.Cliente_Fiscal_Descripcion+ 'ya existe')

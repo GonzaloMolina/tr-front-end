@@ -554,7 +554,7 @@ export default {
             if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
               alert("El código ya existe")
             } else{
-              console.log(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo))
+              //console.log(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo))
               this.guardar()
             }
           } else this.guardar()
@@ -596,7 +596,7 @@ export default {
                     Colaborador_Hora_Dia : parseInt(this.colaborador_hora)}
         await axios.patch(ip+"/colaboradores_horas/"+usuarioKey, hora)
           .then((response) => {
-           console.log(response)
+           //console.log(response)
         })
       },
       async guardarFunciones(){
@@ -612,7 +612,7 @@ export default {
           }
           this.deleteFunciones();
           	
-          console.log(this.colaborador)
+          //console.log(this.colaborador)
           if (this.colaborador.Colaborador_Funciones != null){
             for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
               if(typeof(this.colaborador.Colaborador_Categoria) === "number"){
@@ -624,7 +624,7 @@ export default {
               pedido.Colaborador_Funcion_Funcion_Key = key,
               pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
               pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
-              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => console.log(response) )
+              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => response )
             }            
           }
       },

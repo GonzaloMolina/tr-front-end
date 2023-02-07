@@ -75,6 +75,7 @@ this.loadColaboradores();
 
 },
 created() {
+this.overlayNoRowsTemplate ="<span style=\"padding: 15px; border: 5px solid #444; background: lightgoldenrodyellow;\">Cargando</span>";  
 this.overlayLoadingTemplate =
  '<span class="ag-overlay-loading-center">Cargando.......</span>';
 this.autoGroupColumnDef = {
@@ -98,7 +99,7 @@ this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290,
                  ],
                   // {field: 'categoria',headerName:'Categoria'},
                   // { field: 'ceco', headerName:'Ceco'}],
-this.groupDefaultExpanded = -1;
+this.groupDefaultExpanded = 1;
 this.getDataPath = (data) => {
  return data.orgHierarchy;
 };
@@ -123,7 +124,7 @@ onGridReady(params) {
 editColab(){
  let colaborator = this.gridApi.getSelectedRows()[0]
  this.$store.state.colaborador = {id: colaborator.id, horas: colaborator.horas}
- console.log(colaborator)
+ //console.log(colaborator)
  this.$router.push('editColaborador/')  
 },
 seguridadColaboradores(){

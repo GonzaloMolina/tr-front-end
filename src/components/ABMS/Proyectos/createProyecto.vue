@@ -424,15 +424,14 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
     //Guarda tecnologias
     guardarTecnologias(){
           var tecnologiasAGuardar = this.$store.state.proyecto[0].Tecnologias
-          console.log(tecnologiasAGuardar)
-          console.log(this.$store.state.proyecto[0].Tecnologias)
+          
           for(let i = 0; i< tecnologiasAGuardar.length; i++){
             this.asignarKey(tecnologiasAGuardar[i])
             tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
             tecnologiasAGuardar[i].Usuario_Modificacion = localStorage.usuario_id
             axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
             .then((response) => {
-              console.log(response);
+              //console.log(response);
             })
           }
         },
@@ -440,7 +439,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
     //si no llega al 100 tambien.
     validarPorcentaje(){
       var tecnologias = this.$store.state.proyecto[0].Tecnologias
-      console.log(tecnologias)
+      
       if(tecnologias.length == 0){
         return true
       } else{
@@ -596,7 +595,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
     //Funcion que funciona en base al tipo de proyecto, segun sea Trabajo Externo o distinto de Trabajo Externo
     asignarSegunTipo(){
           var seleccionado = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0]
-          console.log(seleccionado.Proyecto_Tipo_Beneficio)
+          
           this.proyecto.Tipo.Proyecto_Tipo_Beneficio = seleccionado.Proyecto_Tipo_Beneficio
           if(seleccionado.Proyecto_Tipo_Beneficio != "Trabajo Externo"){
           this.proyecto.Proyecto_Alcance = "No Aplica"

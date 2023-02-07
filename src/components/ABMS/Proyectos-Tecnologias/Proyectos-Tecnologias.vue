@@ -184,7 +184,7 @@ const ip = require('../../../ip/ip')
         &&
         axios.delete(ip+"/proyectos_tecnologias/"+item.Proyecto_Tecnologia_Proyecto+"/"+item.Proyecto_Tecnologia_Tecnologia)
         .then(response => {
-          console.log(response);
+          
         })
       },
 

@@ -6,7 +6,7 @@
         :headers="headers"
         :items="desserts"
         :search="search"
-        :items-per-page="7"
+        :items-per-page="20"
         :footer-props="footerProps"
         v-show="tableshow"
         :item-class="itemRowBackground"
@@ -171,9 +171,8 @@ const ip = require('../../../ip/ip')
       },
       //nueva funcion para dar de baja a los usuarios 
       async enableorunable(colab){
-      console.log(colab)
-      //var colab =  this.desserts.indexOf(colab)
-      console.log(colab)
+      
+    
       if(colab.Usuario_Habilitado == 'X'){
         var noVisible = {
           Usuario_Habilitado:'',
@@ -181,7 +180,7 @@ const ip = require('../../../ip/ip')
           Colaborador_Estado: 2}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, noVisible)
           .then((response) => {
-            console.log(response)
+            
       
         })
         
@@ -192,7 +191,7 @@ const ip = require('../../../ip/ip')
             Colaborador_Estado: 1}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, visible)
           .then((response) => {
-            console.log(response)
+           
             
         })
       }
@@ -203,7 +202,7 @@ const ip = require('../../../ip/ip')
       
       async sendUsuario(item){
         this.$store.state.usuario_id = item.Usuario_Key;
-        console.log(item)
+        
       }
     
   },
@@ -219,7 +218,7 @@ const ip = require('../../../ip/ip')
       },
       itemRowBackground(item) {
         if (item.Usuario_Habilitado == '') {
-          console.log(item)
+          
           return "grey";
         } else {
           return "orange";
