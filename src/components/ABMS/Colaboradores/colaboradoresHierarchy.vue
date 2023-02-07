@@ -18,6 +18,7 @@
            @grid-ready="onGridReady"
            :defaultColDef="defaultColDef"
            :autoGroupColumnDef="autoGroupColumnDef"
+           :overlayNoRowsTemplate="overlayNoRowsTemplate"
            :rowData="rowData"
            :treeData="true"
            :rowSelection="rowSelection"
@@ -47,6 +48,7 @@ totalValueRenderer: TotalValueRenderer,
 data: function () {
 return {
  overlayLoadingTemplate: null,
+ overlayNoRowsTemplate :null,
  colaborator : null,
  rowSelection:null,
  columnDefs: null,
