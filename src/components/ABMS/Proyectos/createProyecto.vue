@@ -407,7 +407,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         this.proyecto.Visible = 'X'
         await axios.post(ip+"/proyectos", this.proyecto)
         .then((response) => {
-          //console.log(this.proyecto);
+         
         });
         await axios.get(ip+"/proyectos/"+ proyectoGuardado)
         .then((response) => {
@@ -431,7 +431,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
             tecnologiasAGuardar[i].Usuario_Modificacion = localStorage.usuario_id
             axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
             .then((response) => {
-              //console.log(response);
+              
             })
           }
         },
@@ -518,18 +518,21 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         this.tecnologias = response.data;
       });
     },
-    loadResponsables(){
-      axios.get(ip+"/colaboradores/descripciones").then((response) => {
-        this.responsables = response.data.filter(responsable => responsable.Funcion.Colaborador_Funcion_Funcion_Key === 2)
+ 
+     loadResponsables(){
+       axios.get(ip+"/colaboradores/descripciones").then((response) => {
+        this.responsables = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(2))
         this.responsablesDescripciones = this.responsables.map(responsable => responsable.Usuario.Usuario_Nombre_Completo).sort();
       });
     },
+ 
     loadVendedores(){
       axios.get(ip+"/colaboradores/descripciones").then((response) => {
-        this.vendedores = response.data.filter(responsable => responsable.Funcion.Colaborador_Funcion_Funcion_Key === 1)
+        this.vendedores = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(1))
         this.vendedoresDescripciones = this.vendedores.map(vendedor => vendedor.Usuario.Usuario_Nombre_Completo).sort();
       });
     },
+
     //Asigna descripciones para mostrar en los combos
     asignarDescripciones(){
       var desUnidad_Negocio = this.unidades_Negocio.filter(unidad_negocio => unidad_negocio.Unidad_Negocio_Key == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Descripcion
@@ -595,7 +598,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
     //Funcion que funciona en base al tipo de proyecto, segun sea Trabajo Externo o distinto de Trabajo Externo
     asignarSegunTipo(){
           var seleccionado = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0]
-          
+  
           this.proyecto.Tipo.Proyecto_Tipo_Beneficio = seleccionado.Proyecto_Tipo_Beneficio
           if(seleccionado.Proyecto_Tipo_Beneficio != "Trabajo Externo"){
           this.proyecto.Proyecto_Alcance = "No Aplica"

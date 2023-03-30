@@ -434,9 +434,34 @@ export default {
     })
     },
 
+    getClientesFiscales(){
+      let clientesfiscales = []
+      for (var index in this.$store.state.cliente[0].ClientesFiscales){
+        let key = this.$store.state.cliente[0].ClientesFiscales[index].Cliente_Fiscal_Key
+        axios.get(ip+"/clientes_fiscales/key/"+key).then(response => {
+          clientesfiscales.push(response.data)          
+        })
+      }
+      return clientesfiscales
+    },
+
+    getProyectos(){
+      let proyectos = []
+      for (var index in this.$store.state.cliente[0].Proyectos){
+        let key = this.$store.state.cliente[0].Proyectos[index].Proyecto_Key
+        axios.get(ip+"/proyectos/key/"+key).then(response => {
+          proyectos.push(response.data)
+        })
+      }
+      
+      return proyectos
+      
+    },
+
     //Se hace una copia de los clientes fiscales originales para guardarlos si no fueron modificados
     loadClientesFiscalesBackup(){
-      this.clientesFiscalesOriginal = _.cloneDeep(this.$store.state.cliente[0].ClientesFiscales)
+
+      this.clientesFiscalesOriginal = this.getClientesFiscales()
     },
 
      permisoGuardar(){
@@ -488,7 +513,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then(response => {
-        //console.log(response)
+        
       })
       this.closeDialogProyecto()
     },
@@ -501,7 +526,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then((response) => {
-        //console.log(response);
+        
       });
     },
 
@@ -513,7 +538,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then(response => {
-        //console.log(response)
+        
       })
       this.closeDialogClienteFiscal()
     },
@@ -526,7 +551,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then((response) => {
-        //console.log(response);
+        
       });
     },
 
@@ -564,6 +589,10 @@ export default {
     //Se carga el cliente de vuex
     loadCliente(){
       this.cliente = this.$store.state.cliente[0];
+      this.cliente.ClientesFiscales = this.getClientesFiscales()
+      this.cliente.Proyectos = this.getProyectos()
+
+
       this.logo = this.$store.state.cliente[0].Cliente_Logo
       this.defaultCode = this.$store.state.cliente[0].Cliente_Codigo;
     },
@@ -709,7 +738,7 @@ export default {
             clienteFiscal.Usuario_Modificacion = localStorage.usuario_id
             axios.post(ip+"/clientes_fiscales", clienteFiscal)
             .then((response) => {
-              //console.log(res.data)
+             
             })
             .catch(err => {
               alert('Cliente Fiscal'+clienteFiscal.Cliente_Fiscal_Descripcion+ 'ya existe')

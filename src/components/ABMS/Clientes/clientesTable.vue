@@ -157,11 +157,11 @@ const ip = require('../../../ip/ip')
 
     methods: {
       initialize () { //Pido todos los clientes al backend
-        axios.get(ip+"/clientes")
+        axios.get(ip+"/clientes/clientesGrid")
         .then(response => {
           this.desserts = response.data
-          this.loader = false
           this.tableshow = true
+          this.loader = false
         })
       },
 
@@ -219,7 +219,7 @@ const ip = require('../../../ip/ip')
           this.desserts.splice(index, 1, item)
           axios.patch(ip+"/Clientes/"+item.Cliente_Codigo, visible)
           .then(response => {
-            //console.log(response)
+         
           })
         }
       } ,
@@ -237,7 +237,7 @@ const ip = require('../../../ip/ip')
         this.desserts.splice(index, 1, item)
         axios.patch(ip+"/Clientes/"+item.Cliente_Codigo, visible)
         .then(response => {
-          //console.log(response)
+          
         })
       },
 

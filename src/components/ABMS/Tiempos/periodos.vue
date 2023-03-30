@@ -207,7 +207,7 @@ export default {
       axios
         .patch(ip + "/tiempos_periodos/" + item.Tiempo_Periodo, abierto_cerrado)
         .then((response) => {
-          console.log(response);
+         
         });
       this.evalPeriods();
     },
@@ -221,7 +221,7 @@ export default {
       axios
         .patch(ip + "/tiempos_periodos/" + item.Tiempo_Periodo, abierto_cerrado)
         .then((response) => {
-          console.log(response);
+          
         });
       this.evalPeriods();
     },
@@ -230,11 +230,11 @@ export default {
       var periodosAbiertos = this.allPeriods.filter(
         (periodo) => periodo.Tiempo_Abierto_Cerrado == "A"
       );
-      console.log(periodosAbiertos);
+      
       var periodosAbiertosAMostrar = periodosAbiertos.map(
         (periodo) => periodo.Tiempo_Periodo
       );
-      console.log(periodosAbiertos);
+      
       if (periodosAbiertos.length == 0) {
         alert("Todos los períodos estan cerrados");
       } else if (periodosAbiertos.length > 1) {

@@ -5,10 +5,9 @@
        <div class="example-wrapper" style="">
            <div style="margin-bottom: 5px; ">
                <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filtro..." v-on:input="onFilterTextBoxChanged()">
-               <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisos()" style="40rem" @click="editColab" > EDITAR </v-btn>
-               <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisos()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
+               <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisosLectura()" style="40rem" @click="editColab" > EDITAR </v-btn>
+               <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisosEditar()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
            </div>
-
            <ag-grid-vue
            
            style="width: 80vw; height: 100%"
@@ -55,6 +54,7 @@ return {
  gridApi: null,
  columnApi: null,
  disableEditar : false,
+ horas_user: "",
  defaultColDef: {
    flex: 1,
  },
@@ -65,6 +65,7 @@ return {
  async loadColaboradores(){
    await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
    this.rowData = response.data;
+  
  })
 }, 
 };
@@ -99,8 +100,7 @@ this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290,
                    { filter:true, field: 'puesto',resizable: true, headerName:'Puesto'},
                    { filter:true, field: 'tipo',resizable: true, headerName:'Tipo'},
                  ],
-                  // {field: 'categoria',headerName:'Categoria'},
-                  // { field: 'ceco', headerName:'Ceco'}],
+                 
 this.groupDefaultExpanded = 1;
 this.getDataPath = (data) => {
  return data.orgHierarchy;
@@ -123,13 +123,28 @@ onGridReady(params) {
  this.gridColumnApi.setColumnVisible('puesto', false)
  this.gridColumnApi.setColumnVisible('tipo', false)
 },
-editColab(){
- let colaborator = this.gridApi.getSelectedRows()[0]
- this.$store.state.colaborador = {id: colaborator.id, horas: colaborator.horas}
- //console.log(colaborator)
- this.$router.push('editColaborador/')  
+async editColab(){
+let colaborator = this.gridApi.getSelectedRows()[0]
+await this.getHoras(colaborator.usuario)
+if( this.horas_user === null ) {  this.horas_user = 0}
+this.$store.state.colaborador = {id: colaborator.id, horas: this.horas_user}
+this.$router.push('editColaborador/')  
 },
-seguridadColaboradores(){
+
+ async getHoras(user){
+  var horas = 10
+  await  axios.get(ip+"/colaboradores_horas").then((response) => {
+    horas = response.data.filter( h => h.Colaborador_Hora_Usuario == user)[0].Colaborador_Hora_Dia;
+  })
+  this.horas_user = horas
+},
+seguridadColaboradoresGuardar(){
+  if(!localStorage.login){
+     return false
+   } else
+   return localStorage.Permisos.includes('P46') || localStorage.Permisos.includes('P45') 
+},
+seguridadColaboradoresLectura(){
   if(!localStorage.login){
      return false
    } else
@@ -142,8 +157,11 @@ async wait(time) {
    }, time);
  })
 },
-btnEditarPermisos(){
- return !this.seguridadColaboradores() && this.btnEditarPermisoAccion()
+btnEditarPermisosEditar(){
+ return !this.seguridadColaboradoresGuardar()
+},
+btnEditarPermisosLectura(){
+ return !this.seguridadColaboradoresLectura() && this.btnEditarPermisoAccion()
 },
 btnEditarPermisoAccion(){
  return this.disableEditar
@@ -151,7 +169,7 @@ btnEditarPermisoAccion(){
 
 async enableorunable(){
  var colaborator = this.gridApi.getSelectedRows()[0]
- console.log(colaborator)
+
  if(colaborator.visible == 'X'){
    var noVisible = {
      Usuario_Habilitado:'',

@@ -41,7 +41,10 @@
          
           <v-icon
             v-b-tooltip.hover title="Desactivar"
+
             v-if="permisoDesactivar() && item.Usuario_Habilitado == 'X'"
+           
+            dissa
             medium
             color= "#2991c6"
             @click="enableorunable(item)"
@@ -160,7 +163,7 @@ const ip = require('../../../ip/ip')
         })
       },
       permisoDesactivar(){
-        if(localStorage.Permisos.includes("P34")){
+        if(localStorage.Permisos.includes("P47") && localStorage.Permisos.includes("P48") ){
           return true
         }
       },
@@ -172,7 +175,8 @@ const ip = require('../../../ip/ip')
       //nueva funcion para dar de baja a los usuarios 
       async enableorunable(colab){
       
-    
+      //var colab =  this.desserts.indexOf(colab)
+      
       if(colab.Usuario_Habilitado == 'X'){
         var noVisible = {
           Usuario_Habilitado:'',
@@ -180,7 +184,7 @@ const ip = require('../../../ip/ip')
           Colaborador_Estado: 2}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, noVisible)
           .then((response) => {
-            
+           
       
         })
         
@@ -191,7 +195,7 @@ const ip = require('../../../ip/ip')
             Colaborador_Estado: 1}
         await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, visible)
           .then((response) => {
-           
+            
             
         })
       }

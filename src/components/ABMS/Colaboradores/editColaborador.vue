@@ -18,8 +18,8 @@
             </b-col>
             <b-col class="col-2 ">
               <b-row>
-              <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradores()"  color="#2991C6" dark >Guardar</v-btn>
-              <v-btn @click="back()" :disabled="!seguridadColaboradores()"   color="#ffa025" dark class="ml-3">Volver</v-btn>
+              <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradoresEditar()"  color="#2991C6" dark >Guardar</v-btn>
+              <v-btn @click="back()" :disabled="!seguridadColaboradoresLeer()"   color="#ffa025" dark class="ml-3">Volver</v-btn>
               </b-row>
             </b-col>             
           </b-form-row>
@@ -31,7 +31,7 @@
                 <v-text-field
                   outlined
                   dense
-                  :disabled="!seguridadColaboradores()"
+                  :disabled="!seguridadColaboradoresEditar()"
                   v-model="colaborador.Colaborador_Codigo"
                   label="Código"
                   placeholder="Escribe..."
@@ -42,7 +42,7 @@
                 <v-text-field
                   outlined
                   dense
-                  :disabled="!seguridadColaboradores()"
+                  :disabled="!seguridadColaboradoresEditar()"
                   v-model="colaborador.Colaborador_Descripcion"
                   label="Nombre Completo"
                   placeholder="Escribe..."
@@ -52,7 +52,7 @@
               <b-col>
                 <v-autocomplete
                   dense
-                  :disabled="!seguridadColaboradores()"
+                  :disabled="!seguridadColaboradoresEditar()"
                   outlined
                   v-model="colaborador.Colaborador_Usuario"
                   :items="usuarioCodigos"
@@ -63,7 +63,7 @@
               <b-col>
                 <v-autocomplete
                   dense
-                  :disabled="!seguridadColaboradores()"
+                  :disabled="!seguridadColaboradoresEditar()"
                   outlined
                   v-model="colaborador.Colaborador_Responsable"
                   :items="colaboradoresDescripciones"
@@ -77,7 +77,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Region"
                 :items="regionesDescripciones"
@@ -88,7 +88,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Calendario"
                 :items="calendariosDescripciones"
@@ -99,7 +99,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Area"
                 :items="colaboradoresAreasDescripciones"
@@ -110,7 +110,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Ceco"
                 :items="Cecoitems"
@@ -125,7 +125,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Puesto"
                 :items="colaboradoresPuestosDescripciones"
@@ -136,7 +136,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Categoria"
                 :items="Catitems"
@@ -149,7 +149,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Tipo"
                 :items="tiposDescripciones"
@@ -160,7 +160,7 @@
             <b-col class="col-3">
               <v-autocomplete
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Empresa"
                 :items="empresasDescripciones"
@@ -171,7 +171,7 @@
           <b-form-row class="ml-1 mr-1 mt-n6">
             <b-col class="col-3">
               <v-text-field
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 label="Horas Diarias"
                 v-model="colaborador_hora"
                 type="number"
@@ -183,7 +183,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Unidad_Negocio"
                 :items="[{un:'No aplica', cod:1}, {un:'SAP', cod:2},{un:'SDM', cod:3}, {un:'Tableau', cod:4}, {un:'Volume Distributor', cod:5}, {un:'Nuvol', cod:6}, {un:'Soluciones Cloud', cod:7}, {un:'Innovación', cod:8}]"
@@ -196,7 +196,7 @@
             <b-col class="col-3">
               <v-select
                 dense
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 outlined
                 v-model="colaborador.Colaborador_Estado"
                 :items="[{est:'Activo', cod:1}, {est:'Inactivo', cod:2}]"
@@ -208,7 +208,7 @@
             </b-col>
             <b-col>
               <v-text-field
-                :disabled="!seguridadColaboradores()"
+                :disabled="!seguridadColaboradoresEditar()"
                 label="ID Externo"
                 v-model="colaborador.Colaborador_ID_Externo"
                 outlined
@@ -236,6 +236,7 @@
               <b-row class="mt-1 mb-3">            
                 <h6 class="mr-3 mt-2" >Habilitar/Deshabilitar</h6>
                     <v-switch 
+                      :disabled="!seguridadColaboradoresEditar()"
                       class="mt-n1 p-2"
                       v-model="switch1"
                       inset
@@ -367,7 +368,8 @@ export default {
           { cat: 'Analista', cod: 4 },
           { cat: 'Preventa', cod: 5 },
           { cat: 'No aplica', cod: 6 },
-        ],
+          { cat:'Trainee', cod: 7}
+  ],
     
               
     Unitems: [
@@ -554,7 +556,7 @@ export default {
             if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
               alert("El código ya existe")
             } else{
-              //console.log(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo))
+             
               this.guardar()
             }
           } else this.guardar()
@@ -596,7 +598,7 @@ export default {
                     Colaborador_Hora_Dia : parseInt(this.colaborador_hora)}
         await axios.patch(ip+"/colaboradores_horas/"+usuarioKey, hora)
           .then((response) => {
-           //console.log(response)
+           
         })
       },
       async guardarFunciones(){
@@ -612,7 +614,7 @@ export default {
           }
           this.deleteFunciones();
           	
-          //console.log(this.colaborador)
+          
           if (this.colaborador.Colaborador_Funciones != null){
             for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
               if(typeof(this.colaborador.Colaborador_Categoria) === "number"){
@@ -624,7 +626,9 @@ export default {
               pedido.Colaborador_Funcion_Funcion_Key = key,
               pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
               pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
-              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => response )
+              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => response  )
+                
+                 
             }            
           }
       },
@@ -637,7 +641,13 @@ export default {
         clienteFiscal: [],
         empresa: []})
     },
-    seguridadColaboradores(){
+    seguridadColaboradoresEditar(){
+       if(!localStorage.login){
+          return false
+        } else
+        return localStorage.Permisos.includes('P45') || localStorage.Permisos.includes('P46') 
+    },
+    seguridadColaboradoresLeer(){
        if(!localStorage.login){
           return false
         } else
@@ -684,8 +694,55 @@ export default {
       }
       
     },
+
+    validatedFields(col){
+    var  colaborador = col
+      if(colaborador.Colaborador_Responsable===null && colaborador.Colaborador_Key!==41){
+        colaborador.Colaborador_Responsable= 436
+    }
+    if(colaborador.Colaborador_Region === null){
+      colaborador.Colaborador_Region = 1
+    }
+    if(colaborador.Colaborador_Area ===null){
+      colaborador.Colaborador_Area = 1 
+    }
+    if(colaborador.Colaborador_Puesto ===null){
+      colaborador.Colaborador_Puesto = 1 
+    }
+    if(colaborador.Colaborador_Tipo ===null){
+      colaborador.Colaborador_Tipo = 1 
+    }
+    if(colaborador.Colaborador_Empresa ===null){
+      colaborador.Colaborador_Empresa = 140
+    }
+    if(colaborador.Colaborador_Estado ===null){
+      colaborador.Colaborador_Estado = 2
+    }
+    if(colaborador.Colaborador_Codigo ===null){
+      colaborador.Colaborador_Codigo = "No tiene"
+    }
+    if(colaborador.Colaborador_Descripcion ===null){
+      colaborador.Colaborador_Descripcion = "No tiene"
+    }
+    if(colaborador.Colaborador_Unidad_Negocio ===null){
+      colaborador.Colaborador_Unidad_Negocio = 1
+    }
+    if(colaborador.Colaborador_Calendario ===null){
+      colaborador.Colaborador_Calendario = 1
+    }
+    if(colaborador.Colaborador_Ceco_key ===null){
+      colaborador.Colaborador_Ceco_key = 1
+    }
+    if(colaborador.Colaborador_Categoria_Key ===null){
+      colaborador.Colaborador_Calendario = 6
+    }
+    return colaborador
+    },
     asignarDescripciones(){
       this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
+      this.colaborador = this.validatedFields(this.colaborador)
+      console.log(this.colaborador)
+      console.log(this.$store.state.colaborador)
       this.originalKeyUser = this.colaborador.Colaborador_Usuario
       let regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
       let colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;

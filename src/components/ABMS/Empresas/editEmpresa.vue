@@ -179,10 +179,9 @@ export default {
 
   methods: {
     async initialize(){
-      this.loadEmpresa();
-      this.loadTiposEmpresas();
-      await this.wait(2000); //DISPARAR EVENTO DE LOADING
-      this.asignarDescripciones();
+      await this.loadEmpresa();
+      await this.loadTiposEmpresas();
+      await this.wait(1000)
       this.loader = false
     },
 
@@ -194,12 +193,13 @@ export default {
   })
     },
 
-    loadEmpresa(){
+    async loadEmpresa(){
         this.empresa = this.$store.state.empresa[0];
+        this.empresa.Empresa_Tipo = this.empresa.TipoEmpresa.Tipo_Empresa_Descripcion
         this.codigoViejo = this.$store.state.empresa[0].Empresa_Codigo;
     },
 
-    loadTiposEmpresas(){
+    async loadTiposEmpresas(){
         axios.get(ip+"/tipos_empresas")
         .then(response => {
             this.tiposEmpresas = response.data
@@ -242,10 +242,7 @@ export default {
         this.empresa.Empresa_Tipo = tipoEmpresaKey;
     },
 
-    asignarDescripciones(){
-        var tipoEmpresaDesc = this.tiposEmpresas.filter((tipoEmpresa) => tipoEmpresa.Tipo_Empresa_Key == this.empresa.Empresa_Tipo)[0].Tipo_Empresa_Descripcion;
-        this.empresa.Empresa_Tipo = tipoEmpresaDesc;
-    },
+
   mounted() {
       if(!localStorage.login){
         this.$router.push("/login");

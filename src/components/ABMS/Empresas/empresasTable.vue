@@ -177,7 +177,7 @@ const ip = require('../../../ip/ip')
         &&
         axios.patch(ip+"/Empresas/"+item.Empresa_Codigo, visible)
         .then(response => {
-          //console.log(response)
+         
         })
       },
 
@@ -188,7 +188,7 @@ const ip = require('../../../ip/ip')
         this.desserts.splice(index, 1, item)
         axios.patch(ip+"/Empresas/"+item.Empresa_Codigo, visible)
         .then(response => {
-          //console.log(response)
+          
         })
       },
     }

@@ -452,7 +452,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then(response => {
-        console.log(response)
+        
       })
       this.closeDialogProyecto()
     },
@@ -464,7 +464,7 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then((response) => {
-        console.log(response);
+       
       });
     },
     //Borrado logico de cliente fiscal
@@ -476,7 +476,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then(response => {
-        console.log(response)
+        
       })
       this.closeDialogClienteFiscal()
     },
@@ -488,7 +488,7 @@ export default {
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then((response) => {
-        console.log(response);
+      
       });
     },
     cleanStore(){
@@ -686,7 +686,7 @@ export default {
         clienteFiscal.Usuario_Modificacion = localStorage.usuario_id
         axios.post(ip+"/clientes_fiscales/", clienteFiscal)
         .then((response) => {
-          console.log(response.data)
+          
         })
       }
       alert('Clientes Fiscales correctamente guardados')

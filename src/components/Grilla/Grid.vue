@@ -697,7 +697,7 @@ export default {
   watch: {
     asignacionesHoras: {
       handler(val) {
-      
+       
       },
       deep: true,
     },
@@ -754,12 +754,11 @@ export default {
     printA() {
       
       this.parametersBulkLoad();
-   
      
     },
 
     printAsignacionesHoras() {
-   
+     
     },
 
     printInicializarColumnas(){
@@ -767,7 +766,7 @@ export default {
     },
     debug(){
       this.infoTooltip()
-     
+      
     },
 
     // =============================== Prints Fin ===============================
@@ -886,11 +885,11 @@ export default {
 /*
     alertaHomeOfficeMensual(){
       var valorDelUsuario = this.colaborador.HomeOffice.Colaborador_Home_Cantidad
-   
+    
       var restoDeDias = this.numberOfDays % 8
-      
+    
       var cantidadHO = valorDelUsuario * 4 + ((restoDeDias * 7) / valorDelUsuario )
-      
+     
       if(cantidadHO > (this.sumaTotalHomeOffice()/8)){
           alert('Se exceden las horas HO cargadas')
         } else if(cantidadHO > (this.sumaTotalHomeOffice()/8)){
@@ -905,7 +904,7 @@ export default {
 
     generarSetDatos(proyecto) {
       if (this.seSeleccionoProyecto(proyecto.Proyecto_Descripcion)) {
-       
+        
       } else {
         var asignacion = this.generateJSONAsignacion();
         asignacion.modalidades.local.local_key = 1;
@@ -993,7 +992,8 @@ export default {
       this.asignacionesHoras = asignacionesFiltradas
       for (var i = 0; i < this.proyectosSeleccionados.length; i++) {
         var proyecto = this.proyectos.find(p => p.Proyecto_Descripcion == this.proyectosSeleccionados[i]);
-        this.generarSetDatos(proyecto);
+   
+       this.generarSetDatos(proyecto);
       }
       this.dialogAsignaciones = false;
       this.infoTooltip()
@@ -1002,6 +1002,7 @@ export default {
     seSeleccionoProyecto(name) {
       var existe = false;
       existe = this.asignacionesHoras.some((a) => a.name == name);
+      
       return existe;
     },
 
@@ -1028,10 +1029,11 @@ export default {
 
     modalidadesFiltradas() {
       var modalidadesFiltadas = this.modalidades;
+     
       for (var i = 0; i < this.modalidadesSeleccionadas.length; i++) {
         modalidadesFiltadas = modalidadesFiltadas.filter((m) => m.Tipo_Hora_Descripcion == this.modalidadesSeleccionadas[i]);
       }
-      
+   
     },
 
     //Evaluacion de modalidades seleccionadas para mostrar u ocultar las modalidades
@@ -1059,7 +1061,7 @@ export default {
         .delete(
           ip + "/horas/" + this.colaboradorUsuario + "/" + this.mesActualDinamico)
         .then((response) => {
-          
+
         });
      
     },
@@ -1099,7 +1101,7 @@ export default {
     async giveMeClients() {
       await axios.get(ip + "/clientes/clientes_proyectos").then((response) => {
         this.clientes = response.data;
-        
+       
       });
       this.jerarquiaProyectos();
     },
@@ -1261,10 +1263,10 @@ export default {
       }
 
      if(this.cargaMasivaModalidad == 'HO'){
-        
+       
         hasta++;
         while(desde != hasta){
-          
+       
           this.asignacionesHoras.filter( a => a.name == this.cargaMasivaAsignacionSelecionada)[0].modalidades.homeoffice.horas[desde - 1].valor = this.cargaMasivaCantHoras;
           if(this.days.name[desde-1] == 'S' || this.days.name[desde-1] == 'D' || this.days.specialDay[desde - 1]) {
             this.asignacionesHoras.filter( a => a.name == this.cargaMasivaAsignacionSelecionada)[0].modalidades.homeoffice.horas[desde - 1].valor = 0;
@@ -1276,7 +1278,7 @@ export default {
       if(this.cargaMasivaModalidad == 'LO' || this.days.name[desde-1] == 'D' || this.days.specialDay[desde - 1]){
           hasta++;
         while(desde != hasta){
-     
+         
           this.asignacionesHoras.filter( a => a.name == this.cargaMasivaAsignacionSelecionada)[0].modalidades.local.horas[desde - 1].valor = this.cargaMasivaCantHoras;
           if(this.days.name[desde-1] == 'S' || this.days.name[desde-1] == 'D' || this.days.specialDay[desde - 1]) {
             this.asignacionesHoras.filter( a => a.name == this.cargaMasivaAsignacionSelecionada)[0].modalidades.local.horas[desde - 1].valor = 0;

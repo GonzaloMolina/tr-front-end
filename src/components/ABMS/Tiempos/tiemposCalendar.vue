@@ -377,7 +377,7 @@ const ip = require('../../../ip/ip')
       async addEvent(){
         if(this.selectedEvent.type == 'Feriado'){
           var date = new Date(this.selectedEvent.feriado)
-          console.log(date)
+         
           var saveFeriado = this.saveFeriado(date)
           if(this.isEditEvent){
             this.events.splice(this.indexItem,1,saveFeriado)

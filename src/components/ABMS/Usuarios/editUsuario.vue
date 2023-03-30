@@ -20,7 +20,7 @@
             </b-col>
             <b-col class="col-2 ">
               <b-row>
-                <v-btn :disabled="this.button" @click="saveUser()" color="#2991C6" dark >Guardar</v-btn>
+                <v-btn :disabled="!btnSegEdit()" @click="saveUser()" color="#2991C6" dark >Guardar</v-btn>
                 <v-btn @click="back()" color="#ffa025" dark class="ml-3">Volver</v-btn> 
               </b-row>
             </b-col>             
@@ -31,6 +31,7 @@
             <b-form-row class="ml-1 mr-1">
               <b-col class="col-3">
               <v-text-field
+               :disabled="!seguridadUsuariosEditar()"
                 outlined
                 dense         
                 v-model="this.usuario.Usuario_Codigo"    
@@ -42,6 +43,7 @@
             </b-col>
             <b-col class="col-4">
               <v-text-field
+                :disabled="!seguridadUsuariosEditar()"
                 outlined
                 dense
                 v-model="usuario.Usuario_Nombre_Completo"
@@ -54,7 +56,7 @@
               <v-text-field
                 outlined
                 dense
-                :disabled="false"
+                :disabled="!seguridadUsuariosEditar()"
                 v-model="usuario.Usuario_Mail"
                 @change="validarMail()"
                 label="Mail"
@@ -67,7 +69,7 @@
             <b-col class="col-3">
               <v-autocomplete
                 dense
-                :disabled="false"
+                :disabled="!seguridadUsuariosEditar()"
                 outlined
                 v-model="usuario.Usuario_Tipo"
                 :items="['Administrador', 'Miembro', 'Migración']"
@@ -78,7 +80,7 @@
             <b-col class="col-4">
               <v-autocomplete
                 dense
-                :disabled="false"
+                :disabled="!seguridadUsuariosEditar()"
                 outlined
                 v-model="usuario.Usuario_Rol"
                 :items="Rolitems"
@@ -93,6 +95,7 @@
               <b-row class="ml-12">
               <h6 class="mr-3 mt-3" >Habilitar/Deshabilitar</h6>
                     <v-switch 
+                    :disabled="!seguridadUsuariosEditar()"
                       class="mt-2 mb-1 ml-2"
                       v-model="switch1"
                       inset
@@ -227,6 +230,16 @@ export default{
         this.Rolitems = response.data;
       })
     },
+    seguridadUsuariosEditar(){
+      if(localStorage.Permisos.includes("P47") && localStorage.Permisos.includes("P48") ){
+          return true 
+        }
+    },
+
+    btnSegEdit(){
+      return this.seguridadUsuariosEditar() && !this.button
+    },
+
 
       async loadUsuario(){       
         this.usuario_id = this.$store.state.usuario_id;   
@@ -258,7 +271,7 @@ export default{
     },
 
     async saveUser(){
-        console.log(this.usuario)
+
         //Habilitar/deshabilitar
         if(this.switch1){
           this.usuario.Usuario_Habilitado = 'X'

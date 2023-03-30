@@ -432,7 +432,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
             
             let contador = 0
             let flag = false
-         
+        
             for (let tecnologia of tecnologias){
               contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
             }
@@ -471,9 +471,9 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         },
 
         loadProyectoDescripciones(){
-          
+ 
           this.proyectoConDescripciones = _.cloneDeep(this.proyecto)
-         
+          
         },
 
         loadMonedas(){
@@ -498,19 +498,20 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
             })      
         },
 
-        loadResponsables(){
-          axios.get(ip+"/colaboradores/descripciones").then((response) => {
-            this.responsables = response.data.filter(responsable => responsable.Funcion.Colaborador_Funcion_Funcion_Key === 2)
-            this.responsablesDescripciones = this.responsables.map(responsable => responsable.Usuario.Usuario_Nombre_Completo).sort();
-          });
-        },
 
-        loadVendedores(){
-          axios.get(ip+"/colaboradores/descripciones").then((response) => {
-            this.vendedores = response.data.filter(responsable => responsable.Funcion.Colaborador_Funcion_Funcion_Key === 1)
-            this.vendedoresDescripciones = this.vendedores.map(vendedor => vendedor.Usuario.Usuario_Nombre_Completo).sort();
-          });
-        },
+     loadResponsables(){
+       axios.get(ip+"/colaboradores/descripciones").then((response) => {
+        this.responsables = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(2))
+        this.responsablesDescripciones = this.responsables.map(responsable => responsable.Usuario.Usuario_Nombre_Completo).sort();
+      });
+    },
+ 
+    loadVendedores(){
+      axios.get(ip+"/colaboradores/descripciones").then((response) => {
+        this.vendedores = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(1))
+        this.vendedoresDescripciones = this.vendedores.map(vendedor => vendedor.Usuario.Usuario_Nombre_Completo).sort();
+      });
+    },
 
         loadUnidades_Negocios(){
             axios.get(ip+"/unidades_negocios/descripciones")
@@ -631,7 +632,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
 
         asignarKey(tecnologia){
           if(typeof tecnologia.Proyecto_Tecnologia_Tecnologia === 'string'){
-            console.log(tecnologia)
+           
             var keyTecnologia = this.tecnologias.filter(tecno => tecno.Tecnologia_Descripcion == tecnologia.Proyecto_Tecnologia_Tecnologia)[0].Tecnologia_Key;
             tecnologia.Proyecto_Tecnologia_Tecnologia = keyTecnologia
           }
