@@ -447,6 +447,7 @@ export default {
 
     getProyectos(){
       let proyectos = []
+      console.log("CLIENTE",this.$store.state.cliente[0] )
       for (var index in this.$store.state.cliente[0].Proyectos){
         let key = this.$store.state.cliente[0].Proyectos[index].Proyecto_Key
         axios.get(ip+"/proyectos/key/"+key).then(response => {

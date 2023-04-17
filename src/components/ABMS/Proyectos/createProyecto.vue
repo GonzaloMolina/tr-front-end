@@ -2,233 +2,250 @@
   <v-content>
     <v-container fluid>
       <loader :loader="loader" style="position: fixed;"/>
-      <v-form ref="form">
-      <v-row>
-        <v-header
-          style="font-size:1.5rem; margin-left:3rem; margin-top:2rem; width:36rem"
-        >{{proyecto.Proyecto_Descripcion}}</v-header>
-        <v-checkbox
-          style="display:inline-block;margin-top:2rem "
-          v-model="proyecto.Proyecto_Facturable"
-          :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-          label="Facturable"
-        ></v-checkbox>
-        <v-checkbox
-          v-model="proyecto.Proyecto_Newsletter"
-          :color="proyecto.Proyecto_Newsletter ? 'yellow' : 'black'"
-          style="display:inline-block;margin-top:2rem; margin-left:2rem"
-          label="Newsletter"
-        ></v-checkbox>
-
-          <v-btn
-            color="#2991C6"
-            dark
-            style="margin-left:11rem;margin-top:2rem"
-            @click="evaluarGuardado"
-          > Guardar
-          </v-btn>
-
-          <v-snackbar
-            :value="alert"
-            color="blue"
-            elevation="9"
-            type="success"
-            top
-            centered
-          > Se han guardado los cambios.
-          </v-snackbar>
-
-          <v-btn @click="dialogCancelar = true" color="#ffa025" dark style="margin-left:1rem;margin-top:2rem">Cancelar</v-btn>
-        <v-col cols="12" style="max-width:56rem;margin-left:1rem;margin-top:-1rem">
-          <v-card class="pa-2" outlined tile>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Codigo"
-              label="Código"
-              :rules="[rules.checkCode,rules.counterCodigo]"
-              placeholder="Escribe..."
-              style="display:inline-block; max-width: 8rem;"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Codigo_Externo"
-              label="Código Externo"
-              :rules="[rules.counterCodigo]"
-              placeholder="Escribe..."
-              style="display:inline-block; margin-left:1rem; max-width: 8rem;"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Descripcion"
-              :rules="[rules.counterDescripcion]"
-              label="Descripción"
-              placeholder="Escribe..."
-              style="display:inline-block; margin-left:1rem; min-width: 24rem;"
-            ></v-text-field>
-            <v-select
-              dense
-              outlined
-              v-model="proyecto.Proyecto_Tipo"
-              @input="asignarSegunTipo"
-              :items="proyectos_tipos_descripciones"
-              v-b-tooltip.hover="{variant: 'light'}" :title="evalTooltipTiposProyectos"
-              label="Tipo"
-              placeholder="Selecciona..."
-              style="max-width:10rem; display:inline-block; margin-left:1rem; margin-bottom:-1.5rem"
-            ></v-select>
-            <v-select
-              dense
-              outlined
-              v-model="proyecto.Proyecto_Alcance"
-              :items="alcances_descripciones"
-              label="Alcance"
-              :readonly="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              placeholder="Selecciona..."
-              style="max-width:11.5rem; display:inline-block; margin-bottom:-1.5rem"
-            ></v-select>
-            <v-autocomplete
-              v-model="proyecto.Proyecto_Unidad_Negocio"
-              label="U. Negocio"
-              :readonly="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :items="unidades_NegocioDescripciones"
-              :loading="isLoading"
-              :search-input.sync="searchUnidadesNegocio"
-              outlined
-              dense
-              cache-items
-              placeholder="Selecciona..."
-              color="white"
-              style="min-width:8rem; max-width:10rem; display:inline-block; margin-left:1rem; margin-bottom:-1.5rem"
-            ></v-autocomplete>
-            <v-autocomplete
-              v-model="proyecto.Proyecto_Responsable"
-              label="Responsable"
-              :readonly="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :items="responsablesDescripciones"
-              :loading="isLoading"
-              :search-input.sync="searchResponsables"
-              outlined
-              dense
-              cache-items
-              placeholder="Selecciona..."
-              color="white"
-              style="min-width:8rem; max-width:10rem; display:inline-block; margin-left:0.5rem; margin-bottom:-1.5rem"
-            ></v-autocomplete>
-            <v-autocomplete
-              v-model="proyecto.Proyecto_Vendedor"
-              label="Vendedor"
-              :readonly="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :items="vendedoresDescripciones"
-              :loading="isLoading"
-              :search-input.sync="searchVendedores"
-              outlined
-              dense
-              cache-items
-              placeholder="Selecciona..."
-              color="white"
-              style="min-width:8rem; max-width:10rem; display:inline-block; margin-left:0.5rem; margin-bottom:-1.5rem"
-            ></v-autocomplete>
-            <v-select
-              dense
-              outlined
-              v-model="proyecto.Proyecto_Moneda"
-              :items="monedasCodigos"
-              label="Moneda"
-              :readonly="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio != '' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
-              placeholder="Selecciona..."
-              style="max-width:8rem; display:inline-block; margin-left:0.5rem; margin-bottom:-1.5rem"
-            ></v-select>
-          </v-card>
-        </v-col>
-
-        <v-col cols="3">
-          <v-textarea
-            style="min-width:24rem; margin-top:-1rem"
-            auto-grow
-            background-color="white"
-            filled
-            color="black"
-            label="Descripcion detallada"
-            v-model="proyecto.Proyecto_Observacion"
-            :counter="3000"
-            placeholder="Escribe.."
-            rows="4"
-          ></v-textarea>
-        </v-col>
-        <v-col cols="12" style="margin-left:1rem; max-width:56rem; margin-top:-1rem">
-        <!--
-          <v-text style="font-size:1.5rem; padding-left:1rem;">Referentes</v-text>
-          <v-card class="pa-2" outlined tile>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Referente_Comercial"
-              label="Referente Comercial"
+        <h3 class="mt-3">Cliente: {{ this.$store.state.cliente[0].Cliente_Descripcion}}</h3>
+        <b-form-row class="mt-3 mb-n4">
+          <b-col cols="5">
+            <h1 style="font-size:1.5rem;">{{proyecto.Proyecto_Descripcion}}</h1>
+          </b-col>
+          <b-col cols="1">
+            <v-checkbox
+              v-model="proyecto.Proyecto_Facturable"
+              :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' && proyecto.Tipo.Proyecto_Tipo_Beneficio != 'Trabajo Externo'"
+              label="Facturable"
+            ></v-checkbox>
+          </b-col>
+          <b-col cols="2">
+            <v-checkbox
+              v-model="proyecto.Proyecto_Newsletter"
               :disabled="permisoActualizarProyecto()"
-              :rules="[rules.counterReferentes]"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width: 18rem;"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Referente_Comercial_Mail"
-              label="Mail Comercial"
-              :disabled="permisoActualizarProyecto()"
-              :rules="[rules.counterReferentes]"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width: 34rem; margin-left:1rem"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Referente_Tecnico"
-              label="Referente Técnico"
-              :disabled="permisoActualizarProyecto()"
-              :rules="[rules.counterReferentes]"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width: 18rem; margin-bottom:-1.5rem"
-            ></v-text-field>
-            <v-text-field
-              outlined
-              dense
-              v-model="proyecto.Proyecto_Referente_Tecnico_Mail"
-              label="Mail Técnico"
-              :disabled="permisoActualizarProyecto()"
-              :rules="[rules.counterReferentes]"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width: 34rem; margin-left:1rem;margin-bottom:-1.5rem"
-            ></v-text-field>
-          </v-card>
-          -->
-        </v-col>
+              :color="proyecto.Proyecto_Newsletter ? 'yellow' : 'black'"
+              label="Newsletter"
+            ></v-checkbox>
+          </b-col>
+          <b-col cols="1" class="ml-12">
+                <v-btn :disabled="!isFormValid || permisoActualizarProyecto()" @click="evaluarGuardado"  color="#2991C6" dark >Guardar</v-btn> 
+          </b-col>
+          <b-col cols="1">
+              <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Cancelar</v-btn>
+          </b-col>
+        </b-form-row>
 
-        <v-col cols="3" style="margin-top:-1rem; min-width:26rem">
-          <proyectosTecnologias  :proyectoFueGuardado="proyectoFueGuardado"></proyectosTecnologias>
-        </v-col>
-      </v-row>
-      </v-form>
-
-        <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
+        <b-form-row>
+            <b-col class="col-11">
+              <v-card class="mt-n3" outlined tile>
+              <v-form ref="form">
+                <b-form-row class="ml-1 mr-1">
+                  <b-col class="col-2 mt-3">
+                    <v-text-field
+                    outlined
+                    dense
+                    v-model="proyecto.Proyecto_Codigo"
+                    label="Código"
+                    :rules="[rules.checkCode,rules.counterCodigo]"
+                    :disabled="proyectoFueGuardado "
+                    placeholder="Escribe..."
+                  ></v-text-field>
+                  </b-col>
+                  <b-col class="col-2 mt-3">
+                    <v-text-field
+                    outlined
+                    dense
+                    v-model="proyecto.Proyecto_Codigo_Externo"
+                    label="Código Externo"
+                    :rules="[rules.counterCodigo]"
+                    placeholder="Sin asignar"
+                    ></v-text-field>
+                  </b-col>
+                  <b-col class="col-5 mt-3">
+                    <v-text-field
+                    outlined
+                    dense
+                    v-model="proyecto.Proyecto_Descripcion"
+                    :rules="[rules.checkEmpty]"
+                    label="Descripción"
+                    placeholder="Escribe..."
+                    :disabled="proyectoFueGuardado "
+                    ></v-text-field>
+                  </b-col>
+                  <b-col class="col-3 mt-3">
+                      <v-select
+                      dense
+                      outlined
+                      :rules="[rules.checkSelection]"
+                      v-model="proyecto.Proyecto_Tipo"
+                      @input="asignarSegunTipo"
+                      :items="proyectos_tipos_descripciones"
+                      v-b-tooltip.hover="{variant: 'light'}"
+                      :title="evalTooltipTiposProyectos"
+                      label="Tipo"
+                      placeholder="Selecciona..."
+                      @blur="validateForm"
+                      :disabled="proyectoFueGuardado "
+                      ></v-select>
+                  </b-col>
+                </b-form-row>
+                <b-form-row class="ml-1 mr-1 mt-n6">
+                  <b-col class="col-3 ">
+                    <v-select
+                    dense
+                    outlined
+                    :rules="[rules.checkSelection]"
+                    v-model="proyecto.Proyecto_Alcance"
+                    :items="alcances_descripciones"
+                    label="Alcance"
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    placeholder="Selecciona..."
+                    ></v-select>
+                  </b-col>
+                  <b-col class="col-3">
+                    <v-autocomplete
+                    v-model="proyecto.Proyecto_Unidad_Negocio"
+                    :rules="[rules.checkSelection]"
+                    label="U. Negocio"
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :items="unidades_NegocioDescripciones"
+                    :loading="isLoading"
+                    :search-input.sync="searchUnidadesNegocio"
+                    outlined
+                    dense
+                    cache-items
+                    placeholder="Selecciona..."
+                    color="white"
+                    ></v-autocomplete>
+                  </b-col>
+                  <b-col>
+                    <v-autocomplete
+                      v-model="proyecto.Proyecto_Responsable"
+                      label="Responsable"
+                      :rules="[rules.checkSelection]"
+                      :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                      :items="responsables"
+                      :loading="isLoading"
+                      :search-input.sync="searchResponsables"
+                      :return-object="true"
+                      outlined
+                      dense
+                      cache-items
+                      placeholder="Selecciona..."
+                      color="white"
+                      item-text="Usuario.Usuario_Nombre_Completo"
+                      ></v-autocomplete>
+                  </b-col>
+                  <b-col>
+                    <v-autocomplete
+                    v-model="proyecto.Proyecto_Vendedor"
+                    label="Vendedor"
+                    :rules="[rules.checkSelection]"
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :items="vendedores"
+                    :loading="isLoading"
+                    :search-input.sync="searchVendedores"
+                    :return-object="true"
+                    outlined
+                    dense
+                    cache-items
+                    placeholder="Selecciona..."
+                    color="white"
+                    item-text="Usuario.Usuario_Nombre_Completo"
+                    ></v-autocomplete>
+                  </b-col>
+                </b-form-row>
+                <b-form-row class="ml-1 mr-1 mt-n6">
+                  <b-col class="col-2">
+                    <v-select
+                    dense
+                    outlined
+                    v-model="proyecto.Proyecto_Moneda"
+                    :rules="[rules.checkSelection]"
+                    :items="monedasCodigos"
+                    label="Moneda"
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    placeholder="Selecciona..."
+                    ></v-select>
+                  </b-col>
+                  <b-col class="col-2">
+                    <v-select
+                    dense
+                    outlined
+                    :rules="[rules.checkSelection]"
+                    v-model="proyecto.Ceco_Key"
+                    :items="Cecoitems"
+                    item-text="ceco"
+                    item-value="cod"
+                    label="CECO"
+                    @blur="validateForm"
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    placeholder="Selecciona..."
+                    ></v-select>
+                  </b-col>
+                </b-form-row>
+              </v-form>
+            </v-card>
+            </b-col>
+            <b-col class="col-4">
+              <proyectosTecnologias :proyectoFueGuardado="proyectoFueGuardado"></proyectosTecnologias>
+            </b-col>
+   
+            <b-col class="col-3 ml-n8">
+              <h4>Español</h4>
+              <v-textarea
+              auto-grow
+              background-color="white"
+              filled
+              color="black"
+              label="Descripcion detallada"
+              v-model="proyecto.Proyecto_Observacion"
+              :disabled="proyectoFueGuardado "
+              :counter="3000"
+              placeholder="Escribe.."
+              rows="4"
+            ></v-textarea>
+            </b-col>
+            <b-col class="col-4 ml-5">
+              <h4>Inglés</h4>
+              <b-row>
+                <b-col class="col-12 mb-n10">
+                <v-text-field
+                      outlined
+                      dense
+                      background-color="white"
+                      v-model="proyecto.Proyecto_Descripcion_EN"
+                      :disabled="proyectoFueGuardado "
+                      label="Description"
+                      placeholder="Sin asignar"
+                      ></v-text-field>
+                    </b-col>
+              </b-row>
+              <b-row>
+                <b-col class="col-12">
+                    <v-textarea
+                    auto-grow
+                    background-color="white"
+                    filled
+                    color="black"
+                    label="Detailed description"
+                    v-model="proyecto.Proyecto_Observacion_EN"
+                    :disabled="proyectoFueGuardado "
+                    :counter="3000"
+                    placeholder="Sin asignar"
+                    rows="4"
+                  ></v-textarea>
+                </b-col>
+              </b-row>
+            </b-col>
+          </b-form-row>
+          <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
             <v-card>
               <v-toolbar
                 dark
                 color="#2991C6"
                 height="30rem"
               >
-              <v-icon color="#ffa025" style="text-shadow: 1px 1px 2px black;position:absolute; left:38%">mdi-alert</v-icon><v-text style="font-weight: bold;position:absolute; left:45%; color:white; text-shadow: 1px 1px 2px black;">ALERTA</v-text>
+              <v-icon color="#ffa025" style="text-shadow: 1px 1px 2px black;position:absolute; left:38%">mdi-alert</v-icon><h5 style="font-weight: bold;position:absolute; left:45%; color:white; text-shadow: 1px 1px 2px black;" class="mt-3">ALERTA</h5>
               </v-toolbar>
               <v-card-title>Los cambios no guardados se borrarán. <br> ¿Deseas continuar?</v-card-title>
               <v-card-actions>
-                <v-btn 
+                <v-btn
                   color="white"
                   text
                   outlined
@@ -250,9 +267,15 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
-
-
+          <v-snackbar
+            :value="alert"
+            color="blue"
+            elevation="9"
+            type="success"
+            top
+            centered
+          > Se han guardado los cambios.
+          </v-snackbar>
 
     </v-container>
   </v-content>
@@ -271,12 +294,13 @@ import axios from 'axios';
 import loader from '../../Estado/loader'
 const ip = require('../../../ip/ip')
 import proyectosTecnologias from '../Proyectos-Tecnologias/Proyectos-Tecnologias';
-import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail} from '../../../validations/validations'
+import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail, isFieldEmpty, isNotSelected} from '../../../validations/validations'
   export default {
     components: {
       proyectosTecnologias, loader
     },
     data: () => ({
+      isFormValid: false,
       proyectoFueGuardado: false,
       rules: {
         checkCode: checkCode,
@@ -284,7 +308,22 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         counterDescripcion: counterDescripcion,
         counterReferentes: counterReferentes,
         checkEmail: checkEmail,
+        checkEmpty: isFieldEmpty,
+        checkSelection: isNotSelected
       },
+      Cecoitems: [
+          { ceco: 'No Aplica', cod: 1 },
+          { ceco: 'Administracion', cod: 2 },
+          { ceco: 'Preventa', cod: 3 },
+          { ceco: 'Comercial', cod: 4 },
+          { ceco: 'Controlling', cod: 5 },
+          { ceco: 'IT', cod: 6 },
+          { ceco: 'RRHH', cod: 7 },
+          { ceco: 'Estructura', cod: 8 },
+          { ceco: 'Marketing', cod: 9 },
+          { ceco: 'Consultoria', cod: 10 },
+          { ceco: 'Innovacion', cod: 11 },
+        ],
       newsletter: '',
       searchUnidadesNegocio: '',
       searchResponsables: '',
@@ -321,12 +360,31 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
   computed: {
   },
   watch: {
-  },
+  proyecto: {
+    handler: 'validateForm',
+    deep: true,
+    immediate: false,
+    // List of properties to watch for changes
+    include: [
+      'Proyecto_Codigo',
+      'Proyecto_Descripcion',
+      'Proyecto_Tipo',
+      'Proyecto_Alcance',
+      'Proyecto_Unidad_Negocio',
+      'Proyecto_Responsable',
+      'Proyecto_Vendedor',
+      'Proyecto_Moneda',
+      'Ceco_Key'
+    ]
+  }
+},
+
   created() {
     this.initialize();
   },
   methods: {
     async initialize() {
+      this.$store.state.Tecnologias = []
       this.loadProyecto();
       this.loadUnidades_Negocios();
       this.loadProyectosAlcances();
@@ -350,6 +408,11 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         }, time);
       })
     },
+
+    validateForm() {
+          this.isFormValid = this.$refs.form.validate()
+        },
+
 
     permisoActualizarProyecto(){
           return !localStorage.Permisos.includes("P19")
@@ -407,62 +470,59 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
         this.proyecto.Visible = 'X'
         await axios.post(ip+"/proyectos", this.proyecto)
         .then((response) => {
-         
+          alert('El proyecto se ha guardado')
         });
         await axios.get(ip+"/proyectos/"+ proyectoGuardado)
-        .then((response) => {
-          var proyectoParaGuardarEnState = response.data
-          proyectoParaGuardarEnState.Tipo = {Proyecto_Tipo_Descripcion: tipoDescripcion,
-                                             Proyecto_Tipo_Beneficio: tipoBeneficio}
-          proyectoParaGuardarEnState.Responsable = {Usuario_Nombre_Completo: responsable}
-          this.$store.state.cliente[0].Proyectos.push(proyectoParaGuardarEnState) // Inserta el proyecto guardado al cliente
-          this.$store.state.proyecto = [proyectoParaGuardarEnState] // Inserta el proyecto guardado al cliente
-          this.proyectoFueGuardado = true
-        })
+          .then((response) => {
+            var proyectoParaGuardarEnState = response.data
+            this.$store.state.ProyectoKey = response.data.Proyecto_Key
+            
+            proyectoParaGuardarEnState.Tipo = {Proyecto_Tipo_Descripcion: tipoDescripcion,
+                                              Proyecto_Tipo_Beneficio: tipoBeneficio}
+            proyectoParaGuardarEnState.Responsable = {Usuario_Nombre_Completo: responsable}
+            this.$store.state.cliente[0].Proyectos.push(proyectoParaGuardarEnState) // Inserta el proyecto guardado al cliente
+            this.$store.state.proyecto = [proyectoParaGuardarEnState] // Inserta el proyecto guardado al cliente      
+            this.proyectoFueGuardado = true
+          })
         }
     },
+
     //Guarda tecnologias
     guardarTecnologias(){
-          var tecnologiasAGuardar = this.$store.state.proyecto[0].Tecnologias
-          
-          for(let i = 0; i< tecnologiasAGuardar.length; i++){
-            this.asignarKey(tecnologiasAGuardar[i])
-            tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
-            tecnologiasAGuardar[i].Usuario_Modificacion = localStorage.usuario_id
-            axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
-            .then((response) => {
-              
-            })
+          // Obtener tecnologías creadas
+          const tecnologiasAGuardar = this.$store.state.Tecnologias
+          if (tecnologiasAGuardar.length > 0){
+            for(let i = 0; i< tecnologiasAGuardar.length; i++){        
+              tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
+              axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
+            }
           }
         },
+
+
     //Este metodo recorre la lista de tecnologias evaluando sus porcentajes, si se pasa del 100 emite alerta
     //si no llega al 100 tambien.
     validarPorcentaje(){
-      var tecnologias = this.$store.state.proyecto[0].Tecnologias
-      
-      if(tecnologias.length == 0){
-        return true
-      } else{
-        let contador = 0
-        let flag = false
-        var seleccionado = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0]
-        if(seleccionado.Proyecto_Tipo_Beneficio != "Trabajo Externo"){
-          return true
-        } else{
-        for (let tecnologia of tecnologias){
-          contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
-        }
-        if (contador > 100){
-          alert('El porcentaje de tecnologías supera el 100%')
-          return flag
-        } else if(contador < 100) {
-          alert('El porcentaje de tecnologías no llega al 100%')
-          return flag
-        } else return flag = true
-        }
-       }
-      
-    },
+          if(this.$store.state.Tecnologias.length > 0){
+            var tecnologias = this.$store.state.Tecnologias
+
+            let contador = 0
+            let flag = false
+
+            for (let tecnologia of tecnologias){
+              contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
+            }
+            if (contador > 100){
+              alert('El porcentaje de tecnologías supera el 100%')
+              return flag
+            } else if(contador < 100) {
+              alert('El porcentaje de tecnologías no llega al 100%')
+              return flag
+            } else return flag = true
+          } else return true
+
+        },
+
     rollback(){
       this.$store.state.proyecto[0] = {}
       if(this.$store.state.clienteTipo == 0){
@@ -519,19 +579,19 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
       });
     },
  
-     loadResponsables(){
-       axios.get(ip+"/colaboradores/descripciones").then((response) => {
-        this.responsables = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(2))
-        this.responsablesDescripciones = this.responsables.map(responsable => responsable.Usuario.Usuario_Nombre_Completo).sort();
-      });
-    },
- 
-    loadVendedores(){
-      axios.get(ip+"/colaboradores/descripciones").then((response) => {
-        this.vendedores = response.data.filter(responsable => responsable.Funcion.map(key => key.Colaborador_Funcion_Funcion_Key).includes(1))
-        this.vendedoresDescripciones = this.vendedores.map(vendedor => vendedor.Usuario.Usuario_Nombre_Completo).sort();
-      });
-    },
+    // RESPONSABLES con usuario Sin Asignar
+    loadResponsables(){
+      axios.get(ip+"/colaboradores/responsables/"+2).then((response) => {
+        this.responsables = response.data;
+        });
+      },
+
+      // VENDEDORES con usuario Sin Asignar
+      loadVendedores(){
+        axios.get(ip+"/colaboradores/vendedores/"+2).then((response) => {
+          this.vendedores = response.data;
+          });
+      },
 
     //Asigna descripciones para mostrar en los combos
     asignarDescripciones(){
@@ -539,16 +599,17 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
       var desAlcance = this.alcances.filter(alcance => alcance.Proyecto_Alcance_Key == this.proyecto.Proyecto_Alcance)[0].Proyecto_Alcance_Descripcion
       var desTipoProyecto = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Key == this.proyecto.Proyecto_Tipo)[0].Proyecto_Tipo_Descripcion
       var desMoneda = this.monedas.filter(moneda => moneda.Moneda_Key == this.proyecto.Proyecto_Moneda)[0].Moneda_Codigo
-      var desResponsable = this.responsables.filter(responsable => responsable.Colaborador_Usuario == this.proyecto.Proyecto_Responsable)[0].Usuario.Usuario_Nombre_Completo
-      var desVendedor = this.vendedores.filter(responsable => responsable.Colaborador_Usuario == this.proyecto.Proyecto_Vendedor)[0].Usuario.Usuario_Nombre_Completo
       this.proyecto.Proyecto_Newsletter = this.evalNewsletter()
       this.proyecto.Proyecto_Facturable = this.evalFacturable()
       this.proyecto.Proyecto_Unidad_Negocio = desUnidad_Negocio
       this.proyecto.Proyecto_Alcance = desAlcance
       this.proyecto.Proyecto_Tipo = desTipoProyecto
       this.proyecto.Proyecto_Moneda = desMoneda
-      this.proyecto.Proyecto_Responsable = desResponsable
-      this.proyecto.Proyecto_Vendedor = desVendedor
+      const responsable = this.vendedores.find(obj => obj.Colaborador_Usuario === this.proyecto.Proyecto_Responsable);
+      this.proyecto.Proyecto_Responsable = responsable.Usuario.Usuario_Nombre_Completo
+      const vendedor = this.vendedores.find(obj => obj.Colaborador_Usuario === this.proyecto.Proyecto_Vendedor);
+      this.proyecto.Proyecto_Vendedor = vendedor.Usuario.Usuario_Nombre_Completo
+
     },
     //Asigna la key a la tecnologia brindada
     asignarKey(tecnologia){
@@ -565,16 +626,14 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
           tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0].Proyecto_Tipo_Key;
       var keyMoneda = this.monedas.filter((moneda) => 
           moneda.Moneda_Codigo == this.proyecto.Proyecto_Moneda)[0].Moneda_Key;
-      var keyResponsable = this.responsables.filter(responsable => responsable.Usuario.Usuario_Nombre_Completo == this.proyecto.Proyecto_Responsable)[0].Colaborador_Usuario
-      var keyVendedor = this.vendedores.filter(vendedor => vendedor.Usuario.Usuario_Nombre_Completo == this.proyecto.Proyecto_Vendedor)[0].Colaborador_Usuario
       this.proyecto.Proyecto_Unidad_Negocio = keyUnidad_Negocio;
       this.proyecto.Proyecto_Facturable = this.asignarFacturable();
       this.proyecto.Proyecto_Newsletter = this.asignarNewsletter();
       this.proyecto.Proyecto_Alcance = keyAlcance;
       this.proyecto.Proyecto_Tipo = keyTipoProyecto;
       this.proyecto.Proyecto_Moneda = keyMoneda;
-      this.proyecto.Proyecto_Responsable = keyResponsable
-      this.proyecto.Proyecto_Vendedor = keyVendedor
+      this.proyecto.Proyecto_Responsable = this.proyecto.Proyecto_Responsable.Colaborador_Usuario
+      this.proyecto.Proyecto_Vendedor = this.proyecto.Proyecto_Vendedor.Colaborador_Usuario
     },
     //Asigna la key de facturable en base a la condicion del checkbox
     asignarFacturable(){
@@ -603,18 +662,11 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
           if(seleccionado.Proyecto_Tipo_Beneficio != "Trabajo Externo"){
           this.proyecto.Proyecto_Alcance = "No Aplica"
           this.proyecto.Proyecto_Unidad_Negocio = "No Aplica"
-          this.proyecto.Proyecto_Responsable = "Sin Asignar"
-          this.proyecto.Proyecto_Vendedor = "Sin Asignar"
+          this.proyecto.Proyecto_Responsable = this.responsables.find(obj => obj.Colaborador_Usuario === 2);
+          this.proyecto.Proyecto_Vendedor = this.vendedores.find(obj => obj.Colaborador_Usuario === 2);
           this.proyecto.Proyecto_Moneda = "N/A"
           this.proyecto.Proyecto_Facturable = false
-          } else{
-            this.proyecto.Proyecto_Alcance = this.proyectoOriginal.Proyecto_Alcance
-            this.proyecto.Proyecto_Unidad_Negocio = this.proyectoOriginal.Proyecto_Unidad_Negocio
-            this.proyecto.Proyecto_Responsable = this.proyectoOriginal.Proyecto_Responsable
-            this.proyecto.Proyecto_Vendedor = this.proyectoOriginal.Proyecto_Vendedor
-            this.proyecto.Proyecto_Moneda = this.proyectoOriginal.Proyecto_Moneda
-            this.proyecto.Proyecto_Facturable = this.proyectoOriginal.Proyecto_Facturable
-            this.proyecto.Proyecto_Newsletter = this.proyectoOriginal.Proyecto_Newsletter
+          this.proyecto.Ceco_Key = 1
           }
     },
      mounted() {
