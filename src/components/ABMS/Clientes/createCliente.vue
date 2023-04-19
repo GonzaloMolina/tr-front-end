@@ -1,132 +1,180 @@
-<template>
+<template >
   <v-content>
     <v-container fluid>
       <loader :loader="loader" style="position: fixed;"/>
+      <div v-if="!loader">
             <v-alert
                 :value="alert"
                 style="position: absolute;  left: 0; right: 0; top: -12px; text-align: center;"
                 top
                 dense
-                type="success"
-                
                 color="blue"
+                type="success"
               > Se han guardado los cambios.
               </v-alert>
-      <v-form ref="form">
-      <v-row>
-        <v-col cols="12" style="max-width:82rem">
-          <v-title style="font-size:1.5rem; padding-left:1rem;">Datos generales</v-title>
-          <img style="margin-top:-1rem; margin-left:1rem" width="180rem" height="40rem" v-bind:src="cliente.Cliente_Logo">
 
-          <v-dialog v-model="dialog" persistent max-width="600">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn v-bind="attrs" v-on="on" x-small fab><v-icon>mdi-camera</v-icon></v-btn>
-            </template>
-            <v-card>
-              <v-col>
-              <v-card-title class="headline">Inserte link de Imagen</v-card-title>
-              <v-text-field label="Imagen:" v-model="logo"></v-text-field>
-              </v-col>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="#2991c6" text @click="dialog = false">Cancelar</v-btn>
-                <v-btn color="#2991c6"  text @click="saveLogo" >Guardar</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+      <b-form-row class="mt-3 mb-n4">
+        <b-col class="col-6">
+          <b-form-row>
+            <b-col class="p-0">
+              <h3>Datos Generales</h3>
+            </b-col>
+            <b-col class="p-0">
+              <img width="180rem" height="40rem" v-bind:src="cliente.Cliente_Logo">
+            </b-col>
+            <b-col class="p-0">
+              <v-dialog v-model="dialog" persistent max-width="600">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" v-on="on" x-small fab><v-icon>mdi-camera</v-icon></v-btn>
+                </template>
+                <v-card>
+                  <v-col>
+                    <v-card-title class="headline">Inserte link de Imagen</v-card-title>
+                    <v-text-field label="Imagen:" v-model="logo"></v-text-field>
+                  </v-col>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="#2991c6" text @click="dialog = false">Volver</v-btn>
+                    <v-btn color="#2991c6" text @click="saveLogo">Guardar</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+          </b-col>
+        </b-form-row>
+        </b-col>
+        <b-col class="col-4 mr-n7"></b-col>
+        <b-col class="col-2 ">
+            <b-form-row>
+          <b-col class="p-0 mr-4 ">
+                  <v-btn :disabled="!isFormValid" @click="guardarCliente()" color="#2991C6" dark >Guardar</v-btn>
+            </b-col>
+            <b-col class="p-0">
+                <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Volver</v-btn>
+            </b-col>
+        </b-form-row>
+        </b-col>
+      </b-form-row>
 
-          <v-btn
-            :disabled="permisoGuardar()" 
-            color="#2991C6"
-            dark
-            style="margin-left:38rem"
-            @click="evaluarGuardado"
-          > Guardar
-          </v-btn>
-
-
-          <v-btn @click="dialogCancelar = true" color="#ffa025" dark style="margin-left:1rem">Cancelar</v-btn>
-          <v-card class="pa-2" style="margin-top:1rem;" outlined tile>
-            <v-text-field
+      <b-form-row>
+        <b-col class="col-12">
+        <v-card class="mt-5" outlined tile>
+          <v-form ref="form">
+          <b-form-row class="ml-1 mr-1">
+            <b-col class="col-2 mt-3">
+              <v-text-field
               outlined
               dense
               v-model="cliente.Cliente_Codigo"
               label="Código"
+              :disabled="permisoGuardar()"
               :rules="[rules.checkCode,rules.counterCodigo]"
               placeholder="Escribe..."
-              style="display:inline-block; max-width:7rem; margin-bottom:-1rem"
             ></v-text-field>
-            <v-text-field
-              outlined
+            </b-col>
+            <b-col class="col-7 mt-3">
+              <v-text-field
+                outlined
+                dense
+                :disabled="permisoGuardar()"
+                v-model="cliente.Cliente_Descripcion"
+                :rules="[rules.counterDescripcion]"
+                label="Descripción"
+                placeholder="Escribe..."
+              ></v-text-field>
+            </b-col>
+            <b-col class="col-3 mt-3">
+              <v-select
               dense
-              v-model="cliente.Cliente_Descripcion"
-              :rules="[rules.checkCode,rules.counterDescripcion]"
-              label="Descripción"
-              placeholder="Escribe..."
-              style="display:inline-block; min-width: 23rem; margin-left:1rem; margin-bottom:-1rem"
-            ></v-text-field>
-            <v-select
-              dense
               outlined
-              v-model="cliente.Cliente_Industria"
-              :items="industriasDescripciones"
+              :disabled="permisoGuardar()"
+              v-model="cliente.Industria"
+              :items="industrias"
+              item-text="Industria_Descripcion"
               label="Industria"
               placeholder="Selecciona..."
-              style="max-width:10rem;display:inline-block; margin-left:1rem; margin-bottom:-1rem"
+              :return-object="true"
+              :rules="[rules.checkSelection]"
             ></v-select>
-            <v-select
+            </b-col>
+
+          </b-form-row>
+          <b-form-row class="ml-1 mr-1 mt-n7">
+            <b-col class="col-3">
+              <v-select
               dense
               outlined
-              v-model="cliente.Cliente_Pais"
-              :items="paisesDescripciones"
+              v-model="cliente.Pais"
+              :items="paises"
               label="País"
               placeholder="Selecciona..."
-              style="max-width:9rem; display:inline-block;margin-left:1rem; margin-bottom:-1rem"
+              item-text="Pais_Descripcion"
+              :return-object="true"
+              :rules="[rules.checkSelection]"
             ></v-select>
+            </b-col>
+            <b-col class="col-2">
+              <v-select
+                dense
+                outlined
+                :disabled="permisoGuardar()"
+                v-model="cliente.Region"
+                :items="regiones"
+                label="Región"
+                placeholder="Selecciona..."
+                item-text="Region_Descripcion"
+                :return-object="true"
+                :rules="[rules.checkSelection]"
+              ></v-select>
+            </b-col>
+            <b-col class="col-5">
             <v-select
-              dense
-              outlined
-              v-model="cliente.Cliente_Region"
-              :items="descripcionesRegiones"
-              label="Región"
-              placeholder="Selecciona..."
-              style="max-width:9rem; display:inline-block;margin-left:1rem; margin-bottom:-1rem"
-            ></v-select>
-            <v-select
               outlined
               dense
-              v-model="cliente.Cliente_Empresa"
-              :items="empresasDescripciones"
+              :disabled="permisoGuardar()"
+              v-model="cliente.Empresa"
+              :items="empresas"
               label="Partner"
               placeholder="Selecciona..."
-              style="max-width:9rem; display:inline-block; margin-left:1rem; margin-bottom:-2rem"
+              item-text="Empresa_Descripcion"
+              :return-object="true"
+              :rules="[rules.checkSelection]"
             ></v-select>
+          </b-col>
+          <b-col class="col-2">
             <v-select
               outlined
               dense
-              v-model="cliente.Cliente_Moneda_Principal"
-              :items="monedasCodigos"
+              :disabled="permisoGuardar()"
+              v-model="cliente.Moneda"
+              :items="monedas"
               label="Moneda"
               placeholder="Selecciona..."
-              style="max-width:6rem; display:inline-block; margin-left:1rem; margin-bottom:-2rem"
+              item-text="Moneda_Codigo"
+              :return-object="true"
+              :rules="[rules.checkSelection]"
             ></v-select>
+          </b-col>
+          </b-form-row>
+          <b-form-row class="ml-1 mr-1 mt-n7">
+          <b-col>
             <v-textarea
               outlined
+              :disabled="permisoGuardar()"
               placeholder="Escribe.."
               v-model="cliente.Cliente_Observacion"
               label="Observaciones"
               :counter="1000"
               rows="2"
-              style="margin-bottom:-2rem"
             ></v-textarea>
-          </v-card>
-        </v-col>
-        <v-col cols="3" style="margin-left:10rem">
+          </b-col>
+          </b-form-row>
+        </v-form>
+        </v-card>
+      </b-col>
+      </b-form-row>
 
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" style="max-width:40rem; margin-top:-2rem">
+      <b-form-row>
+        <b-col>
           <template>
           <v-data-table
             :headers="headersProyectos"
@@ -141,11 +189,13 @@
                     <v-toolbar flat color="white">
                       <v-toolbar-title style="font-size:1.5rem;">Proyectos</v-toolbar-title>
                         <template>
+                          <router-link to="/createProyecto">
                           <v-btn :loading="!clienteFueGuardado" @click="sendCliente" dark fab x-small color="#2991c6" style="margin-left:1rem">
                             <v-icon dark>mdi-plus</v-icon>
                           </v-btn>
+                        </router-link>
                         </template>
-                        <v-data-footer 
+                        <v-data-footer
                         :pagination="pagination"
                         class="dataFooter"
                         :itemsPerPageOptions=[]
@@ -159,7 +209,7 @@
                   <template v-slot:[`item.actions`]="{ item }">
                     <router-link to="/editProyecto">
                     <v-icon
-                      v-b-tooltip.hover title="Editar"
+                    v-b-tooltip.hover title="Editar"
                       small
                       v-if=" item.Visible == 'X' "
                       class="mr-2"
@@ -188,11 +238,11 @@
                       mdi-eye
                     </v-icon>
                   </template>
-              
+
           </v-data-table>
           </template>
-        </v-col> 
-        <v-col cols="5" style="margin-top:-2rem">
+        </b-col>
+        <b-col>
           <template>
           <v-data-table
             :headers="headersRazonesSociales"
@@ -206,11 +256,13 @@
               <v-toolbar flat color="white">
                 <v-toolbar-title style="font-size:1.5rem;">Clientes Fiscales</v-toolbar-title>
                   <template>
+                    <router-link to="/createClienteFiscal">
                     <v-btn :loading="!clienteFueGuardado" @click="sendCliente" dark fab x-small color="#2991c6" style="margin-left:1rem">
                       <v-icon dark>mdi-plus</v-icon>
                     </v-btn>
+                  </router-link>
                   </template>
-                    <v-data-footer 
+                    <v-data-footer
                       :pagination="pagination"
                       :itemsPerPageOptions=[]
                       class="dataFooter"
@@ -223,7 +275,7 @@
             <template v-slot:[`item.actions`]="{ item }">
               <router-link to="/editClienteFiscal">
               <v-icon
-                v-b-tooltip.hover title="Editar"
+              v-b-tooltip.hover title="Editar"
                 v-if=" item.Visible == 'X' "
                 small
                 class="mr-2"
@@ -254,46 +306,20 @@
             </template>
           </v-data-table>
           </template>
-        </v-col>
-      </v-row>
-      </v-form>
-
-      <v-dialog v-model="dialogDeleteProyecto" max-width="500px">
-          <v-card>
-            <v-card-title class="headline">Estas seguro que deseas desactivar este elemento?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="desactivarProyecto">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialogDeleteClienteFiscal" max-width="500px">
-          <v-card>
-            <v-card-title>Este elemento se desactivará. ¿Deseas continuar?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="desactivarClienteFiscal">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
+        </b-col>
+      </b-form-row>
+      <v-dialog v-model="dialogCancelar" width="500px" height="10rem"> 
             <v-card>
               <v-toolbar
                 dark
                 color="#2991C6"
                 height="30rem"
               >
-              <v-icon color="#ffa025" style="text-shadow: 1px 1px 2px black;position:absolute; left:38%">mdi-alert</v-icon><v-text style="font-weight: bold;position:absolute; left:45%; color:white; text-shadow: 1px 1px 2px black;">ALERTA</v-text>
+              <v-icon color="#ffa025" style="text-shadow: 1px 1px 2px black;position:absolute; left:38%">mdi-alert</v-icon><h5 class="mt-2" style="font-weight: bold;position:absolute; left:45%; color:white; text-shadow: 1px 1px 2px black;">ALERTA</h5>
               </v-toolbar>
               <v-card-title>Los cambios no guardados se borrarán. <br> ¿Deseas continuar?</v-card-title>
               <v-card-actions>
-                <v-btn 
+                <v-btn
                   color="white"
                   text
                   outlined
@@ -314,11 +340,11 @@
                 </v-btn>
               </v-card-actions>
             </v-card>
-          </v-dialog>
-
-
+          </v-dialog> 
+        </div>
     </v-container>
   </v-content>
+
 </template>
 
 <style scoped>
@@ -339,10 +365,11 @@
 import axios from "axios";
 import loader from '../../Estado/loader'
 const ip = require('../../../ip/ip')
-import {checkCode,counterCodigo,counterDescripcion,checkEmail} from '../../../validations/validations'
+import {checkCode,counterCodigo,counterDescripcion,checkEmail,isFieldEmpty, isNotSelected} from '../../../validations/validations'
 export default {
   components: {loader},
   data: () => ({
+    isFormValid: false,
     //dialogo de logo
     clienteFueGuardado: false,
     dialog: false,
@@ -355,6 +382,8 @@ export default {
       counterDescripcion: counterDescripcion,
       checkCode: checkCode,
       checkEmail: checkEmail,
+      checkEmpty: isFieldEmpty,
+      checkSelection: isNotSelected
     },
     //Razones Sociales y Proyectos para los datatable de un cliente
     headersRazonesSociales: [
@@ -393,12 +422,7 @@ export default {
     monedas: [],
     empresas: [],
     paises: [],
-    //SEARCHBOX
-    descripcionesRegiones: [],
-    industriasDescripciones: [],
-    empresasDescripciones: [],
-    monedasCodigos: [],
-    paisesDescripciones: [],
+
     //AUTOCOMPLETE
     entries: [],
     isLoading: false,
@@ -409,6 +433,24 @@ export default {
     alert: false,
     loader: true,
   }),
+  watch: {
+    cliente: {
+    handler: 'validateForm',
+    deep: true,
+    immediate: false,
+    // List of properties to watch for changes
+    include: [
+      'Cliente_Codigo',
+      'Cliente_Descripcion',
+      'Industria',
+      'Region',
+      'Pais',
+      'Empresa',
+      'Moneda',
+    ]
+  }
+    },
+
   created() {
     this.initialize();
   },
@@ -422,16 +464,14 @@ export default {
       this.loadMonedas();
       this.loadEmpresas();
       this.loadPaises();
-      //Este if se realiza para diferenciar el comportamiento de un nuevo cliente con uno que ya fue guardado y 
+      //Este if se realiza para diferenciar el comportamiento de un nuevo cliente con uno que ya fue guardado y
       // esta listo para asignarle proyectos y clientes fiscales
       setTimeout(() => {
-        if(this.clienteFueGuardado){
-        this.asignarDescripciones()
-        } else {
+        if(!this.clienteFueGuardado){
           this.loader = false
         }
       }, 2000) //DISPARAR EVENTO DE LOADING
-      
+
     },
      permisoGuardar(){
         return !localStorage.Permisos.includes("P6")
@@ -444,7 +484,7 @@ export default {
       })
     },
     //Borrado logico de proyecto
-    desactivarProyecto(){ 
+    desactivarProyecto(){
       const index = this.indice
       const item = this.elementoEditado
       var visible = {Visible: ''}
@@ -452,43 +492,43 @@ export default {
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then(response => {
-        
+
       })
       this.closeDialogProyecto()
     },
     //Activacion logica de proyecto
-    activarProyecto(item){ 
+    activarProyecto(item){
       const index = this.cliente.Proyectos.indexOf(item)
       var visible = {Visible: 'X'}
       item.Visible = 'X'
       this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
       .then((response) => {
-       
+
       });
     },
     //Borrado logico de cliente fiscal
-    desactivarClienteFiscal(){ 
+    desactivarClienteFiscal(){
       const index = this.indice
       const item = this.elementoEditado
       var visible = {Visible: ''}
-      item.Visible = '' 
+      item.Visible = ''
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then(response => {
-        
+
       })
       this.closeDialogClienteFiscal()
     },
     //Activacion logica de cliente fiscal
-    activarClienteFiscal(item){ 
+    activarClienteFiscal(item){
       const index = this.cliente.ClientesFiscales.indexOf(item)
       var visible = {Visible: 'X'}
       item.Visible = 'X'
       this.cliente.ClientesFiscales.splice(index, 1,item)
       axios.patch(ip+"/clientes_fiscales/"+item.Cliente_Fiscal_Codigo, visible)
       .then((response) => {
-      
+
       });
     },
     cleanStore(){
@@ -564,25 +604,23 @@ export default {
           this.alert = true;
           setTimeout(() => {this.alert = false
           this.$router.push({path: "/clientesTable"})}, 2000)
-          
+
           }
       }
     },
     //Guardado de un cliente nuevo
     async guardarCliente() {
-      await this.assignKeys();
+      console.log(this.cliente)
       this.cliente.Usuario_Creacion = localStorage.usuario_id
       this.cliente.Usuario_Modificacion = localStorage.usuario_id
       var clienteGuardado = this.cliente.Cliente_Codigo
       await axios.post(ip+"/clientes", this.cliente)
       .then((res) => {
-        this.asignarDescripciones()
         this.alert = true
         setTimeout(() => {this.alert = false}, 2000)
       })
       .catch(err => {
         alert('No se ha podido crear. Cliente ya existe')
-        this.asignarDescripciones()
         throw new Error('El cliente ya existe')
       })
       await axios.get(ip+"/clientes/"+ clienteGuardado)
@@ -592,16 +630,13 @@ export default {
       this.clienteFueGuardado = true;
       this.$store.state.clienteFueGuardado = true;
     },
-    //Pedidos a la api de los combos
+
     //Pedidos a la API para combos
     loadRegions() {
       axios
         .get(ip+"/regiones/descripciones")
         .then((response) => {
           this.regiones = response.data;
-          this.descripcionesRegiones = response.data.map(
-            (region) => region.Region_Descripcion
-          ).sort();
         });
     },
 
@@ -610,68 +645,28 @@ export default {
         .get(ip+"/industrias/descripciones")
         .then((response) => {
           this.industrias = response.data;
-          this.industriasDescripciones = response.data.map(
-            (industria) => industria.Industria_Descripcion
-          ).sort();
         });
     },
 
     loadMonedas() {
       axios.get(ip+"/monedas").then((response) => {
         this.monedas = response.data;
-        this.monedasCodigos = response.data.map(
-          (moneda) => moneda.Moneda_Codigo
-        ).sort();
+
       });
     },
 
     loadEmpresas(){
       axios.get(ip+"/empresas").then((response) => {
         this.empresas = response.data;
-        this.empresasDescripciones = response.data.map(
-          (empresa) => empresa.Empresa_Descripcion
-        ).sort();
       });
     },
+
     loadPaises(){
       axios.get(ip+"/paises").then((response) => {
         this.paises= response.data;
-        this.paisesDescripciones = response.data.map(
-          (pais) => pais.Pais_Descripcion
-        ).sort();
       });
     },
-    
-    //Este metodo es muy importante para cargar los combos. Estos campos vienen en formato "key" y hay que transformarlos
-    //En descripcion
-    asignarDescripciones(){
-      var regionDescripcion = this.regiones.filter(region => region.Region_Key == this.cliente.Cliente_Region)[0].Region_Descripcion;
-      var industriaDescripcion = this.industrias.filter(industria => industria.Industria_Key == this.cliente.Cliente_Industria)[0].Industria_Descripcion;
-      var monedaPrincCodigo = this.monedas.filter(moneda => moneda.Moneda_Key == this.cliente.Cliente_Moneda_Principal)[0].Moneda_Codigo;
-      var empresaDescripcion = this.empresas.filter(empresa => empresa.Empresa_Key == this.cliente.Cliente_Empresa)[0].Empresa_Descripcion;
-      var paisDescripcion = this.paises.filter(pais => pais.Pais_Key == this.cliente.Cliente_Pais)[0].Pais_Descripcion;
-      this.cliente.Cliente_Region = regionDescripcion;
-      this.cliente.Cliente_Industria = industriaDescripcion;
-      this.cliente.Cliente_Empresa = empresaDescripcion;
-      this.cliente.Cliente_Moneda_Principal = monedaPrincCodigo;
-      this.cliente.Cliente_Pais = paisDescripcion
-    },
-    //Este metodo asigna las keys en base a las descripciones seleccionadas en el combo. Se utiliza en el guardado.
-    assignKeys() {
-      var keyRegion = this.regiones.filter(
-        (region) => region.Region_Descripcion == this.cliente.Cliente_Region)[0].Region_Key;
-      var keyIndustria = this.industrias.filter(
-        (industria) => industria.Industria_Descripcion == this.cliente.Cliente_Industria)[0].Industria_Key;
-      var keyMoneda = this.monedas.filter(
-        (moneda) => moneda.Moneda_Codigo == this.cliente.Cliente_Moneda_Principal)[0].Moneda_Key;
-      var empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.cliente.Cliente_Empresa)[0].Empresa_Key;
-      var paisKey = this.paises.filter(pais => pais.Pais_Descripcion == this.cliente.Cliente_Pais)[0].Pais_Key;
-      this.cliente.Cliente_Region = keyRegion;
-      this.cliente.Cliente_Industria = keyIndustria;
-      this.cliente.Cliente_Empresa = empresaKey;
-      this.cliente.Cliente_Moneda_Principal = keyMoneda;
-      this.cliente.Cliente_Pais = paisKey;
-    },
+
     // Guardado de logo
     saveLogo(){
       this.cliente.Cliente_Logo = this.logo
@@ -686,12 +681,12 @@ export default {
         clienteFiscal.Usuario_Modificacion = localStorage.usuario_id
         axios.post(ip+"/clientes_fiscales/", clienteFiscal)
         .then((response) => {
-          
+
         })
       }
       alert('Clientes Fiscales correctamente guardados')
       }
-      
+
     },
     //ACCIONES DE DIALOGOS DE BORRADO
     desactivarElementoDialogProyecto(item){
@@ -714,6 +709,11 @@ export default {
       this.elementoEditado= {}
       this.indice = 0
     },
+
+    validateForm() {
+      this.isFormValid = this.$refs.form.validate()
+    },
+
     mounted() {
        if(!this.$store.state.loggin){
       this.$router.push("/login");
