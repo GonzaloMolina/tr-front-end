@@ -1,61 +1,68 @@
-
 export function counterCodigo(value) {
     if(value.length > 0){
-    value.length <= 10 || "Max 10 carácteres"
+        return value.length <= 10 || "Max 10 carácteres"
     }
 }
 
 export function counterDescripcion(value) {
     if(value.length > 0){
-    value.length <= 50 || "Max 50 carácteres"
+        return value.length <= 50 || "Max 50 carácteres"
     }
+}
+
+export function isFieldEmpty(value) {
+    return !!value.trim() 
+  }
+
+export function isNotSelected(value){
+    return !!value 
 }
 
 export function counterReferentes(value) {
     if(!!value || (value && value.length > 0)){
-    value.length <= 100 || "Max 100 carácteres"
+        return value.length <= 100 || "Max 100 carácteres"
     }
 }
 
 export function counterCodigoClienteFiscal(value) {
     if(value.length > 0){
-    value.length <= 50 || "Max 50 caracteres"
+        return value.length <= 50 || "Max 50 caracteres"
     }
 }
 
 export function counterDescripcionClienteFiscal(value) {
     if(value.length > 0){
-    value.length <= 100 || "Max 100 caracteres"
+        return value.length <= 100 || "Max 100 caracteres"
     }
 }
 
 export function counterDireccion(value) {
     if(value.length > 0){
-    value.length <= 100 || "Max 100 caracteres"
+        return value.length <= 100 || "Max 100 caracteres"
     }
 }
 
 export function counterTelefono(value) {
     if(value.length > 0){
-    value.length <= 100 || "Max 50 caracteres"
+        return value.length <= 100 || "Max 50 caracteres"
     }
 }
 
 export function counterIdFiscal(value) {
     if(value.length > 0){
-    value.length <= 30 || "Max 30 caracteres"
+    return value.length <= 30 || "Max 30 caracteres"
     }
 }
 
 export function counterEmail(value) {
     if(value.length > 0){
-    value.length <= 100 || "Max 100 caracteres"
+      return value.length <= 100 || "Max 100 caracteres"
     }
 }
 
 export function counterIIBB(value) {
     if(value.length > 0){
-    value.length <= 30 || "Max 30 caracteres"
+        return value.length <= 30 || "Max 30 caracteres"
     }
 }
 
