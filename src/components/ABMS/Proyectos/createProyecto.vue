@@ -26,16 +26,16 @@
                 <v-btn :disabled="!isFormValid || permisoActualizarProyecto()" @click="evaluarGuardado"  color="#2991C6" dark >Guardar</v-btn> 
           </b-col>
           <b-col cols="1">
-              <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Cancelar</v-btn>
+              <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Volver</v-btn>
           </b-col>
         </b-form-row>
 
         <b-form-row>
-            <b-col class="col-11">
+            <b-col class="col-6">
               <v-card class="mt-n3" outlined tile>
               <v-form ref="form">
                 <b-form-row class="ml-1 mr-1">
-                  <b-col class="col-2 mt-3">
+                  <b-col class="col-3 mt-3">
                     <v-text-field
                     outlined
                     dense
@@ -46,7 +46,7 @@
                     placeholder="Escribe..."
                   ></v-text-field>
                   </b-col>
-                  <b-col class="col-2 mt-3">
+                  <b-col class="col-3 mt-3">
                     <v-text-field
                     outlined
                     dense
@@ -56,18 +56,7 @@
                     placeholder="Sin asignar"
                     ></v-text-field>
                   </b-col>
-                  <b-col class="col-5 mt-3">
-                    <v-text-field
-                    outlined
-                    dense
-                    v-model="proyecto.Proyecto_Descripcion"
-                    :rules="[rules.checkEmpty]"
-                    label="Descripción"
-                    placeholder="Escribe..."
-                    :disabled="proyectoFueGuardado "
-                    ></v-text-field>
-                  </b-col>
-                  <b-col class="col-3 mt-3">
+                  <b-col class="col-6 mt-3">
                       <v-select
                       dense
                       outlined
@@ -85,7 +74,7 @@
                   </b-col>
                 </b-form-row>
                 <b-form-row class="ml-1 mr-1 mt-n6">
-                  <b-col class="col-3 ">
+                  <b-col class="col-6 ">
                     <v-select
                     dense
                     outlined
@@ -97,7 +86,7 @@
                     placeholder="Selecciona..."
                     ></v-select>
                   </b-col>
-                  <b-col class="col-3">
+                  <b-col class="col-6">
                     <v-autocomplete
                     v-model="proyecto.Proyecto_Unidad_Negocio"
                     :rules="[rules.checkSelection]"
@@ -113,6 +102,9 @@
                     color="white"
                     ></v-autocomplete>
                   </b-col>
+                </b-form-row>
+
+                <b-form-row class="ml-1 mr-1 mt-n6">
                   <b-col>
                     <v-autocomplete
                       v-model="proyecto.Proyecto_Responsable"
@@ -163,7 +155,7 @@
                     placeholder="Selecciona..."
                     ></v-select>
                   </b-col>
-                  <b-col class="col-2">
+                  <b-col class="col-5">
                     <v-select
                     dense
                     outlined
@@ -181,31 +173,45 @@
                 </b-form-row>
               </v-form>
             </v-card>
-            </b-col>
-            <b-col class="col-4">
+            <b-form-row>
+              <b-col class="col-10">
               <proyectosTecnologias :proyectoFueGuardado="proyectoFueGuardado"></proyectosTecnologias>
             </b-col>
-   
-            <b-col class="col-3 ml-n8">
-              <h4>Español</h4>
-              <v-textarea
-              auto-grow
-              background-color="white"
-              filled
-              color="black"
-              label="Descripcion detallada"
-              v-model="proyecto.Proyecto_Observacion"
-              :disabled="proyectoFueGuardado "
-              :counter="3000"
-              placeholder="Escribe.."
-              rows="4"
-            ></v-textarea>
+            </b-form-row>
             </b-col>
-            <b-col class="col-4 ml-5">
-              <h4>Inglés</h4>
-              <b-row>
-                <b-col class="col-12 mb-n10">
-                <v-text-field
+
+
+            <b-col class="col-5">
+              <v-card class="mt-n3" outlined tile>
+                <h4 class="p-3">Descripción</h4>
+                <b-col class="col-12">
+                      <v-text-field
+                      outlined
+                      dense
+                      v-model="proyecto.Proyecto_Descripcion"
+                      :rules="[rules.checkEmpty]"
+                      label="Descripción"
+                      placeholder="Escribe..."
+                      :disabled="proyectoFueGuardado "
+                      ></v-text-field>
+                </b-col>
+                <b-col class="mt-n9">
+                  <v-textarea
+                    outlined
+                    auto-grow
+                    background-color="white"
+                    filled
+                    color="black"
+                    label="Descripcion detallada"
+                    v-model="proyecto.Proyecto_Observacion"
+                    :disabled="proyectoFueGuardado "
+                    :counter="3000"
+                    placeholder="Escribe.."
+                    rows="4"
+                  ></v-textarea>
+                </b-col>
+                <b-col class="mt-5">
+                  <v-text-field
                       outlined
                       dense
                       background-color="white"
@@ -214,24 +220,23 @@
                       label="Description"
                       placeholder="Sin asignar"
                       ></v-text-field>
-                    </b-col>
-              </b-row>
-              <b-row>
-                <b-col class="col-12">
-                    <v-textarea
+                </b-col>
+                <b-col class="mt-n9">
+                  <v-textarea
+                    outlined
                     auto-grow
                     background-color="white"
                     filled
                     color="black"
                     label="Detailed description"
                     v-model="proyecto.Proyecto_Observacion_EN"
-                    :disabled="proyectoFueGuardado "
                     :counter="3000"
+                    :disabled="permisoActualizarProyecto()"
                     placeholder="Sin asignar"
                     rows="4"
                   ></v-textarea>
                 </b-col>
-              </b-row>
+              </v-card>
             </b-col>
           </b-form-row>
           <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
@@ -378,7 +383,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
     ]
   }
 },
-
   created() {
     this.initialize();
   },
@@ -408,12 +412,9 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         }, time);
       })
     },
-
     validateForm() {
           this.isFormValid = this.$refs.form.validate()
         },
-
-
     permisoActualizarProyecto(){
           return !localStorage.Permisos.includes("P19")
       },
@@ -486,7 +487,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
           })
         }
     },
-
     //Guarda tecnologias
     guardarTecnologias(){
           // Obtener tecnologías creadas
@@ -498,17 +498,13 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
             }
           }
         },
-
-
     //Este metodo recorre la lista de tecnologias evaluando sus porcentajes, si se pasa del 100 emite alerta
     //si no llega al 100 tambien.
     validarPorcentaje(){
           if(this.$store.state.Tecnologias.length > 0){
             var tecnologias = this.$store.state.Tecnologias
-
             let contador = 0
             let flag = false
-
             for (let tecnologia of tecnologias){
               contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
             }
@@ -520,9 +516,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
               return flag
             } else return flag = true
           } else return true
-
         },
-
     rollback(){
       this.$store.state.proyecto[0] = {}
       if(this.$store.state.clienteTipo == 0){
@@ -585,14 +579,12 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         this.responsables = response.data;
         });
       },
-
       // VENDEDORES con usuario Sin Asignar
       loadVendedores(){
         axios.get(ip+"/colaboradores/vendedores/"+2).then((response) => {
           this.vendedores = response.data;
           });
       },
-
     //Asigna descripciones para mostrar en los combos
     asignarDescripciones(){
       var desUnidad_Negocio = this.unidades_Negocio.filter(unidad_negocio => unidad_negocio.Unidad_Negocio_Key == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Descripcion
@@ -609,7 +601,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       this.proyecto.Proyecto_Responsable = responsable.Usuario.Usuario_Nombre_Completo
       const vendedor = this.vendedores.find(obj => obj.Colaborador_Usuario === this.proyecto.Proyecto_Vendedor);
       this.proyecto.Proyecto_Vendedor = vendedor.Usuario.Usuario_Nombre_Completo
-
     },
     //Asigna la key a la tecnologia brindada
     asignarKey(tecnologia){
