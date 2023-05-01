@@ -17,6 +17,9 @@ import usuariosTable from '../components/ABMS/Usuarios/usuariosTable.vue'
 import colaboradoresHierarchy from '../components/ABMS/Colaboradores/colaboradoresHierarchy.vue'
 import editColaborador from '../components/ABMS/Colaboradores/editColaborador.vue'
 import editUsuario from '../components/ABMS/Usuarios/editUsuario.vue'
+import tecnologiasTable from '../components/ABMS/Tecnologias/tecnologiasTable.vue'
+import editTecnologia from '../components/ABMS/Tecnologias/editTecnologia.vue'
+import createTecnologia from '../components/ABMS/Tecnologias/createTecnologia.vue'
 
 Vue.use(VueRouter)
 
@@ -140,6 +143,25 @@ Vue.use(VueRouter)
     component: editUsuario,
     props: true
   },
+  {
+    path: '/tecnologias',
+    name: 'tecnologiasTable',
+    component: tecnologiasTable,
+    props: true
+  },
+  {
+    path: '/editTecnologia',
+    name: 'editTecnologia',
+    component: editTecnologia,
+    props: true
+  },
+  {
+    path: '/createTecnologia',
+    name: 'createTecnologia',
+    component: createTecnologia,
+    props: true
+  }
+
 
 
 ]

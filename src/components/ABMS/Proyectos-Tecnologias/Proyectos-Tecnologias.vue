@@ -1,15 +1,14 @@
 <template>
 <v-content>
-<v-container style="width:42rem;margin-left: -1rem">
+<v-container style="width:100%;margin-left: -1rem">
   <loader style="position: fixed;"/>
   <b-form-row>
     <b-col class="col-3">
     <h2 style="font-size:1.5rem;padding-left:1rem">Tecnologías</h2>
     </b-col>
     <b-col >
-      <v-btn  
+      <v-btn  tabindex="-1"
         v-show="permisoEscrituraProyectoTecnologia()"
-        :loading="!$attrs.proyectoFueGuardado"
         dark 
         fab 
         x-small 
@@ -82,7 +81,7 @@
             style="max-width: 25%;">
             </v-text-field>
           <template v-slot:modal-footer="{ ok, cancel }">
-            <b-button variant="primary" @click="saveNew" :disabled="porcentajeInvalido">Aceptar</b-button>
+            <b-button variant="primary" @click="saveNew" :disabled="porcentajeInvalido || tecnologiaInvalida">Aceptar</b-button>
             <b-button @click="close">Cancelar</b-button>
           </template>
         </b-modal>
@@ -93,13 +92,15 @@
             class="mr-2"
             color="#2991c6"
             @click="editItem(item)"
+            tabindex="-1"
             >
             mdi-pencil
             </v-icon>
             <v-icon
             small
             color="#2991c6"
-            @click="deleteItem(item)"
+            @click="deleteItem(item)"    
+            tabindex="-1"
             >
             mdi-delete
             </v-icon>
@@ -111,7 +112,7 @@
 
 <style scoped>
 .v-content{
-    margin-top:-5rem;
+    margin-top:0rem;
     margin-right: 0rem;
 }
 </style>
@@ -131,6 +132,8 @@ const ip = require('../../../ip/ip')
           Tecnologia: {Tecnologia_Descripcion:null},
           Usuario_Creacion: null
         },
+
+
       headersProyectosTecnologias: [
         {
           text: "Tecnologia",
@@ -149,6 +152,8 @@ const ip = require('../../../ip/ip')
         align: "end",},
       ],
         
+
+
       // Objeto Proyecto_Tecnologia seleccionado
       proyectoTecnologiaSeleccionado: {},
       // Tecnologia del Objeto Proyecto_Tecnologia seleccionado
@@ -163,32 +168,44 @@ const ip = require('../../../ip/ip')
       search: null
       
     }),
+
     computed: {
       porcentajeInvalido() {
-      return this.nuevoProyectoTecnologia.Proyecto_Tecnologia_Porcentaje > 100
-    }
+        var porcentaje = this.nuevoProyectoTecnologia.Proyecto_Tecnologia_Porcentaje 
+        return ( porcentaje > 100 || porcentaje == 0 || porcentaje == null)
+      },
+      tecnologiaInvalida() {
+        return (this.nuevoProyectoTecnologia.Tecnologia.Tecnologia_Descripcion == null)
+      }
     },
+
     watch: {
       dialog (val) {
         val || this.close()
       },
     },
+
     created () {
       this.initialize()
     },
+
     methods: {
       initialize () {
         this.loadProyectoTecnologias();
         this.loadTecnologias();
+
       },
+
       editItem(item) {
         this.proyectoTecnologiaSeleccionado = item
         this.proyectoTecnologia = item.Tecnologia
         this.$refs.editModal.show();
       },
+
       createItem(){
         this.$refs.createModal.show();
       },
+
       deleteItem (itemSelected) {
         const index = this.proyectoTecnologias.findIndex(item => item.Proyecto_Tecnologia_Key === itemSelected.Proyecto_Tecnologia_Key);
         if (index !== -1) {
@@ -196,26 +213,33 @@ const ip = require('../../../ip/ip')
         }
         this.$store.state.Tecnologias = this.proyectoTecnologias
       },
+
       close() {
         this.$nextTick(() => {
           this.$refs.editModal.hide();
           this.$refs.createModal.hide();
         })
       },
+
       save() {
         // Reemplaza los valores de la tecnologia en objeto Proyecto_tecnologia seleccionado
         this.proyectoTecnologiaSeleccionado.Proyecto_Tecnologia_Tecnologia = this.proyectoTecnologia.Tecnologia_Key
         this.proyectoTecnologiaSeleccionado.Tecnologia.Tecnologia_Descripcion = this.proyectoTecnologia.Tecnologia_Descripcion
+
       
         // Reemplaza el objeto proyecto_tecnologia editado en el array de las tecnologias del proyecto
         const index = this.proyectoTecnologias.findIndex(item => item.Proyecto_Tecnologia_Key === this.proyectoTecnologiaSeleccionado.Proyecto_Tecnologia_Key);
         if (index !== -1) {
           this.proyectoTecnologias.splice(index-1, 1, this.proyectoTecnologiaSeleccionado);
         }
+
         this.$store.state.Tecnologias = this.proyectoTecnologias
+
         this.close()
       },
+
       saveNew() {
+
         this.nuevoProyectoTecnologiaLocal = {
           Proyecto_Tecnologia_Proyecto:this.nuevoProyectoTecnologia.Proyecto_Tecnologia_Proyecto,
           Proyecto_Tecnologia_Porcentaje:this.nuevoProyectoTecnologia.Proyecto_Tecnologia_Porcentaje,
@@ -226,15 +250,19 @@ const ip = require('../../../ip/ip')
     
         this.nuevoProyectoTecnologiaLocal.Proyecto_Tecnologia_Tecnologia = this.nuevoProyectoTecnologia.Tecnologia.Tecnologia_Key
         this.nuevoProyectoTecnologiaLocal.Proyecto_Tecnologia_Proyecto = this.$store.state.ProyectoKey
+
         this.proyectoTecnologias.push(this.nuevoProyectoTecnologiaLocal)
         this.$store.state.Tecnologias = this.proyectoTecnologias
+
         this.close()
       },
+
       loadTecnologias(){
         axios.get(ip+"/tecnologias/descripciones").then((response) => {
             this.tecnologias = response.data;
           });
       },
+
       loadProyectoTecnologias(){
           axios.get(ip+"/proyectos_tecnologias/tecnologias/"+this.$store.state.ProyectoKey).then((response) => {
             this.proyectoTecnologias = response.data
@@ -242,12 +270,16 @@ const ip = require('../../../ip/ip')
            
           });
         },
+
+
       permisoLecturaProyectoTecnologia(){
         return localStorage.Permisos.includes('P21')
       },
       permisoEscrituraProyectoTecnologia(){
         return localStorage.Permisos.includes('P22')
       },
+
+
        mounted() {
       if(!localStorage.login){
         this.$router.push("/login");

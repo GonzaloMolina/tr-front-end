@@ -741,8 +741,6 @@ export default {
     asignarDescripciones(){
       this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
       this.colaborador = this.validatedFields(this.colaborador)
-      console.log(this.colaborador)
-      console.log(this.$store.state.colaborador)
       this.originalKeyUser = this.colaborador.Colaborador_Usuario
       let regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
       let colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;

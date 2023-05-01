@@ -96,6 +96,17 @@
                 </v-list-item-content>
             </v-list-item>
 
+            <v-list-item link
+            v-show="SeguridadAdministracionTecnologias()"
+            >
+                <v-list-item-action>
+                  <v-icon>mdi-tools</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/tecnologias">Tecnologías</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+
           </v-list-group>
         </v-list-item-group>
       </v-list>
@@ -176,7 +187,8 @@ export default {
         localStorage.Permisos.includes('P26') ||
         localStorage.Permisos.includes('P27') || localStorage.Permisos.includes('P28') ||
         localStorage.Permisos.includes('P29') || localStorage.Permisos.includes('P30') ||
-        localStorage.Permisos.includes('P31') || localStorage.Permisos.includes('P32')
+        localStorage.Permisos.includes('P31') || localStorage.Permisos.includes('P32') ||
+        localStorage.Permisos.includes('P49')
       },
 
       SeguridadAdministracionCliente(){
@@ -229,7 +241,7 @@ export default {
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P33') || localStorage.Permisos.includes('P34') 
+        return localStorage.Permisos.includes('P40') || localStorage.Permisos.includes('P44') 
                
       },
 
@@ -238,6 +250,14 @@ export default {
           return false
         } else
         return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
+               
+      },
+
+      SeguridadAdministracionTecnologias(){
+        if(!localStorage.login){
+          return false
+        } else
+        return localStorage.Permisos.includes('P49') || localStorage.Permisos.includes('P50') 
                
       },
 

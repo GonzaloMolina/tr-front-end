@@ -4,8 +4,7 @@
                 <v-card class="card">
                 <v-title class="titulo" style="position:relative;top:1.5rem"> BIENVENIDO </v-title>
             
-                <v-btn @click="SignIn" class="buttonOffice"> Iniciar sesión <br> con Office  <v-icon style="position:relative; left:0.5rem">mdi-microsoft-windows</v-icon> </v-btn>
-
+               
 
                     <v-expansion-panels
                         v-model="panel"
@@ -69,7 +68,7 @@ export default {
         }),
         methods:{
             getUser(user){
-                axios.post("https://planningbackdev.azurewebsites.net"+"/autenticacion/autenticar/", user).then((response) => {
+                axios.post(ip+"/autenticacion/autenticar/", user).then((response) => {
                     this.userRecover = response.data.user;
                     if(this.userRecover.Usuario_Habilitado == 'X'){
                         this.getPermisos(user)

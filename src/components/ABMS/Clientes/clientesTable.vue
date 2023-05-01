@@ -6,7 +6,7 @@
         :headers="headers"
         :items="desserts"
         :search="search"
-        :items-per-page="7"
+        :items-per-page="20"
         :footer-props="footerProps"
         v-show="tableshow"
         

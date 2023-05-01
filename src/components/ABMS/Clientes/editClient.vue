@@ -174,7 +174,7 @@
           <template>
           <v-data-table
             :headers="headersProyectos"
-            :items="$store.state.cliente[0].Proyectos"
+            :items="this.proyectos"
             sort-by="[Visible]"
             :sort-desc="true"
             class="elevation-2"
@@ -423,6 +423,7 @@ export default {
     monedas: [],
     empresas: [],
     paises: [],
+    proyectos: [],
     
 
     //AUTOCOMPLETE
@@ -493,17 +494,12 @@ export default {
     },
 
     getProyectos(){
-      let proyectos = []
-      for (var index in this.$store.state.cliente[0].Proyectos){
-        let key = this.$store.state.cliente[0].Proyectos[index].Proyecto_Key
-        axios.get(ip+"/proyectos/key/"+key).then(response => {
-          proyectos.push(response.data)
+        axios.get(ip+"/proyectos/client/"+this.cliente.Cliente_Key).then(response => {
+          this.proyectos = response.data
+          this.cliente.Proyectos = response.data
         })
-      }
-      
-      return proyectos
-      
     },
+      
 
     //Se hace una copia de los clientes fiscales originales para guardarlos si no fueron modificados
     loadClientesFiscalesBackup(){
@@ -552,16 +548,11 @@ export default {
 
     //Borrado logico de proyecto
     desactivarProyecto(item){ 
-      const index = this.cliente.Proyectos.indexOf(item)
-      // const item = this.elementoEditado
-      // this.elementoEditado = Object.assign({}, item)
+      console.log(this.cliente.Proyectos)
+      this.cliente.Proyectos = this.cliente.Proyectos.filter(proyecto => proyecto.Proyecto_Codigo !== item.Proyecto_Codigo);
       var visible = {Visible: ''}
       item.Visible = ''
-      this.cliente.Proyectos.splice(index, 1, item)
       axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
-      .then(response => {
-        
-      })
       this.closeDialogProyecto()
     },
 
@@ -635,7 +626,8 @@ export default {
     loadCliente(){     
       this.cliente = this.$store.state.cliente[0];
       this.cliente.ClientesFiscales = this.getClientesFiscales()
-      this.cliente.Proyectos = this.getProyectos()
+      this.getProyectos()
+      console.log(this.cliente.Proyectos)
 
       this.logo = this.$store.state.cliente[0].Cliente_Logo
       this.defaultCode = this.$store.state.cliente[0].Cliente_Codigo;

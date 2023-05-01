@@ -2,6 +2,7 @@
   <v-content>
     <v-container fluid>
       <loader :loader="loader" style="position: fixed;"/>
+      <div v-if="!loader">
         <b-form-row class="mt-3 mb-n4">
           <b-col cols="5">
             <v-title style="font-size:1.5rem;">{{proyecto.Proyecto_Descripcion}}</v-title>
@@ -13,7 +14,7 @@
               label="Facturable"
             ></v-checkbox>
           </b-col>
-          <b-col cols="2">
+          <b-col cols="2" class="ml-6">
             <v-checkbox
               v-model="proyecto.Proyecto_Newsletter"
               :disabled="permisoActualizarProyecto()"
@@ -24,7 +25,7 @@
           <b-col cols="1" class="ml-12">
                 <v-btn :disabled="!isFormValid || permisoActualizarProyecto()" @click="guardar()" color="#2991C6" dark >Guardar</v-btn> 
           </b-col>
-          <b-col cols="1">
+          <b-col cols="1" class="ml-3"> 
               <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Volver</v-btn>
           </b-col>
         </b-form-row>
@@ -138,7 +139,7 @@
                   </b-col>
                 </b-form-row>
                 <b-form-row class="ml-1 mr-1 mt-n6">
-                  <b-col class="col-2">
+                  <b-col class="col-3">
                     <v-select
                     dense
                     outlined
@@ -166,7 +167,7 @@
               </v-form>
             </v-card>
             <b-form-row>
-              <b-col class="col-10">
+              <b-col class="col-12 mt-n12">
               <proyectosTecnologias :proyectoFueGuardado="proyectoFueGuardado"></proyectosTecnologias>
             </b-col>
             </b-form-row>
@@ -175,6 +176,7 @@
             <b-col class="col-5" >
               <v-card class="mt-n3" outlined tile>
                 <h4 class="p-3">Descripción</h4>
+                <img class="ml-5 mt-n4" width="40" height="25" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bandera_de_Espa%C3%B1a_%28sin_escudo%29.svg/1920px-Bandera_de_Espa%C3%B1a_%28sin_escudo%29.svg.png" alt="Spain Flag" /> 
                 <b-col class="col-12">
                     <v-text-field
                     outlined
@@ -200,7 +202,8 @@
                     placeholder="Escribe.."
                     rows="4"
                   ></v-textarea> 
-              </b-col>
+              </b-col>       
+              <img class="ml-5 mb-n4" width="40" height="25" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1920px-Flag_of_the_United_States.svg.png" alt="US Flag" /> 
               <b-col class="mt-5">
                 <v-text-field
                       outlined
@@ -210,7 +213,7 @@
                       :rules="[rules.counterDescripcion]"
                       label="Description"
                       :disabled="permisoActualizarProyecto()"
-                      placeholder="Sin asignar"
+                      placeholder="Not assigned"
                       ></v-text-field>
               </b-col>
               <b-col class="mt-n9">
@@ -224,12 +227,14 @@
                     v-model="proyecto.Proyecto_Observacion_EN"
                     :counter="3000"
                     :disabled="permisoActualizarProyecto()"
-                    placeholder="Sin asignar"
+                    placeholder="Not assigned"
                     rows="4"
                   ></v-textarea>
               </b-col>
-              </v-card>       
+
+              </v-card>
             </b-col>
+
           </b-form-row>
 
 
@@ -266,15 +271,14 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
+        </div>
     </v-container>
   </v-content>
 </template>
 
 <style scoped>
 .container {
-  min-width: 84rem;
-  margin-top: -1rem;
+  min-width: 90%;
 }
 .v-input--selection-controls .v-input__slot > .v-label, .v-input--selection-controls .v-radio > .v-label {
     align-items: center;
@@ -291,14 +295,15 @@ import axios from 'axios';
 const ip = require('../../../ip/ip')
 import loader from '../../Estado/loader'
 import proyectosTecnologias from '../Proyectos-Tecnologias/Proyectos-Tecnologias';
-import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail} from '../../../validations/validations'
+import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../../../validations/validations'
+
   export default {
     components: {
       proyectosTecnologias,
       loader
     },
     data: () => ({
-      isFormValid: false,
+      isFormValid: true,
       proyectoFueGuardado: false,
       newsletter: null,
       rules: {
@@ -378,27 +383,40 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
       dialogCancelar: false,
       loader:true,
     }),
+
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'Nuevo' : 'Editar'
       },
     },
     watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      'proyecto.Proyecto_Codigo': function() {
-        this.validateForm()
-      },
-      'proyecto.Proyecto_Descripcion': function(){
-        this.validateForm()
-      }
+        proyecto: {
+        handler: 'validateForm',
+        deep: true,
+        immediate: false,
+        include: [
+            'Proyecto_Codigo',
+            'Proyecto_Descripcion',
+            'Proyecto_Codigo_Externo', 
+            'Proyecto_Tipo',
+            'Proyecto_Alcance',
+            'Proyecto_Unidad_Negocio',
+            'Proyecto_Cliente',
+            'Proyecto_Responsable',
+            'Proyecto_Vendedor',
+            'Proyecto_Descripcion_EN',
+            'Proyecto_Observacion_EN',
+            'Ceco_Key'
+        ]
+     }
     },
+
     created () {
         this.initialize()
         this.proyectoFueGuardado  = true
         this.$store.state.ProyectoKey = this.proyecto.Proyecto_Key
     },
+
     methods: {
         async initialize () {
         this.loadProyecto();
@@ -414,8 +432,10 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
                           }, 3000)
         setTimeout(() => { this.loader = false
         }, 3200)
+
         this.loadProyectoDescripciones();
         },
+
         wait(time) {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -426,6 +446,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
          permisoActualizarProyecto(){
           return !localStorage.Permisos.includes("P19")
       },
+
         rollback(){
           if(this.$store.state.clienteTipo == 0){
             this.$router.push({ path: '/createCliente'})
@@ -435,9 +456,11 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
           this.$store.state.proyecto[0] = []
           }
         },
+
       validateForm() {
           this.isFormValid = this.$refs.form.validate()
         },
+
         async guardar() {
           if(this.$refs.form.validate()){
             if(this.validarPorcentaje()){
@@ -446,15 +469,18 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
                 this.asignarDescripciones()
                 setTimeout(() => {
                                 this.rollback()}, 500)
-              }
+               }
           }
         },
+
         validarPorcentaje(){
           if(this.$store.state.Tecnologias){
            if(this.$store.state.Tecnologias.length > 0){
             var tecnologias = this.$store.state.Tecnologias
+
             let contador = 0
             let flag = false
+
             for (let tecnologia of tecnologias){
               contador = contador + parseInt(tecnologia.Proyecto_Tecnologia_Porcentaje);
             }
@@ -466,28 +492,38 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
               return flag
             } else return flag = true
           } else return true}
+
         },
+
         loadProyecto(){
           this.proyecto = _.cloneDeep(this.$store.state.proyecto[0])
           this.defaultCode = this.proyecto.Proyecto_Codigo
         },
+
         evalNewsletter(){
           if(this.proyecto.Proyecto_Newsletter.toString() == "Si"){
             return true
           } else return false
         },
+
         evalFacturable(){
           if(this.proyecto.Proyecto_Facturable == 1){
             return true
           } else return false
         },
+
         //CARGAN LOS CHECKBOXES Y AUTOCOMPLETE
+
         loadTecnologiasBackup(){
           this.tecnologiasOriginal = _.cloneDeep(this.$store.state.proyecto[0].Tecnologias)
         },
+
         loadProyectoDescripciones(){
+
           this.proyectoConDescripciones = _.cloneDeep(this.proyecto)
+
         },
+
         loadMonedas(){
             axios.get(ip+"/monedas")
             .then(response => {
@@ -509,23 +545,27 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
                 this.proyectos_tipos_descripciones = response.data.map(tipo => tipo.Proyecto_Tipo_Descripcion)
             })
         },
+
         loadTecnologias(){
           axios.get(ip+"/proyectos_tecnologias/tecnologias/"+this.proyecto.Proyecto_Key).then((response) => {
             this.proyectoTecnologias = response.data
           });
         },
+
         // RESPONSABLES
         loadResponsables(){
           axios.get(ip+"/colaboradores/responsables/"+this.proyecto.Proyecto_Responsable).then((response) => {
             this.responsables = response.data;
             });
           },
+
       // VENDEDORES
       loadVendedores(){
         axios.get(ip+"/colaboradores/vendedores/"+this.proyecto.Proyecto_Vendedor).then((response) => {
           this.vendedores = response.data;
           });
       },
+
         loadUnidades_Negocios(){
             axios.get(ip+"/unidades_negocios/descripciones")
             .then(response => {
@@ -533,8 +573,11 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
                 this.unidades_NegocioDescripciones = response.data.map(unidad_negocio => unidad_negocio.Unidad_Negocio_Descripcion)
             })
         },
+
+
         //--
         //Asigna descripciones al cargar el proyecto
+
         asignarDescripciones(){
             var desUnidad_Negocio = this.unidades_Negocio.filter(unidad_negocio => unidad_negocio.Unidad_Negocio_Key == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Descripcion
             var desAlcance = this.alcances.filter(alcance => alcance.Proyecto_Alcance_Key == this.proyecto.Proyecto_Alcance)[0].Proyecto_Alcance_Descripcion
@@ -549,8 +592,10 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
             this.proyecto.Proyecto_Responsable = this.proyecto.Responsable.Usuario_Nombre_Completo
             this.proyecto.Proyecto_Vendedor = this.proyecto.Vendedor.Usuario_Nombre_Completo
         },
+
         //--
         //Asigna keys al guardar el proyecto
+
         assignKeys(){
           var keyUnidad_Negocio = this.unidades_Negocio.filter((unidad_negocio) =>
           unidad_negocio.Unidad_Negocio_Descripcion == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Key;
@@ -560,6 +605,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
               tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0].Proyecto_Tipo_Key;
           var keyMoneda = this.monedas.filter((moneda) =>
               moneda.Moneda_Codigo == this.proyecto.Proyecto_Moneda)[0].Moneda_Key;
+
           this.proyecto.Proyecto_Unidad_Negocio = keyUnidad_Negocio;
           this.proyecto.Proyecto_Facturable = this.asignarFacturable();
           this.proyecto.Proyecto_Newsletter = this.asignarNewsletter();
@@ -568,18 +614,21 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
           this.proyecto.Proyecto_Moneda = keyMoneda;
           this.proyecto.Proyecto_Responsable = this.proyecto.Proyecto_Responsable.Colaborador_Usuario
           this.proyecto.Proyecto_Vendedor = this.proyecto.Proyecto_Vendedor.Colaborador_Usuario
-          this.$store.state.cliente[0].Proyectos.push(this.proyecto)
         },
+
+
         asignarFacturable(){
           if(this.proyecto.Proyecto_Facturable == true){
             return 1
           } else return 2
         },
+
         asignarNewsletter(){
           if(this.proyecto.Proyecto_Newsletter == true){
             return 'Si'
           } else return 'No'
         },
+
         //--
         async guardarProyecto(){
           var responsable = this.proyecto.Proyecto_Responsable
@@ -594,18 +643,20 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
                                  Proyecto_Tipo_Beneficio: this.proyecto.Tipo.Proyecto_Tipo_Beneficio
                                  }
             this.proyecto.Responsable = {Usuario_Nombre_Completo: responsable}
-            this.$store.state.cliente[0].Proyectos = this.$store.state.cliente[0].Proyectos.filter(proyecto => proyecto.Proyecto_Codigo != this.defaultCode)
-            this.$store.state.cliente[0].Proyectos.push(this.proyecto)
           })
+
         },
+
         guardarTecnologias(){
           // Obtener tecnologías editadas/creadas
           const tecnologiasAGuardar = this.$store.state.Tecnologias
           const tecnologiasAEliminar = this.proyectoTecnologias.filter(objeto => !tecnologiasAGuardar.some(tecnologia => tecnologia.Proyecto_Tecnologia_Key === objeto.Proyecto_Tecnologia_Key));
+
           if (tecnologiasAGuardar){
             for(let i = 0; i< tecnologiasAGuardar.length; i++){
               //Por cada tecnología del array, verificar si existían previamente o fueron creadas
               const index = this.proyectoTecnologias.findIndex(item => item.Proyecto_Tecnologia_Key === tecnologiasAGuardar[i].Proyecto_Tecnologia_Key);
+
               // Si el index es -1, no existe en la base y hay que crear un proyecto_tecnologia nuevo
               if (index == -1) {
                 tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
@@ -617,6 +668,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
               }
             }
           }
+
           if(tecnologiasAEliminar.length > 0){
            
             for(let i = 0; i< tecnologiasAEliminar.length; i++){
@@ -624,12 +676,15 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
             }
           }
         },
+
+
         evalTooltipTiposProyectos(){
           var tooltip = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0]
           if(tooltip == undefined){
             return 'No se selecciono un Tipo'
           } else return ('Grupo: ' +tooltip.Proyecto_Tipo_Grupo+ '\n' +'Beneficio: ' +tooltip.Proyecto_Tipo_Beneficio)
         },
+
         asignarSegunTipo(){
           var seleccionado = this.proyectos_tipos.filter(tipo => tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0]
           this.proyecto.Tipo.Proyecto_Tipo_Beneficio = seleccionado.Proyecto_Tipo_Beneficio
@@ -642,10 +697,15 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail}
           this.proyecto.Proyecto_Facturable = false}
         },
       },
+
      mounted() {
       if(!localStorage.login){
         this.$router.push("/login");
       }
+
      }
+
 }
+
+
 </script>

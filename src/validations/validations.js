@@ -1,3 +1,4 @@
+
 export function counterCodigo(value) {
     if(value.length > 0){
         return value.length <= 10 || "Max 10 carácteres"

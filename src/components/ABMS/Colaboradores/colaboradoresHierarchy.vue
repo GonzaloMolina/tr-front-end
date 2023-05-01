@@ -65,7 +65,6 @@ return {
  async loadColaboradores(){
    await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
    this.rowData = response.data;
-  
  })
 }, 
 };
@@ -99,6 +98,8 @@ this.columnDefs = [ {filter:true,field: 'name',headerName:'Nombre',minWidth:290,
                    { filter:true, field: 'area',resizable: true, headerName:'Area'},
                    { filter:true, field: 'puesto',resizable: true, headerName:'Puesto'},
                    { filter:true, field: 'tipo',resizable: true, headerName:'Tipo'},
+                   { filter:true, field: 'ceco',resizable: true, headerName:'CECO'},
+                   
                  ],
                  
 this.groupDefaultExpanded = 1;
@@ -122,6 +123,7 @@ onGridReady(params) {
  this.gridColumnApi.setColumnVisible('area', false)
  this.gridColumnApi.setColumnVisible('puesto', false)
  this.gridColumnApi.setColumnVisible('tipo', false)
+ this.gridColumnApi.setColumnVisible('CECO', false)
 },
 async editColab(){
 let colaborator = this.gridApi.getSelectedRows()[0]
@@ -194,10 +196,8 @@ async enableorunable(){
      .then((response) => {
        this.disableEditar = true
        this.loadColaboradores()
-       this.gridApi.showLoadingOverlay()
-       
-       this.disableEditar = false
-       
+       this.gridApi.showLoadingOverlay()   
+       this.disableEditar = false    
    })
  }
  alert('Colaborador Actualizado')

@@ -14,7 +14,7 @@
               label="Facturable"
             ></v-checkbox>
           </b-col>
-          <b-col cols="2">
+          <b-col cols="2" class="ml-4">
             <v-checkbox
               v-model="proyecto.Proyecto_Newsletter"
               :disabled="permisoActualizarProyecto()"
@@ -23,17 +23,18 @@
             ></v-checkbox>
           </b-col>
           <b-col cols="1" class="ml-12">
-                <v-btn :disabled="!isFormValid || permisoActualizarProyecto()" @click="evaluarGuardado"  color="#2991C6" dark >Guardar</v-btn> 
+                <v-btn :disabled="!isFormValid || permisoActualizarProyecto()" @click="guardar"  color="#2991C6" dark >Guardar</v-btn> 
           </b-col>
           <b-col cols="1">
               <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Volver</v-btn>
           </b-col>
         </b-form-row>
-
+        <v-form ref="form">
         <b-form-row>
+
             <b-col class="col-6">
               <v-card class="mt-n3" outlined tile>
-              <v-form ref="form">
+
                 <b-form-row class="ml-1 mr-1">
                   <b-col class="col-3 mt-3">
                     <v-text-field
@@ -42,7 +43,6 @@
                     v-model="proyecto.Proyecto_Codigo"
                     label="Código"
                     :rules="[rules.checkCode,rules.counterCodigo]"
-                    :disabled="proyectoFueGuardado "
                     placeholder="Escribe..."
                   ></v-text-field>
                   </b-col>
@@ -69,7 +69,6 @@
                       label="Tipo"
                       placeholder="Selecciona..."
                       @blur="validateForm"
-                      :disabled="proyectoFueGuardado "
                       ></v-select>
                   </b-col>
                 </b-form-row>
@@ -82,7 +81,7 @@
                     v-model="proyecto.Proyecto_Alcance"
                     :items="alcances_descripciones"
                     label="Alcance"
-                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     placeholder="Selecciona..."
                     ></v-select>
                   </b-col>
@@ -91,7 +90,7 @@
                     v-model="proyecto.Proyecto_Unidad_Negocio"
                     :rules="[rules.checkSelection]"
                     label="U. Negocio"
-                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     :items="unidades_NegocioDescripciones"
                     :loading="isLoading"
                     :search-input.sync="searchUnidadesNegocio"
@@ -110,7 +109,7 @@
                       v-model="proyecto.Proyecto_Responsable"
                       label="Responsable"
                       :rules="[rules.checkSelection]"
-                      :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                      :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                       :items="responsables"
                       :loading="isLoading"
                       :search-input.sync="searchResponsables"
@@ -128,7 +127,7 @@
                     v-model="proyecto.Proyecto_Vendedor"
                     label="Vendedor"
                     :rules="[rules.checkSelection]"
-                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     :items="vendedores"
                     :loading="isLoading"
                     :search-input.sync="searchVendedores"
@@ -143,15 +142,14 @@
                   </b-col>
                 </b-form-row>
                 <b-form-row class="ml-1 mr-1 mt-n6">
-                  <b-col class="col-2">
+                  <b-col class="col-3">
                     <v-select
                     dense
                     outlined
                     v-model="proyecto.Proyecto_Moneda"
-                    :rules="[rules.checkSelection]"
                     :items="monedasCodigos"
                     label="Moneda"
-                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     placeholder="Selecciona..."
                     ></v-select>
                   </b-col>
@@ -159,23 +157,22 @@
                     <v-select
                     dense
                     outlined
-                    :rules="[rules.checkSelection]"
                     v-model="proyecto.Ceco_Key"
                     :items="Cecoitems"
                     item-text="ceco"
                     item-value="cod"
                     label="CECO"
                     @blur="validateForm"
-                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica' || proyectoFueGuardado "
+                    :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     placeholder="Selecciona..."
                     ></v-select>
                   </b-col>
                 </b-form-row>
-              </v-form>
+
             </v-card>
             <b-form-row>
-              <b-col class="col-10">
-              <proyectosTecnologias :proyectoFueGuardado="proyectoFueGuardado"></proyectosTecnologias>
+              <b-col class="col-12  mt-n12" tabindex="-1">
+              <proyectosTecnologias></proyectosTecnologias>
             </b-col>
             </b-form-row>
             </b-col>
@@ -184,6 +181,7 @@
             <b-col class="col-5">
               <v-card class="mt-n3" outlined tile>
                 <h4 class="p-3">Descripción</h4>
+                <img class="ml-5 mt-n4" width="40" height="25" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Bandera_de_Espa%C3%B1a_%28sin_escudo%29.svg/1920px-Bandera_de_Espa%C3%B1a_%28sin_escudo%29.svg.png" alt="Spain Flag" /> 
                 <b-col class="col-12">
                       <v-text-field
                       outlined
@@ -191,8 +189,7 @@
                       v-model="proyecto.Proyecto_Descripcion"
                       :rules="[rules.checkEmpty]"
                       label="Descripción"
-                      placeholder="Escribe..."
-                      :disabled="proyectoFueGuardado "
+                      placeholder="Sin asignar"
                       ></v-text-field>
                 </b-col>
                 <b-col class="mt-n9">
@@ -204,21 +201,20 @@
                     color="black"
                     label="Descripcion detallada"
                     v-model="proyecto.Proyecto_Observacion"
-                    :disabled="proyectoFueGuardado "
                     :counter="3000"
-                    placeholder="Escribe.."
+                    placeholder="Sin Asignar"
                     rows="4"
                   ></v-textarea>
                 </b-col>
+                <img class="ml-5 mb-n4" width="40" height="25" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1920px-Flag_of_the_United_States.svg.png" alt="US Flag" /> 
                 <b-col class="mt-5">
                   <v-text-field
                       outlined
                       dense
                       background-color="white"
                       v-model="proyecto.Proyecto_Descripcion_EN"
-                      :disabled="proyectoFueGuardado "
                       label="Description"
-                      placeholder="Sin asignar"
+                      placeholder="Not assigned"
                       ></v-text-field>
                 </b-col>
                 <b-col class="mt-n9">
@@ -232,13 +228,14 @@
                     v-model="proyecto.Proyecto_Observacion_EN"
                     :counter="3000"
                     :disabled="permisoActualizarProyecto()"
-                    placeholder="Sin asignar"
+                    placeholder="Not assigned"
                     rows="4"
                   ></v-textarea>
                 </b-col>
               </v-card>
             </b-col>
           </b-form-row>
+        </v-form>
           <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
             <v-card>
               <v-toolbar
@@ -288,7 +285,7 @@
 
 <style scoped>
 .container {
-  min-width: 84rem;
+  min-width: 90%;
   margin-top: -1rem;
 }
 </style>
@@ -305,8 +302,8 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       proyectosTecnologias, loader
     },
     data: () => ({
+      
       isFormValid: false,
-      proyectoFueGuardado: false,
       rules: {
         checkCode: checkCode,
         counterCodigo: counterCodigo,
@@ -346,6 +343,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       proyectos_tipos: [],
       monedas: [],
       tecnologias: [],
+      proyectos:[],
       //SEARCHBOX
       responsablesDescripciones: [],
       vendedoresDescripciones: [],
@@ -383,11 +381,13 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
     ]
   }
 },
+
   created() {
     this.initialize();
   },
   methods: {
     async initialize() {
+      this.$store.state.ProyectoKey = null,
       this.$store.state.Tecnologias = []
       this.loadProyecto();
       this.loadUnidades_Negocios();
@@ -399,11 +399,8 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       this.loadTecnologias();
       this.proyectoOriginal = _.cloneDeep(this.proyecto)
       await this.wait(1000); //DISPARAR EVENTO DE LOADING
-      if(this.proyectoFueGuardado){
-        this.asignarDescripciones()
-      }else{
-        this.loader = false
-      }
+
+      this.loader = false
     },
     wait(time) {
       return new Promise(resolve => {
@@ -412,9 +409,12 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         }, time);
       })
     },
+
     validateForm() {
           this.isFormValid = this.$refs.form.validate()
         },
+
+
     permisoActualizarProyecto(){
           return !localStorage.Permisos.includes("P19")
       },
@@ -439,54 +439,57 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
     //Guardado de proyecto. En primera instancia si el proyecto no fue guardado, se lo guarda para luego poder
     //guardar las tecnologias. En una segunda instancia de guardado, realiza validacion de porcentajes de tecnologias,
     //guarda las tecnologias, asigna datos para el guardado y guarda el proyecto en vuex
-    async evaluarGuardado() {
-      if(this.proyectoFueGuardado){
-        this.guardarTecnologias(); // guarda las tecnologias en la base
-        this.$store.state.proyecto[0] = []
-        setTimeout(() => {this.loader = false
-                          this.rollback()}, 2000) // vuelve al cliente
-      } else if(this.$refs.form.validate()){
-        await this.guardarProyecto();
-        this.asignarDescripciones();
-        this.loader = true
-        setTimeout(() => {this.loader = false}, 1000)
-      }
-    },
+    async guardar() {
+          if(this.$refs.form.validate()){
+            if(this.validarPorcentaje()){
+                await this.guardarProyecto()  // Inserta el proyecto guardado al cliente
+              }
+          }
+        },
+
     //Guardado del proyecto. Realiza una validacion si existe el proyecto en la lista de proyectos de vuex
     //Luego guarda el proyecto y lo pide nuevamente para poder obtener la Key del proyecto
     async guardarProyecto() {
-      var proyectoGuardado = this.proyecto.Proyecto_Codigo
-      var proyectoDescripcion= this.proyecto.Proyecto_Descripcion
-      if(this.$store.state.cliente[0].Proyectos.some(proyecto => proyecto.Proyecto_Codigo == proyectoGuardado ||
-      proyecto.Proyecto_Descripcion == proyectoDescripcion)){
-        alert('El proyecto ya existe para el cliente seleccionado')
-        throw new Error('Proyecto existe')
-      } else {
-        var responsable = this.proyecto.Proyecto_Responsable
-        var tipoDescripcion = this.proyecto.Proyecto_Tipo
-        var tipoBeneficio = this.proyecto.Tipo.Proyecto_Tipo_Beneficio
-        this.assignKeys();
-        this.proyecto.Usuario_Creacion = localStorage.usuario_id
-        this.proyecto.Usuario_Modificacion = localStorage.usuario_id
-        this.proyecto.Visible = 'X'
-        await axios.post(ip+"/proyectos", this.proyecto)
-        .then((response) => {
-          alert('El proyecto se ha guardado')
-        });
-        await axios.get(ip+"/proyectos/"+ proyectoGuardado)
-          .then((response) => {
-            var proyectoParaGuardarEnState = response.data
-            this.$store.state.ProyectoKey = response.data.Proyecto_Key
-            
-            proyectoParaGuardarEnState.Tipo = {Proyecto_Tipo_Descripcion: tipoDescripcion,
-                                              Proyecto_Tipo_Beneficio: tipoBeneficio}
-            proyectoParaGuardarEnState.Responsable = {Usuario_Nombre_Completo: responsable}
-            this.$store.state.cliente[0].Proyectos.push(proyectoParaGuardarEnState) // Inserta el proyecto guardado al cliente
-            this.$store.state.proyecto = [proyectoParaGuardarEnState] // Inserta el proyecto guardado al cliente      
-            this.proyectoFueGuardado = true
-          })
-        }
-    },
+      this.loader = true
+      axios.get(ip+"/proyectos/client/"+this.proyecto.Proyecto_Cliente).then(response => {
+            this.proyectos = response.data
+          }).then((response) => {
+            var proyectoGuardado = this.proyecto.Proyecto_Codigo
+            if(this.proyectos.some(item => item.Proyecto_Codigo === this.proyecto.Proyecto_Codigo || item.Proyecto_Descripcion ===  this.proyecto.Proyecto_Descripcion)){
+              alert('El proyecto ya existe para el cliente seleccionado')
+              throw new Error('Proyecto existe')
+            } else {
+              var responsable = this.proyecto.Proyecto_Responsable
+              var tipoDescripcion = this.proyecto.Proyecto_Tipo
+              var tipoBeneficio = this.proyecto.Tipo.Proyecto_Tipo_Beneficio
+              this.assignKeys();
+              this.proyecto.Usuario_Creacion = localStorage.usuario_id
+              this.proyecto.Usuario_Modificacion = localStorage.usuario_id
+              this.proyecto.Visible = 'X'
+               axios.post(ip+"/proyectos", this.proyecto)
+              .then((response) => {
+                alert('El proyecto se ha guardado')
+                axios.get(ip+"/proyectos/"+ proyectoGuardado)
+                .then((response) => {
+                  var proyectoParaGuardarEnState = response.data
+                  this.$store.state.ProyectoKey = response.data.Proyecto_Key
+                  proyectoParaGuardarEnState.Tipo = {Proyecto_Tipo_Descripcion: tipoDescripcion,
+                                                    Proyecto_Tipo_Beneficio: tipoBeneficio}
+                  proyectoParaGuardarEnState.Responsable = {Usuario_Nombre_Completo: responsable}
+                  this.$store.state.proyecto = [proyectoParaGuardarEnState] // Inserta el proyecto guardado al cliente      
+                  this.guardarTecnologias() // guarda las tecnologias en la base
+
+                  setTimeout(() => {
+                                this.loader = false
+                                this.rollback()}, 500)
+                })
+              });
+              }
+            })
+      	  },
+
+
+
     //Guarda tecnologias
     guardarTecnologias(){
           // Obtener tecnologías creadas
@@ -494,19 +497,24 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
           if (tecnologiasAGuardar.length > 0){
             for(let i = 0; i< tecnologiasAGuardar.length; i++){        
               tecnologiasAGuardar[i].Usuario_Creacion = localStorage.usuario_id
+              tecnologiasAGuardar[i].Proyecto_Tecnologia_Proyecto = this.$store.state.ProyectoKey
               axios.post(ip+"/Proyectos_Tecnologias", tecnologiasAGuardar[i])
             }
           }
         },
+
+
     //Este metodo recorre la lista de tecnologias evaluando sus porcentajes, si se pasa del 100 emite alerta
     //si no llega al 100 tambien.
     validarPorcentaje(){
           if(this.$store.state.Tecnologias.length > 0){
             var tecnologias = this.$store.state.Tecnologias
+
             let contador = 0
             let flag = false
+
             for (let tecnologia of tecnologias){
-              contador = contador + tecnologia.Proyecto_Tecnologia_Porcentaje
+              contador = contador + parseInt(tecnologia.Proyecto_Tecnologia_Porcentaje)
             }
             if (contador > 100){
               alert('El porcentaje de tecnologías supera el 100%')
@@ -516,7 +524,9 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
               return flag
             } else return flag = true
           } else return true
+
         },
+
     rollback(){
       this.$store.state.proyecto[0] = {}
       if(this.$store.state.clienteTipo == 0){
@@ -579,12 +589,14 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         this.responsables = response.data;
         });
       },
+
       // VENDEDORES con usuario Sin Asignar
       loadVendedores(){
         axios.get(ip+"/colaboradores/vendedores/"+2).then((response) => {
           this.vendedores = response.data;
           });
       },
+
     //Asigna descripciones para mostrar en los combos
     asignarDescripciones(){
       var desUnidad_Negocio = this.unidades_Negocio.filter(unidad_negocio => unidad_negocio.Unidad_Negocio_Key == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Descripcion
@@ -601,6 +613,10 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       this.proyecto.Proyecto_Responsable = responsable.Usuario.Usuario_Nombre_Completo
       const vendedor = this.vendedores.find(obj => obj.Colaborador_Usuario === this.proyecto.Proyecto_Vendedor);
       this.proyecto.Proyecto_Vendedor = vendedor.Usuario.Usuario_Nombre_Completo
+      if((this.proyecto.Proyecto_Moneda) == null){
+        this.proyecto.Proyecto_Moneda = 'N/A'
+      }
+
     },
     //Asigna la key a la tecnologia brindada
     asignarKey(tecnologia){
@@ -613,10 +629,23 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
           unidad_negocio.Unidad_Negocio_Descripcion == this.proyecto.Proyecto_Unidad_Negocio)[0].Unidad_Negocio_Key;
       var keyAlcance = this.alcances.filter((alcance) =>
           alcance.Proyecto_Alcance_Descripcion == this.proyecto.Proyecto_Alcance)[0].Proyecto_Alcance_Key;
+        
+
       var keyTipoProyecto = this.proyectos_tipos.filter((tipo) =>
           tipo.Proyecto_Tipo_Descripcion == this.proyecto.Proyecto_Tipo)[0].Proyecto_Tipo_Key;
-      var keyMoneda = this.monedas.filter((moneda) => 
+
+      if((this.proyecto.Proyecto_Moneda) == null){
+        var keyMoneda = 6
+      }
+      else{
+        var keyMoneda = this.monedas.filter((moneda) => 
           moneda.Moneda_Codigo == this.proyecto.Proyecto_Moneda)[0].Moneda_Key;
+      }
+
+      if(this.proyecto.Ceco_Key == null){
+        this.proyecto.Ceco_Key = 1
+      }
+      
       this.proyecto.Proyecto_Unidad_Negocio = keyUnidad_Negocio;
       this.proyecto.Proyecto_Facturable = this.asignarFacturable();
       this.proyecto.Proyecto_Newsletter = this.asignarNewsletter();
