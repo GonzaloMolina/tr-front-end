@@ -172,37 +172,31 @@ const ip = require('../../../ip/ip')
           return true
         }
       },
-      //nueva funcion para dar de baja a los usuarios 
-      async enableorunable(colab){
-      
-      //var colab =  this.desserts.indexOf(colab)
-      
-      if(colab.Usuario_Habilitado == 'X'){
-        var noVisible = {
-          Usuario_Habilitado:'',
-          Visible: '',
-          Colaborador_Estado: 2}
-        await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, noVisible)
+
+      async enableorunable(colaborator){
+        colaborator.Usuario_Modificacion = parseInt(localStorage.usuario_id)
+
+          if(colaborator.Usuario_Habilitado == 'X'){
+              colaborator.Visible = '';
+              colaborator.Usuario_Habilitado = '';
+              colaborator.Colaborador_Estado = 2;
+              await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.Usuario_Key, colaborator)
           .then((response) => {
-           
-      
-        })
-        
-      } else {
-        var visible = {
-            Usuario_Habilitado:'X',
-            Visible: 'X',
-            Colaborador_Estado: 1}
-        await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colab.Usuario_Key, visible)
+            alert('Colaborador y Usuario Actualizados')
+            this.initialize()  
+        }) 
+          } else {
+              colaborator.Visible = 'X';
+              colaborator.Usuario_Habilitado = 'X';
+              colaborator.Colaborador_Estado = 1;
+              await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.Usuario_Key, colaborator)
           .then((response) => {
-            
-            
-        })
-      }
-      alert('Colaborador Actualizado')
-      this.initialize()
-      
-      },
+            alert('Colaborador y Usuario Actualizados')
+            this.initialize()  
+        }) 
+          }
+
+    },
       
       async sendUsuario(item){
         this.$store.state.usuario_id = item.Usuario_Key;

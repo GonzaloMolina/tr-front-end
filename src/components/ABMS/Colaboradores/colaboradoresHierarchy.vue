@@ -1,7 +1,7 @@
 <template>
 
   <div  style="height: 100%; width: auto;">
-    
+    <loader :loader="loader" style="position: fixed;"/>
        <div class="example-wrapper" style="">
            <div style="margin-bottom: 5px; ">
                <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filtro..." v-on:input="onFilterTextBoxChanged()">
@@ -32,6 +32,7 @@
 
 
 <script>
+import loader from '../../Estado/loader'
 import axios from "axios";
 import 'ag-grid-enterprise';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -55,6 +56,7 @@ return {
  columnApi: null,
  disableEditar : false,
  horas_user: "",
+ loader: true,
  defaultColDef: {
    flex: 1,
  },
@@ -62,11 +64,7 @@ return {
  rowData: [],
  groupDefaultExpanded: null,
  getDataPath: null,
- async loadColaboradores(){
-   await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
-   this.rowData = response.data;
- })
-}, 
+
 };
 
 },
@@ -108,6 +106,13 @@ this.getDataPath = (data) => {
 };
 },
 methods: {
+
+async loadColaboradores(){
+   await axios.get(ip+"/colaboradores/listadojerarquia/76").then((response) => {
+   this.rowData = response.data;
+ })
+}, 
+
 onFilterTextBoxChanged() {
  this.gridApi.setQuickFilter(
    document.getElementById('filter-text-box').value
@@ -126,6 +131,7 @@ onGridReady(params) {
  this.gridColumnApi.setColumnVisible('CECO', false)
 },
 async editColab(){
+  this.loader = true; 
 let colaborator = this.gridApi.getSelectedRows()[0]
 await this.getHoras(colaborator.usuario)
 if( this.horas_user === null ) {  this.horas_user = 0}
@@ -172,34 +178,24 @@ btnEditarPermisoAccion(){
 async enableorunable(){
  var colaborator = this.gridApi.getSelectedRows()[0]
 
- if(colaborator.visible == 'X'){
-   var noVisible = {
-     Usuario_Habilitado:'',
-     Visible: '',
-     Colaborador_Estado: 2}
-   await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, noVisible)
-     .then((response) => {
-       this.disableEditar = true
-       this.loadColaboradores()
-       this.gridApi.showLoadingOverlay()
-       
-       this.disableEditar = false
- 
-   })
-   
+ if(colaborator.Visible == 'X'){
+    colaborator.Visible = '';
+    colaborator.Usuario_Habilitado = '';
+    colaborator.Colaborador_Estado = 2;
  } else {
-   var visible = {
-       Usuario_Habilitado:'X',
-       Visible: 'X',
-       Colaborador_Estado: 1}
-   await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, visible)
+    colaborator.Visible = 'X';
+    colaborator.Usuario_Habilitado = 'X';
+    colaborator.Colaborador_Estado = 1;
+ }
+
+ await axios.patch(ip+"/colaboradores/enableorunablecolaboratoranduser/"+colaborator.usuario, colaborator)
      .then((response) => {
        this.disableEditar = true
        this.loadColaboradores()
-       this.gridApi.showLoadingOverlay()   
-       this.disableEditar = false    
-   })
- }
+       this.gridApi.showLoadingOverlay() 
+       this.disableEditar = false
+   }) 
+
  alert('Colaborador Actualizado')
 }
 

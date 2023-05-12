@@ -2,18 +2,18 @@
     <v-content>
         <v-container>
             <loader :loader="loader" style="position: fixed;"/>
-            <div v-if="!loader && permisoLecturaTeconologia()">
+            <div v-if="!loader && permisoCreacionPuesto()">
             <div class="alert alert-primary mt-3" role="alert" style="display: none;">
-                Se han guardado los cambios.
+                Se ha creado un nuevo puesto.
             </div>
             <b-form-row>
                 <b-col cols="9">
-                    <h5>Editar tecnología:</h5>
-                    <h2>{{tecnologia.Tecnologia_Descripcion}}</h2>
+                    <h5>Editar Puesto:</h5>
+                    <h2>{{puesto.Colaborador_Puesto_Descripcion}}</h2>
                 </b-col>
                 <b-col cols="3" class="d-flex justify-content-end">
                     <div class="button-group">
-                        <v-btn  v-if="permisoEscrituraTecnologia()" :disabled="!isFormValid" @click="save()" color="#2991C6" dark class="mr-0">Guardar</v-btn> 
+                        <v-btn  v-if="permisoCreacionPuesto()" :disabled="!isFormValid" @click="save()" color="#2991C6" dark class="mr-0">Guardar</v-btn> 
                         <v-btn  @click="dialogCancelar = true"  color="#ffa025" dark class="ml-2">Volver</v-btn>
                     </div>
                 </b-col>
@@ -21,55 +21,59 @@
                 <v-card outlined tile>
                     <v-form ref="form">
                         <b-form-row class="ml-1 mr-1 mt-2">
-                            <b-col cols="2">
+                            <b-col cols="4">
                                 <v-text-field
+                                type="number"
                                 outlined
                                 dense
-                                v-model="tecnologia.Tecnologia_Codigo"
+                                v-model="puesto.Colaborador_Puesto_Codigo"
                                 label="Código"
                                 placeholder="Escribe..."
                                 :disabled="isFormDisabled"
-                                :rules="[rules.checkEmpty,rules.checkCode, rules.counterCodigo]"
+                                :rules="[rules.checkEmpty,rules.checkCode, rules.counterCodigo, rules.checkIfCodeExists]"
                             ></v-text-field>
                             </b-col>
-                            <b-col cols="6">
+                            <b-col cols="8">
                                 <v-text-field
                                 outlined
                                 dense
-                                v-model="tecnologia.Tecnologia_Descripcion"
+                                v-model="puesto.Colaborador_Puesto_Descripcion"
                                 label="Descripción"
                                 placeholder="Escribe..."
                                 :disabled="isFormDisabled"
-                                :rules="[rules.counterDescripcion, rules.checkEmpty]"
+                                :rules="[rules.counterDescripcion, rules.checkEmpty, rules.checkIfDescExists]"
                             ></v-text-field>
-                            </b-col>
-                            <b-col cols="4">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    v-model="tecnologia.Tecnologia_Proveedor"
-                                    label="Proveedor"
-                                    placeholder="Escribe..."
-                                    :disabled="isFormDisabled"
-                                    :rules="[rules.checkEmpty]"
-                                ></v-text-field>
                             </b-col>
                         </b-form-row>
                         <b-form-row class="ml-1 mr-1 mt-n5">
-                            <b-col cols="4">
+                            <b-col cols="6">
                                 <v-autocomplete
                                 dense
                                 outlined
-                                v-model="tecnologia.Tipo"
-                                :items="tipos"
-                                :return-object="true"
-                                label="Tipo"
-                                item-text="Tipo_Tecnologia_Descripcion"
+                                v-model="puesto.Padre"
+                                :items="puestos"
+                                label="Padre"
                                 :disabled="isFormDisabled"
+                                :return-object="true" 
+                                item-text="Colaborador_Puesto_Descripcion"
                                 :rules="[rules.checkSelection]"
                                 >
                                 </v-autocomplete>
                             </b-col>
+                            <b-col cols="6">
+                                <v-combobox
+                                dense
+                                outlined
+                                v-model="puesto.Colaborador_Puesto_Skill"                            
+                                :items="skills"
+                                label="Skill"
+                                :disabled="isFormDisabled"
+                                :rules="[rules.checkSelection]"
+                                >
+                                </v-combobox>
+                            </b-col>
+                        </b-form-row>
+                        <b-form-row class="ml-1 mr-1 mt-n5">
                             <b-col>
                                 <v-textarea
                                 outlined
@@ -78,17 +82,18 @@
                                 filled
                                 color="black"
                                 label="Observaciones"
-                                v-model="tecnologia.Tecnologia_Observacion"
+                                v-model="puesto.Colaborador_Puesto_Observacion"
                                 :counter="3000"
                                 placeholder="Escribe.."
                                 rows="1"
                                 :disabled="isFormDisabled"
                                 ></v-textarea> 
                             </b-col>
+
                         </b-form-row>
                     </v-form>
                 </v-card>
-                <v-dialog v-model="dialogCancelar" width="500px" height="10rem" v-if="permisoEscrituraTecnologia()">
+                <v-dialog v-model="dialogCancelar" width="500px" height="10rem">
                     <v-card>
                         <v-toolbar dark color="#2991C6" height="30rem">
                         <v-icon color="#ffa025" style="text-shadow: 1px 1px 2px black; position:absolute; left:38%">mdi-alert</v-icon>
@@ -119,32 +124,43 @@
     components: {loader},
     data() {
       return{
-        tecnologia: {Usuario_Modificacion: null},
+        puesto: {},
         tipos: [],
+        puestos: [],
+        skills: [],
         loader: true,
         dialogCancelar: false,
         isFormDisabled: false, 
-        isFormValid: true,
+        isFormValid: false,
+        newGrupo: " ",
         rules: {
             checkCode: checkCode,
             counterCodigo: counterCodigo,
             counterDescripcion: counterDescripcion,
             checkEmpty: isFieldEmpty,
-            checkSelection: isNotSelected
+            checkSelection: isNotSelected,
+            checkIfCodeExists: (value) => {
+                const exists = this.puestos.some((item) => item.Colaborador_Puesto_Codigo === value);
+                    return exists ? "El código ya existe" : true;
+            },
+            checkIfDescExists: (value) => {
+                const exists = this.puestos.some((item) => item.Colaborador_Puesto_Descripcion === value);
+                    return exists ? "Ya existe un puesto con esta descripción" : true;
+            }
         },
      };
     },
     watch: {
-        tecnologia: {
+        puesto: {
         handler: 'validateForm',
         deep: true,
         immediate: false,
         include: [
-            'Tecnologia_Codigo',
-            'Tecnologia_Descripcion',
-            'Tecnologia_Proveedor',
-            'Tipo',
-            'Tecnologia_Observacion',
+            'Colaborador_Puesto_Codigo',
+            'Colaborador_Puesto_Descripcion',
+            'Padre',
+            'Colaborador_Puesto_Skill',
+            'Colaborador_Puesto_Observacion',
         ]
      }
     },
@@ -153,35 +169,42 @@
     },
     methods: {
         initialize(){
-            axios.get(ip+"/tecnologias/"+ this.$route.params.id).then((response) => {
-                this.tecnologia=response.data
-                this.loader = false});
-            this.getTecnologiastipos()
+            this.getPuestos();
+            this.getSkills();
+            this.loader = false
         },
 
-        getTecnologiastipos(){
-            axios.get(ip+"/tipos_tecnologias/activos").then((response) => {
-                this.tipos = response.data
+        getPuestos(){
+            axios.get(ip+"/colaboradores_puestos/").then(response => {
+                this.puestos = response.data
             })
-        }, 
+        },
+
+
+        getSkills(){
+            axios.get(ip+"/colaboradores_puestos/skills").then((response) => {
+                 this.skills = [...new Set(response.data.map((item) => item.DISTINCT))];
+            });
+        },
 
         cancelEdit(){
-            this.$router.push({path:'/tecnologias'})
+            this.$router.push({path:'/puestos'})
         },
 
         save(){
-            this.tecnologia.Usuario_Modificacion = parseInt(localStorage.usuario_id)
-            axios.patch(ip+"/tecnologias/"+this.tecnologia.Tecnologia_Key, this.tecnologia).then(
-                    this.showSuccessDialog()
+            this.puesto.Usuario_Modificacion = parseInt(localStorage.usuario_id)
+            axios.post(ip+"/colaboradores_puestos/", this.puesto).then(
+                    this.showSuccessDialog(),
                 )
         },
 
-        showSuccessDialog(){
+        showSuccessDialog(){      
             const alertElement = document.querySelector('.alert');
             this.isFormDisabled = true;
             alertElement.style.display = 'block';
             setTimeout(() => {
-                window.location.href = '/tecnologias';
+                this.loader = true
+                window.location.href = '/puestos';
             }, 1500);
         }, 
 
@@ -189,11 +212,9 @@
           this.isFormValid = this.$refs.form.validate()
         },
 
-        permisoLecturaTeconologia(){
-          return localStorage.Permisos.includes("P51")
-        },
-        permisoEscrituraTecnologia(){
-          return localStorage.Permisos.includes("P52")
+
+        permisoCreacionPuesto(){
+          return localStorage.Permisos.includes("P103")
         },
     }
   }

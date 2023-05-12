@@ -4,9 +4,9 @@
         <loader :loader="loader" style="position: fixed;"/>
         <div v-if="!loader && permisoLecturaTabla()">
             <v-toolbar color="white" elevation="1">
-                <v-toolbar-title>Tecnologías</v-toolbar-title>
-                <router-link to="/createTecnologia">
-                <v-btn class="ml-3" dark fab x-small color="#2991c6" v-if="permisoCreacionTecnologia()">
+                <v-toolbar-title>Regiones</v-toolbar-title>
+                <router-link to="/createRegion">
+                <v-btn class="ml-3" dark fab x-small color="#2991c6" v-if="permisoCreacionRegion()">
                   <v-icon dark>mdi-plus</v-icon>
                 </v-btn>
               </router-link>
@@ -15,18 +15,18 @@
             </v-toolbar>
             <v-data-table 
             :headers="headers"
-            :items="tecnologias"
+            :items="regiones"
             :footer-props="footerProps"
             :items-per-page="20"
             :search="search">
             <template v-slot:[`item.acciones`]="{ item }">
                 <b-row no-gutters>
                   <b-col v-if="permisoEscrituraTabla()" cols="8">
-                    <v-icon @click="disableTechnology(item)" v-b-tooltip.hover title="Desactivar" v-if="item.Visible == 'X'" dissa medium color="#2991c6">mdi-eye-off</v-icon>
-                    <v-icon @click="enableTechnology(item)" v-b-tooltip.hover title="Activar" v-else medium color="#2991c6">mdi-eye</v-icon>
+                    <v-icon @click="disableRegion(item)" v-b-tooltip.hover title="Desactivar" v-if="item.Visible == 'X'" dissa medium color="#2991c6">mdi-eye-off</v-icon>
+                    <v-icon @click="enableRegion(item)" v-b-tooltip.hover title="Activar" v-else medium color="#2991c6">mdi-eye</v-icon>
                   </b-col>
                   <b-col v-if="permisoLecturaTabla() || permisoEscrituraTabla()" cols="4">
-                    <v-icon @click="editTechnology(item)" v-b-tooltip.hover title="Editar" v-if="item.Visible == 'X'" medium color="#2991c6" style="margin-left: 1vw">mdi-pencil</v-icon>
+                    <v-icon @click="editRegion(item)" v-b-tooltip.hover title="Editar" v-if="item.Visible == 'X'" medium color="#2991c6" style="margin-left: 1vw">mdi-pencil</v-icon>
                     <v-icon v-b-tooltip.hover title="Activar para editar" v-if="item.Visible != 'X'" medium color="grey" style="margin-left: 1vw">mdi-pencil-off</v-icon>
                   </b-col>
                 </b-row>
@@ -51,16 +51,16 @@
       return {
         search: "",
         headers: [
-          { text: "Código", value: "Tecnologia_Codigo" },
-          { text: "Descripción", value: "Tecnologia_Descripcion" },
-          { text: "Proveedor", value: "Tecnologia_Proveedor" },
+          { text: "Código", value: "Region_Codigo" },
+          { text: "Descripción", value: "Region_Descripcion" },
+          { text: "Grupo", value: "Region_Agrupada.Region_Agrupada_Descripcion" },
           { text: "Activado", value: "Visible", align:"center"},
           { text: "Acciones", value: "acciones", align:"end" }
         ],
         footerProps: {'items-per-page-options': [7, 20,40, 60, 100, 200],
-                    'itemsPerPageText': 'Tecnologías por página:',},
+                    'itemsPerPageText': 'Regiones por página:',},
         
-        tecnologias: [],
+        proyectos: [],
         loader:true
       };
     }, 
@@ -69,40 +69,40 @@
     },
     methods: {
         initialize(){
-            axios.get(ip+"/tecnologias").then(response => {
-                this.tecnologias = response.data
+            axios.get(ip+"/regiones").then(response => {
+                this.regiones = response.data
                 this.loader = false;
             })
         }, 
 
-        enableTechnology(item){
+        enableRegion(item){
             item.Usuario_Modificacion = localStorage.usuario_id
             item.Visible = 'X'
-            axios.patch(ip+"/tecnologias/"+item.Tecnologia_Key, item)
+            axios.patch(ip+"/regiones/"+item.Region_Key, item)
         },
 
-        disableTechnology(item){
+        disableRegion(item){
             item.Usuario_Modificacion = localStorage.usuario_id
             item.Visible = null
-            axios.patch(ip+"/tecnologias/"+item.Tecnologia_Key, item)
+            axios.patch(ip+"/regiones/"+item.Region_Key, item)
         },
 
-        editTechnology(item){
-            this.$router.push({name: 'editTecnologia', params:{id: item.Tecnologia_Key}})
+        editRegion(item){
+            this.$router.push({name: 'editRegion', params:{id: item.Region_Key}})
         }, 
 
         //PERMISOS
         permisoLecturaTabla(){
-          return localStorage.Permisos.includes("P49")
+          return localStorage.Permisos.includes("P89")
         },
-        permisoLecturaTeconologia(){
-          return localStorage.Permisos.includes("P51")
+        permisoLecturaRegion(){
+          return localStorage.Permisos.includes("P91")
         },
         permisoEscrituraTabla(){
-          return localStorage.Permisos.includes("P50")
+          return localStorage.Permisos.includes("P90")
         },
-        permisoCreacionTecnologia(){
-          return localStorage.Permisos.includes("P53")
+        permisoCreacionRegion(){
+          return localStorage.Permisos.includes("P93")
         },
 
     }

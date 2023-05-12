@@ -2,15 +2,10 @@
   <v-content>
     <v-container fluid >
       <loader :loader="loader" style="position: fixed;"/>
-                <v-alert
-                :value="alert"
-                style="position: absolute;  left: 0; right: 0; top: -12px; text-align: center;"
-                top
-                dense
-                color="blue"
-                type="success"
-              > Se han guardado los cambios.
-              </v-alert>
+      <div v-if="!loader">
+        <div class="alert alert-primary mt-3" role="alert" style="display: none;">
+                Se guardaron los cambios.
+            </div>
           
           <b-form-row>
             <b-col class="col-9">
@@ -18,7 +13,7 @@
             </b-col>
             <b-col class="col-2 ">
               <b-row>
-              <v-btn @click="evalGuardar()" :disabled="!seguridadColaboradoresEditar()"  color="#2991C6" dark >Guardar</v-btn>
+              <v-btn @click="guardar()" :disabled="!seguridadColaboradoresEditar()"  color="#2991C6" dark >Guardar</v-btn>
               <v-btn @click="back()" :disabled="!seguridadColaboradoresLeer()"   color="#ffa025" dark class="ml-3">Volver</v-btn>
               </b-row>
             </b-col>             
@@ -35,7 +30,8 @@
                   v-model="colaborador.Colaborador_Codigo"
                   label="Código"
                   placeholder="Escribe..."
-                  style="margin-top:1rem">
+                  style="margin-top:1rem"
+                  :rules="[rules.checkEmpty, rules.checkIfCodeExists]">
                 </v-text-field>
               </b-col>
               <b-col>
@@ -46,7 +42,8 @@
                   v-model="colaborador.Colaborador_Descripcion"
                   label="Nombre Completo"
                   placeholder="Escribe..."
-                  style="margin-top:1rem">
+                  style="margin-top:1rem"
+                  :rules="[rules.checkEmpty]">
                 </v-text-field>
               </b-col>
               <b-col>
@@ -54,10 +51,13 @@
                   dense
                   :disabled="!seguridadColaboradoresEditar()"
                   outlined
-                  v-model="colaborador.Colaborador_Usuario"
-                  :items="usuarioCodigos"
+                  v-model="colaborador.Usuario"
+                  :items="usuarios"
                   label="Usuario Asociado"
-                  style="margin-top:1rem">
+                  style="margin-top:1rem"
+                  item-text="Usuario_Codigo"
+                  :return-object="true"
+                  :rules="[rules.checkSelection, rules.checkIfUserExists]">
                 </v-autocomplete>
               </b-col>
               <b-col>
@@ -65,10 +65,12 @@
                   dense
                   :disabled="!seguridadColaboradoresEditar()"
                   outlined
-                  v-model="colaborador.Colaborador_Responsable"
-                  :items="colaboradoresDescripciones"
+                  v-model="colaborador.Responsable"
+                  :items="colaboradores"
                   label="Responsable"
-                  style="margin-top:1rem">
+                  style="margin-top:1rem"
+                  item-text="Colaborador_Descripcion"
+                  :return-object="true">
                 </v-autocomplete>
               </b-col>          
           </b-form-row>
@@ -79,58 +81,66 @@
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Region"
-                :items="regionesDescripciones"
+                v-model="colaborador.Region"
+                :items="regiones"
                 label="Región"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Region_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
-            <b-col class="col-3">
+                 <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Calendario"
-                :items="calendariosDescripciones"
+                v-model="colaborador.Calendario"
+                :items="calendarios"
                 label="Calendario"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Calendario_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
-            <b-col class="col-3">
+             <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Area"
-                :items="colaboradoresAreasDescripciones"
+                v-model="colaborador.Area"
+                :items="colaboradoresAreas"
                 label="Área"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Colaborador_Area_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
-            <b-col class="col-3">
+              <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Ceco"
-                :items="Cecoitems"
-                item-text="ceco"
-                item-value="cod"
+                v-model="colaborador.Ceco"
+                :items="cecos"
                 label="Ceco"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Ceco_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
           </b-form-row>
-          <b-form-row class="ml-1 mr-1 mt-n6">
+        <b-form-row class="ml-1 mr-1 mt-n6">
             <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Puesto"
-                :items="colaboradoresPuestosDescripciones"
+                v-model="colaborador.Puesto"
+                :items="colaboradoresPuestos"
                 label="Puesto"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Colaborador_Puesto_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
             <b-col class="col-3">
@@ -138,33 +148,37 @@
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Categoria"
-                :items="Catitems"
-                item-text="cat"
-                item-value="cod"
+                v-model="colaborador.Categoria"
+                :items="categorias"
                 label="Categoría"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Colaborador_Categoria_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
-            <b-col class="col-3">
+       <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Tipo"
-                :items="tiposDescripciones"
+                v-model="colaborador.Tipo"
+                :items="tipos"
                 label="Tipo"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Tipo_Colaborador_Descripcion"
+                :return-object="true">
               </v-select>
             </b-col>
-            <b-col class="col-3">
+              <b-col class="col-3">
               <v-autocomplete
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Empresa"
-                :items="empresasDescripciones"
-                label="Empresa">
+                v-model="colaborador.Empresa"
+                :items="empresas"
+                label="Empresa"
+                item-text="Empresa_Descripcion"
+                :return-object="true">
               </v-autocomplete>
             </b-col>
           </b-form-row>
@@ -173,27 +187,27 @@
               <v-text-field
                 :disabled="!seguridadColaboradoresEditar()"
                 label="Horas Diarias"
-                v-model="colaborador_hora"
+                v-model="colaborador.Horas.Colaborador_Hora_Dia"
                 type="number"
                 outlined
                 min="0"
                 dense>
               </v-text-field>
             </b-col>
-            <b-col class="col-3">
+             <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
                 outlined
-                v-model="colaborador.Colaborador_Unidad_Negocio"
-                :items="[{un:'No aplica', cod:1}, {un:'SAP', cod:2},{un:'SDM', cod:3}, {un:'Tableau', cod:4}, {un:'Volume Distributor', cod:5}, {un:'Nuvol', cod:6}, {un:'Soluciones Cloud', cod:7}, {un:'Innovación', cod:8}]"
-                item-text="un"
-                item-value="cod"
+                v-model="colaborador.Unidad_Negocio"
+                :items="unidadesNegocio"
                 label="Unidad de Negocio"
-                placeholder="Selecciona...">
+                placeholder="Selecciona..."
+                item-text="Unidad_Negocio_Descripcion"
+                :return-object="true">>
               </v-select>
             </b-col>
-            <b-col class="col-3">
+          <b-col class="col-3">
               <v-select
                 dense
                 :disabled="!seguridadColaboradoresEditar()"
@@ -206,13 +220,13 @@
                 placeholder="Selecciona...">
               </v-select>
             </b-col>
-            <b-col>
+               <b-col>
               <v-text-field
                 :disabled="!seguridadColaboradoresEditar()"
                 label="ID Externo"
                 v-model="colaborador.Colaborador_ID_Externo"
                 outlined
-                placeholder="Escribe..."
+                placeholder="Sin asignar"
                 dense>
               </v-text-field>
             </b-col>
@@ -232,7 +246,7 @@
                 max-length="1000"
               ></v-textarea>
             </b-col>
-            <b-col class="col-4 ml-10">    
+          <b-col class="col-4 ml-10">    
               <b-row class="mt-1 mb-3">            
                 <h6 class="mr-3 mt-2" >Habilitar/Deshabilitar</h6>
                     <v-switch 
@@ -242,20 +256,20 @@
                       inset
                     ></v-switch>
               </b-row>
-              <b-row class="mt-n3">
+             <b-row class="mt-n3">
                 <v-select
-                    v-model="colaborador.Colaborador_Funciones"
+                    v-model="colaborador.Funciones"
                     :items="this.funciones"
-                    item-text="name"
-                    item-value="id"
                     chips
                     label="Funciones Asignadas"
                     placeholder="El colaborador no tiene funciones asignadas"
                     multiple
                     outlined
+                    item-text="Funcion_Descripcion"
+                  :return-object="true"
               ></v-select>
-              </b-row>
-            </b-col>         
+              </b-row> 
+            </b-col>       
           </b-form-row> 
             </v-form>         
           </v-card>
@@ -295,6 +309,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+      </div>
     </v-container>
   </v-content>
 </template>
@@ -334,9 +349,10 @@
 
 <script>
 import axios from "axios";
-import { runInThisContext } from "vm";
 import loader from '../../Estado/loader'
+import {isFieldEmpty, isNotSelected} from '../../../validations/validations'
 const ip = require('../../../ip/ip')
+
 export default {
   name: "editColaborador",
   props: {
@@ -345,107 +361,62 @@ export default {
   components: {loader
               },
   data: () => ({
-    // Enums para Ceco y Categoria
-    Cecoitems: [
-          { ceco: 'No Aplica', cod: 1 },
-          { ceco: 'Administracion', cod: 2 },
-          { ceco: 'Preventa', cod: 3 },
-          { ceco: 'Comercial', cod: 4 },
-          { ceco: 'Controlling', cod: 5 },
-          { ceco: 'IT', cod: 6 },
-          { ceco: 'RRHH', cod: 7 },
-          { ceco: 'Estructura', cod: 8 },
-          { ceco: 'Marketing', cod: 9 },
-          { ceco: 'Consultoria', cod: 10 },
-          { ceco: 'Innovacion', cod: 11 },
-        ],
-    
- 
-    Catitems: [
-          { cat: 'Gerente', cod: 1 },
-          { cat: 'Lider', cod: 2 },
-          { cat: 'Consultor', cod: 3 },
-          { cat: 'Analista', cod: 4 },
-          { cat: 'Preventa', cod: 5 },
-          { cat: 'No aplica', cod: 6 },
-          { cat:'Trainee', cod: 7}
-  ],
-    
-              
-    Unitems: [
-      {un:'No aplica', cod:1},
-      {un:'SAP', cod:2},
-      {un:'SDM', cod:3}, 
-      {un:'Tableau', cod:4}, 
-      {un:'Volume Distributor', cod:5}, 
-      {un:'Nuvol', cod:6}, 
-      {un:'Soluciones Cloud', cod:7}, 
-      {un:'Innovación', cod:8}
-    ],
-          
-    codigoViejo: '',
-    //Reglas de agregado y editado
-    //Elemento que se va a guardar con el UPDATE
-    selected : [],
-    colaborador: {
-        Colaborador_Codigo: '',
-        Colaborador_Descripcion: '',
-        Colaborador_Usuario: '',
-        Colaborador_Tipo: '',
-        Colaborador_Responsable: '',
-        Colaborador_Region: '',
-        Colaborador_Puesto: '',
-        Colaborador_Calendario: '',
-        Colaborador_Area: '',
-        Colaborador_Empresa: '',
-        Colaborador_Funcion : 'no aplica',
-        Colaborador_Hora: 0,
-        Usuario_Creacion: 1,
-        Colaborador_Ceco: '',
-        Colaborador_Categoria: '',
-        Colaborador_Estado: '',
-        Colaborador_Unidad_Negocio: '',
-        Colaborador_ID_Externo: '',
-        Colaborador_Observacion: '',
-    },
-    usuarioCodigos : [],
-    originalCodigo: "",
-    originalKeyUser: 0,
-    colaboradoresCodigos: [],
-    colaboradores:[],
-    colaboradoresDescripciones: [],
-    empresas: [],
-    empresasDescripciones: [],
-    regiones: [],
-    regionesDescripciones: [],
-    calendarios: [],
-    calendariosDescripciones: [],
-    colaboradoresAreas: [],
-    colaboradoresAreasDescripciones: [],
-    colaboradoresPuestos: [],
-    colaboradoresPuestosDescripciones: [],
-    colaborador_hora: 0,
-    responsables:[],
-    responsablesDescripciones: [],
+
+    colaborador: {},
     usuarios: [],
-    usuariosDescripciones: [],
-    tipos: [],
-    tiposDescripciones: [],
-    funciones: [],
-    funcionesDescripciones: [],
+    colaboradores: [],
+    regiones: [],
+    calendarios:[],
+    colaboradoresAreas:[],
+    cecos: [],
+    colaboradoresPuestos:[],
+    categorias:[],
+    tipos:[],
+    empresas:[],
+    unidadesNegocio:[],
+    funciones:[],
+    funcionesOriginales:[],
+    responsables: [],
+    actualCode: null,
+    actualUser:null, 
     dialogGuardar: false,
     alert: false,
     dialogCancelar: false,
     loader: true,
     switch1: false,
-    isloading: false
+    isloading: false,
     }),
+
+    watch: {
+        colaborador: {
+        handler: 'validateForm',
+        deep: true,
+        immediate: false,
+        include: [
+            'Colaborador_Codigo',
+            'Colaborador_Descripcion',
+            'Usuario',
+        ]
+     }
+    },
   
   //Ciclo de vida del componente
   created(){
       this.initialize();
   },
   mounted() {
+      this.rules = {
+            checkEmpty: isFieldEmpty,
+            checkSelection: isNotSelected,
+            checkIfCodeExists: (value) => {
+                const exists = this.colaboradores.some((item) => item.Colaborador_Codigo === value && item.Colaborador_Codigo != this.actualCode);
+                return exists ? "El código ya existe" : true;
+            },
+            checkIfUserExists: (value) => {
+                const exists = this.colaboradores.some((item) => item.Colaborador_Usuario === value.Usuario_Key && item.Colaborador_Usuario != this.actualUser);
+                return exists ? "Ya existe un colaborador asociado a ese usuario" : true;
+            }
+        }
       if(!localStorage.login){
         this.$router.push("/login");
       }
@@ -453,19 +424,8 @@ export default {
 //Definicion de metodos 
   methods: {
     async initialize(){
-      await      this.loadUsuarios()
-      await     this.loadEmpresas()
-      await     this.loadRegions()
-      await     this.loadCalendars()
-      await    this.loadColaboradoresTipos()
-      await   this.loadColaboradoresAreas()
-      await      this.loadColaboradoresPuestos()
-      await this.loadColaboradores()
-      await this.loadColaboradoresFunciones()
-      
-      this.asignarDescripciones();
-      this.asignarFunciones()
-      this.loader = false
+      this.loadColaborador()
+      this.loadColaboradores()
     },
     
     async wait(time) {
@@ -475,172 +435,133 @@ export default {
         }, time);
       })
     },
+    
+    validateForm() {
+          this.isFormValid = this.$refs.form.validate()
+        },    
+
+    loadColaborador(){
+      axios.get(ip+"/colaboradores/colaborador/"+ this.$store.state.colaborador.id).then((response) => {
+                this.colaborador = response.data
+                this.getHorasColaborador()
+                this.getVisibleColaborador()   
+                this.actualCode = this.colaborador.Colaborador_Codigo,
+                this.actualUser = this.colaborador.Colaborador_Usuario,           
+                this.loadUsuarios()
+                this.loadRegions()
+                this.loadCalendars()
+                this.loadColaboradoresAreas()
+                this.loadCecos()   
+                this.loadColaboradoresPuestos()    
+                this.loadCategorias()
+                this.loadColaboradoresTipos()
+                this.loadEmpresas()
+                this.loadUnidadesDeNegocio()
+                this.loadColaboradoresFunciones()
+      });
+
+    },
+
+    loadUsuarios(){
+        axios.get(ip+"/usuarios/enabled/"+this.colaborador.Usuario.Usuario_Key).then((response) => {
+        this.usuarios = response.data;
+      })
+    },
+
+
     async loadColaboradores(){
         this.isloading = true
         await axios.get(ip+"/colaboradores").then((response) => {
-        this.colaboradores = response.data;
-        this.colaboradoresFiltrado = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key != this.$store.state.colaborador.id).filter(colaborador => colaborador.Visible === 'X')
-        this.colaboradoresCodigos = _.cloneDeep(this.colaboradoresFiltrado.map(colaborador => colaborador.Colaborador_Codigo))
-        
-        this.colaboradoresDescripciones = this.colaboradoresFiltrado.map(
-          (colaborador) => colaborador.Colaborador_Descripcion
-        ).sort()
+          this.colaboradores = response.data
+          this.colaborador.Responsable = this.colaboradores.find((c) => this.colaborador.Colaborador_Responsable === c.Colaborador_Key);
+
+          const index = this.colaboradores.findIndex(c => c.Colaborador_Key === this.colaborador.Colaborador_Key);
+          this.colaboradores.splice(index, 1);
         })       
-        this.isloading = false     
     },
-    async loadUsuarios(){
-      await axios.get(ip+"/usuarios").then((response) => {
-        this.usuarios = response.data;
-        this.usuariosFiltrado = this.usuarios.filter(usuario => usuario.Usuario_Habilitado === 'X')
-        this.usuarioCodigos = this.usuariosFiltrado.map((usuario) => usuario.Usuario_Mail).sort()
-        this.usuariosDescripciones = this.usuariosFiltrado.map(
-          (usuario) => usuario.Usuario_Codigo
-        ).sort();
+
+    getHorasColaborador(){
+      axios.get(ip+"/colaboradores_horas/"+this.colaborador.Usuario.Usuario_Key).then((response) => {
+        this.colaborador.Horas =  response.data
       })
     },
-    async loadEmpresas(){
-      await axios.get(ip+"/empresas").then((response) => {
-        this.empresas = response.data;
-        this.empresasFiltrado = this.empresas.filter(empresa => empresa.Visible === 'X')
-        this.empresasDescripciones = this.empresasFiltrado.map(
-          (empresa) => empresa.Empresa_Descripcion
-        ).sort();
-      })
+    
+    getVisibleColaborador(){
+        if(this.colaborador.Visible == 'X'){
+          this.switch1 = true
+        }
+        else{
+          this.switch1 = false
+        }
     },
+
     async loadRegions() {
-      await axios.get(ip+"/regiones/descripciones")
-        .then((response) => {
+      await axios.get(ip+"/regiones/enabled/"+this.colaborador.Region.Region_Key).then((response) => {
           this.regiones = response.data;
-          this.regionesDescripciones = response.data.map(
-            (region) => region.Region_Descripcion
-          ).sort();
         });
     },
+
     async loadCalendars() {
-      await axios.get(ip+"/calendarios/descripciones")
-        .then((response) => {
+      await axios.get(ip+"/calendarios/descripciones").then((response) => {
           this.calendarios = response.data;
-          this.calendariosDescripciones = response.data.map((calendario) => calendario.Calendario_Descripcion);
         });
       },
+
       async loadColaboradoresAreas() {
-        await axios.get(ip+"/colaboradores_areas/descripciones")
-          .then((response) => {
+        await axios.get(ip+"/colaboradores_areas/enabled/"+this.colaborador.Area.Colaborador_Area_Key).then((response) => {
             this.colaboradoresAreas = response.data;
-            this.colaboradoresAreasDescripciones = response.data.map((area) => area.Colaborador_Area_Descripcion);
           });
       },
+
+      async loadCecos(){
+        await axios.get(ip+"/ceco/enabled/"+this.colaborador.Ceco.Ceco_Key).then((response) => {
+            this.cecos = response.data;
+            
+          });
+      },
+
       async loadColaboradoresPuestos() {
-      await axios.get(ip+"/colaboradores_puestos/descripciones")
-        .then((response) => {
-          this.colaboradoresPuestos = response.data;
-          this.colaboradoresPuestosDescripciones = response.data.map((puesto) => puesto.Colaborador_Puesto_Descripcion);
-        });
+        await axios.get(ip+"/colaboradores_puestos/enabled/"+this.colaborador.Puesto.Colaborador_Puesto_Key).then((response) => {
+            this.colaboradoresPuestos = response.data;
+          });
       },
+
+      async loadCategorias() {
+        await axios.get(ip+"/colaboradores_categorias/enabled/"+this.colaborador.Categoria.Colaborador_Categoria_Key).then((response) => {
+            this.categorias = response.data;
+          });
+      },
+
       async loadColaboradoresTipos(){
-      await axios.get(ip+"/tipos_colaboradores/descripciones")
-        .then((response) => {
-          this.tipos = response.data;
-          this.tiposDescripciones = this.tipos.map((tipo) => tipo.Tipo_Colaborador_Descripcion);
-        });
+        await axios.get(ip+"/tipos_colaboradores/enabled/"+this.colaborador.Tipo.Tipo_Colaborador_Key).then((response) => {
+            this.tipos = response.data;
+          });
       },
-      async loadColaboradoresFunciones(){
-       await axios.get(ip+"/funciones/descripciones")
-        .then((response) => {
-          this.funciones = response.data;
-          this.funcionesDescripciones = response.data.map((funcion) => funcion.name);
-        });
-      },
-      evalGuardar() {
-          if(this.colaborador.Colaborador_Codigo != this.originalCodigo){
-            if(this.colaboradoresCodigos.includes(this.colaborador.Colaborador_Codigo)){
-              alert("El código ya existe")
-            } else{
-             
-              this.guardar()
-            }
-          } else this.guardar()
-     },
-      async guardar() {
-          await this.guardarHoras()
-          var newUserMail = {
-            Usuario_Mail : this.colaborador.Colaborador_Usuario
-          }
-          await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newUserMail).then((response) =>{
-          })
-          this.asignarKeys()
-          await this.guardarFunciones()
-          var newEstado = {Usuario_Habilitado : this.colaborador.Visible}         
-          await axios.patch(ip+"/usuarios/"+this.originalKeyUser, newEstado).then((response) =>{})
-          
-          await axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Usuario, this.colaborador)
-          .then((response) => {
-            this.alert = true
-            setTimeout(() => {this.alert = false
-             this.$router.push({path: "/colaboradoresHierarchy"})}, 2000)
-          })
-          .catch(err =>{
-            alert('No se ha podido actualizar. El Cliente ya existe')
-            this.asignarDescripciones()
-            throw new Error('El colaborador ya existe')
-          })
-      },
-      async deleteFunciones(){
-        if(this.colaborador.Funcion.length > 0){
-        await axios.delete(ip+'/colaboradores_funciones/'+this.colaborador.Colaborador_Key).then((response) => {
-           
-        })
-        }
-      },
-      async guardarHoras(){
-        var usuarioKey = this.usuarios.filter(usuario => usuario.Usuario_Mail == this.colaborador.Colaborador_Usuario)[0].Usuario_Key
-        let hora = {Colaborador_Hora_Usuario : usuarioKey,
-                    Colaborador_Hora_Dia : parseInt(this.colaborador_hora)}
-        await axios.patch(ip+"/colaboradores_horas/"+usuarioKey, hora)
-          .then((response) => {
-           
-        })
-      },
-      async guardarFunciones(){
-        
-      var pedido =
-         {
-          Colaborador_Funcion_Funcion_Key  : '',
-          Colaborador_Funcion_Descripcion : '',
-          Colaborador_Funcion_Colaborador_Key : '',
-          Usuario_Creacion : 1 ,
-          Usuario_Modificacion : 1,
-          Visible : 'X'
-          }
-          this.deleteFunciones();
-          	
-          
-          if (this.colaborador.Colaborador_Funciones != null){
-            for ( var i  = 0 ; i < (this.colaborador.Colaborador_Funciones).length ; i++){
-              if(typeof(this.colaborador.Colaborador_Categoria) === "number"){
-                var key = this.colaborador.Colaborador_Funciones[i].id
-              }
-              else{
-                var key = this.colaborador.Colaborador_Funciones[i]
-              }
-              pedido.Colaborador_Funcion_Funcion_Key = key,
-              pedido.Colaborador_Funcion_Descripcion = this.colaborador.Colaborador_Codigo + ' - ' + (this.funciones[key-1]).cod,
-              pedido.Colaborador_Funcion_Colaborador_Key = this.colaborador.Colaborador_Key;
-              await axios.post(ip+'/colaboradores_funciones/', pedido).then((response) => response  )
-                
-                 
-            }            
-          }
-      },
-    
-    cleanStore(){
-      this.$store.replaceState({
-        cliente: [],
-        clienteTipo:0,
-        proyecto: [],
-        clienteFiscal: [],
-        empresa: []})
+
+      async loadEmpresas(){
+      await axios.get(ip+"/empresas/enabled/"+this.colaborador.Empresa.Empresa_Key).then((response) => {
+        this.empresas = response.data;
+      })
     },
+     
+    async loadUnidadesDeNegocio(){
+      await axios.get(ip+"/unidades_negocios/enabled/"+this.colaborador.Unidad_Negocio.Unidad_Negocio_Key).then((response) => {
+        this.unidadesNegocio = response.data;
+      })
+    },
+
+    async loadColaboradoresFunciones(){
+      var funcionKeys = this.colaborador.Funcion.map(funcion => funcion.Colaborador_Funcion_Funcion_Key);
+      var funcionKeysStr = funcionKeys.join(',')
+       await axios.get(ip+"/funciones/enabled/"+funcionKeysStr).then((response) => {
+          this.funciones = response.data;
+          this.colaborador.Funciones = this.funciones.filter(funcion => funcionKeys.includes(funcion.Funcion_Key));
+          this.funcionesOriginales = this.colaborador.Funciones
+          this.loader = false
+        });
+      },
+   
+
     seguridadColaboradoresEditar(){
        if(!localStorage.login){
           return false
@@ -653,131 +574,73 @@ export default {
         } else
         return localStorage.Permisos.includes('P41') || localStorage.Permisos.includes('P42') 
     },
-    asignarKeys(){
-      let regionKey = this.regiones.filter(region => region.Region_Descripcion == this.colaborador.Colaborador_Region)[0].Region_Key
-      let areaKey = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Descripcion == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Key
-      let puestoKey = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Descripcion == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Key
-      let empresaKey = this.empresas.filter(empresa => empresa.Empresa_Descripcion == this.colaborador.Colaborador_Empresa)[0].Empresa_Key;
-      let calendarioKey = this.calendarios.filter(calendario => calendario.Calendario_Descripcion == this.colaborador.Colaborador_Calendario)[0].Calendario_Key;
-      let tipoKey = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Descripcion == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Key;
-      let responsableKey = this.colaboradores.filter(colaborador => colaborador.Colaborador_Descripcion == this.colaborador.Colaborador_Responsable)[0].Colaborador_Key;     
-      this.colaborador.Colaborador_Region = regionKey;
-      this.colaborador.Colaborador_Area = areaKey;
-      this.colaborador.Colaborador_Empresa = empresaKey;
-      this.colaborador.Colaborador_Puesto = puestoKey;
-      this.colaborador.Colaborador_Calendario = calendarioKey
-      this.colaborador.Colaborador_Tipo = tipoKey
-      this.colaborador.Colaborador_Responsable = responsableKey
-      this.colaborador.Colaborador_Usuario = this.originalKeyUser
-      
-      //Formateo de datos de enums
-      //(Si no se modifica el Ceco, el tipo de datos asignado al select es un diccionario)
-      if (typeof(this.colaborador.Colaborador_Ceco) === "number"){
-        this.colaborador.Ceco_Key = this.colaborador.Colaborador_Ceco
-      }
-      else{
-        this.colaborador.Ceco_Key = this.colaborador.Colaborador_Ceco.cod
-      }
-      //(Si no se modifica la categoría, el tipo de datos asignado al select es un diccionario)
-      if (typeof(this.colaborador.Colaborador_Categoria) === "number"){
-        this.colaborador.Colaborador_Categoria_Key = this.colaborador.Colaborador_Categoria
-      }
-      else{
-        this.colaborador.Colaborador_Categoria_Key  = this.colaborador.Colaborador_Categoria.cod
-      }
-      //Habilitar/Deshabilitar
-      if(this.switch1){
-        this.colaborador.Visible = 'X'
-      }
-      else{
-        this.colaborador.Visible = null
-      }
-      
-    },
 
-    validatedFields(col){
-    var  colaborador = col
-      if(colaborador.Colaborador_Responsable===null && colaborador.Colaborador_Key!==41){
-        colaborador.Colaborador_Responsable= 436
-    }
-    if(colaborador.Colaborador_Region === null){
-      colaborador.Colaborador_Region = 1
-    }
-    if(colaborador.Colaborador_Area ===null){
-      colaborador.Colaborador_Area = 1 
-    }
-    if(colaborador.Colaborador_Puesto ===null){
-      colaborador.Colaborador_Puesto = 1 
-    }
-    if(colaborador.Colaborador_Tipo ===null){
-      colaborador.Colaborador_Tipo = 1 
-    }
-    if(colaborador.Colaborador_Empresa ===null){
-      colaborador.Colaborador_Empresa = 140
-    }
-    if(colaborador.Colaborador_Estado ===null){
-      colaborador.Colaborador_Estado = 2
-    }
-    if(colaborador.Colaborador_Codigo ===null){
-      colaborador.Colaborador_Codigo = "No tiene"
-    }
-    if(colaborador.Colaborador_Descripcion ===null){
-      colaborador.Colaborador_Descripcion = "No tiene"
-    }
-    if(colaborador.Colaborador_Unidad_Negocio ===null){
-      colaborador.Colaborador_Unidad_Negocio = 1
-    }
-    if(colaborador.Colaborador_Calendario ===null){
-      colaborador.Colaborador_Calendario = 1
-    }
-    if(colaborador.Colaborador_Ceco_key ===null){
-      colaborador.Colaborador_Ceco_key = 1
-    }
-    if(colaborador.Colaborador_Categoria_Key ===null){
-      colaborador.Colaborador_Calendario = 6
-    }
-    return colaborador
-    },
-    asignarDescripciones(){
-      this.colaborador = _.cloneDeep(this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.$store.state.colaborador.id))[0]
-      this.colaborador = this.validatedFields(this.colaborador)
-      this.originalKeyUser = this.colaborador.Colaborador_Usuario
-      let regionDescripcion = this.regiones.filter(region => region.Region_Key == this.colaborador.Colaborador_Region)[0].Region_Descripcion;
-      let colaboradorAreaDescripcion = this.colaboradoresAreas.filter(area => area.Colaborador_Area_Key == this.colaborador.Colaborador_Area)[0].Colaborador_Area_Descripcion;
-      let colaboradorPuestoDescripcion = this.colaboradoresPuestos.filter(puesto => puesto.Colaborador_Puesto_Key == this.colaborador.Colaborador_Puesto)[0].Colaborador_Puesto_Descripcion;
-      let empresaDescripcion = this.empresas.filter(empresa => empresa.Empresa_Key == this.colaborador.Colaborador_Empresa)[0].Empresa_Descripcion;
-      let calendarioDescripcion = this.calendarios.filter(calendario => calendario.Calendario_Key == this.colaborador.Colaborador_Calendario)[0].Calendario_Descripcion;
-      let tipoDescripcion = this.tipos.filter(tipo => tipo.Tipo_Colaborador_Key == this.colaborador.Colaborador_Tipo)[0].Tipo_Colaborador_Descripcion;
-      let responsableDescripcion = this.colaboradores.filter(colaborador => colaborador.Colaborador_Key == this.colaborador.Colaborador_Responsable)[0].Colaborador_Descripcion;
-      let usuarioDescripcion = this.usuarios.filter(usuario => usuario.Usuario_Key == this.colaborador.Colaborador_Usuario)[0].Usuario_Mail
-      
-      this.colaborador.Colaborador_Region = regionDescripcion;
-      this.colaborador.Colaborador_Area = colaboradorAreaDescripcion;
-      this.colaborador.Colaborador_Empresa = empresaDescripcion;
-      this.colaborador.Colaborador_Puesto = colaboradorPuestoDescripcion;
-      this.colaborador.Colaborador_Calendario = calendarioDescripcion
-      this.colaborador.Colaborador_Tipo = tipoDescripcion
-      this.colaborador.Colaborador_Responsable = responsableDescripcion
-      this.colaborador.Colaborador_Usuario = usuarioDescripcion
-      this.colaborador_hora = this.$store.state.colaborador.horas
-      this.colaborador.Usuario_Modificacion = localStorage.usuario_id
-      this.originalCodigo = this.colaborador.Colaborador_Codigo
-      this.colaborador.Colaborador_Ceco = { ceco: this.Cecoitems[this.colaborador.Ceco_Key - 1].ceco, cod: this.colaborador.Ceco_Key }
-      this.colaborador.Colaborador_Categoria = { cat: this.Catitems[this.colaborador.Colaborador_Categoria_Key - 1].cat, cod: this.colaborador.Colaborador_Categoria_Key }
-      
-      if(this.colaborador.Visible === 'X'){
-        this.switch1 = true;
-      }     
-    },
-    asignarFunciones(){
-      var funciones = []
-      if(this.colaborador.Funcion.length >= 1){
-        for(var i = 0 ; i < this.colaborador.Funcion.length ; i++){
-          funciones.push(this.funciones.filter(f => f.id == this.colaborador.Funcion[i].Colaborador_Funcion_Funcion_Key)[0])
-        }
-       this.colaborador.Colaborador_Funciones = funciones
-      }
-    },
+    guardar() {
+          console.log(this.colaborador)
+          this.colaborador.Usuario_Modificacion = parseInt(localStorage.usuario_id)
+          
+          if (this.switch1){
+            this.colaborador.Visible = 'X'
+          }
+          else{
+            this.colaborador.Visible = null
+          }
+
+          axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Key, this.colaborador).then(
+              this.guardarfunciones(),
+              axios.patch(ip+"/colaboradores_horas/colab/"+this.colaborador.Horas.Colaborador_Hora_Key, this.colaborador).then(
+                this.showSuccessDialog()
+            )
+          )
+
+      },
+
+      guardarfunciones(){
+        const colaboradorFunciones = this.colaborador.Funciones;
+          const newFunciones = colaboradorFunciones.filter(colaboradorFuncion =>
+            !this.funcionesOriginales.some(
+              funcionOriginal => funcionOriginal.Funcion_Key === colaboradorFuncion.Funcion_Key
+            )
+          );
+
+          const deletedFunciones = this.funcionesOriginales.filter(funcionOriginal =>
+            !colaboradorFunciones.some(
+              colaboradorFuncion => colaboradorFuncion.Funcion_Key === funcionOriginal.Funcion_Key
+            )
+          );
+
+          if (newFunciones.length > 0) {
+            for (let i=0; i < newFunciones.length; i++) {
+              var newColaboradorFuncion = {
+                Colaborador_Funcion_Funcion_Key: newFunciones[i].Funcion_Key,
+                Colaborador_Funcion_Descripcion: this.colaborador.Colaborador_Codigo + ' - ' + newFunciones[i].Funcion_Codigo,
+                Colaborador_Funcion_Colaborador_Key: this.colaborador.Colaborador_Key,
+                Usuario_Creacion: parseInt(localStorage.usuario_id)
+              }
+              axios.post(ip+"/colaboradores_funciones/", newColaboradorFuncion);
+            }
+          }
+
+
+          if (deletedFunciones.length > 0) {
+            for (let i=0; i < deletedFunciones.length; i++) {
+              const funcion = this.colaborador.Funcion.find(obj => obj.Colaborador_Funcion_Funcion_Key === deletedFunciones[i].Funcion_Key);
+              console.log(funcion)
+              axios.delete(ip+"/colaboradores_funciones/"+ funcion.Colaborador_Funcion_Key);
+            }
+          }
+      },
+
+      showSuccessDialog(){
+            const alertElement = document.querySelector('.alert');
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                this.loader = true
+                window.location.href = '/colaboradoresHierarchy';
+            }, 3000);
+        }, 
+
+   
     back(){
       this.$router.push({path:'/colaboradoresHierarchy'})
     }

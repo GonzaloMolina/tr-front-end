@@ -19,18 +19,92 @@
           <v-list-group
             :value="true"
             prepend-icon="mdi-account-circle"
-            v-if="accesoPanelAdministracion()"
+            v-if="accesoPanelColaborador()"
             no-action
-            >
-            
-            <template v-slot:activator >
-              <v-list-item-content>
-                <v-list-item-title>Administración</v-list-item-title>
-              </v-list-item-content>
-            </template>
+              >             
+              <template v-slot:activator >
+                <v-list-item-content>
+                  <v-list-item-title>Colaborador</v-list-item-title>
+                </v-list-item-content>
+              </template>
+              
+        <v-list-item link v-if="checkSeguridad('P104')">
+                <v-list-item-action >
+                  <v-icon>mdi-table-account</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/categorias">Categorias</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+                <v-list-item link v-if="checkSeguridad('P41')">
+                  <v-list-item-action>
+                    <v-icon>mdi-clipboard-account</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title> <router-link to="/colaboradoresHierarchy">Colaboradores</router-link> </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item> 
+                  <v-list-item link v-if="checkSeguridad('P114')">
+                  <v-list-item-action>
+                    <v-icon>mdi-account-settings</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-content>
+                    <v-list-item-title style="white-space: normal;"> 
+                      <router-link to="/funciones">Funciones</router-link>
+                    </v-list-item-title>
+                  </v-list-item-content>
+              </v-list-item>
+              <v-list-item link v-if="checkSeguridad('P99')">
+                <v-list-item-action>
+                  <v-icon>mdi-smart-card</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/puestos">Puestos</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P109')">
+                <v-list-item-action>
+                  <v-icon>mdi-map-marker-account-outline</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/tiposcolaboradores">Tipos de Colaboradores</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item> 
+            <v-list-item link v-if="checkSeguridad('P40')">
+                <v-list-item-action>
+                  <v-icon>mdi-account-key</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/usuariosTable">Usuarios</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            </v-list-group>
 
-            <v-list-item link
-            v-if="SeguridadAdministracionCliente()">
+            <v-list-group
+            :value="true"
+            prepend-icon="mdi-layers-triple"
+            v-if="accesoPanelProyectos()"
+            no-action>
+              <template v-slot:activator>
+                <v-list-item-title>Proyectos</v-list-item-title>
+              </template>
+              <v-list-item link v-if="checkSeguridad('P79')"> 
+                <v-list-item-action>
+                  <v-icon>mdi-arrow-decision</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/alcances">Alcances</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>   
+              <v-list-item link v-if="checkSeguridad('P9')">
               <v-list-item-action>
                 <v-icon>mdi-account-group</v-icon>
               </v-list-item-action>
@@ -40,18 +114,125 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-
-            <!--v-show="SeguridadAdministracionUsuarios()"-->
-            <v-list-item link
-            v-if="SeguridadColaboradores()"
-            >
+            <v-list-item link v-if="checkSeguridad('P17')">
                 <v-list-item-action>
-                  <v-icon>mdi-clipboard-account</v-icon>
+                  <v-icon>mdi-home-modern</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                  <v-list-item-title> <router-link to="/colaboradoresHierarchy">Colaboradores</router-link> </v-list-item-title>
+                  <v-list-item-title> <router-link to="/empresasTable">Empresas</router-link> </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P94')">
+                <v-list-item-action>
+                  <v-icon>mdi-factory</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/industrias">Industrias</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P84')">
+                <v-list-item-action>
+                  <v-icon>mdi-currency-usd</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/monedas">Monedas</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item> 
+            <v-list-item link v-if="checkSeguridad('P89')">
+                <v-list-item-action>
+                  <v-icon>mdi-map</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/regiones">Regiones</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item> 
+
+            <v-list-item link v-if="checkSeguridad('P49')">
+                <v-list-item-action>
+                  <v-icon>mdi-tools</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/tecnologias">Tecnologías</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P69')">
+                <v-list-item-action>
+                  <v-icon>mdi-ballot</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/proyectostipos">Tipos de Proyectos</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P65')">
+                <v-list-item-action>
+                  <v-icon>mdi-briefcase</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/unidadesnegocio">Unidades de Negocio</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            </v-list-group>
+
+            <v-list-group
+            :value="true"
+            prepend-icon="mdi-office-building"
+            v-if="accesoPanelOrganizacion()"
+            no-action>
+              <template v-slot:activator>
+                <v-list-item-title>Organización</v-list-item-title>
+              </template>
+              
+            <v-list-item link v-if="checkSeguridad('P74')">
+                <v-list-item-action>
+                  <v-icon>mdi-domain</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"> 
+                    <router-link to="/areas">Areas</router-link>
+                  </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P54')">
+                <v-list-item-action>
+                  <v-icon>mdi mdi-checkbook</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/cecos">CECO</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P25')">
+                <v-list-item-action>
+                  <v-icon>mdi-calendar</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/tiemposCalendar">Tiempos</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P59')">
+                <v-list-item-action>
+                  <v-icon>mdi-earth</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title> <router-link to="/paises">Paises</router-link> </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            </v-list-group>
+
+
+
+            <!--v-show="SeguridadAdministracionUsuarios()"-->
+
 
             <v-list-item link
             v-if="SeguridadAdministracionTareas()">
@@ -64,50 +245,6 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-
-            <v-list-item link
-            v-if="SeguridadAdministracionEmpresas()">
-                <v-list-item-action>
-                  <v-icon>mdi-home-modern</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title> <router-link to="/empresasTable">Empresas</router-link> </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link
-            v-show="SeguridadAdministracionTiempos()">
-                <v-list-item-action>
-                  <v-icon>mdi-calendar</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title> <router-link to="/tiemposCalendar">Tiempos</router-link> </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link
-            v-show="SeguridadAdministracionUsuarios()"
-            >
-                <v-list-item-action>
-                  <v-icon>mdi-account-key</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title> <router-link to="/usuariosTable">Usuarios</router-link> </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link
-            v-show="SeguridadAdministracionTecnologias()"
-            >
-                <v-list-item-action>
-                  <v-icon>mdi-tools</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title> <router-link to="/tecnologias">Tecnologías</router-link> </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-
-          </v-list-group>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -169,57 +306,41 @@ export default {
         return localStorage.Permisos.includes('P1')
       },
 
-      accesoPanelAdministracion(){
+      accesoPanelColaborador(){
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P5') || localStorage.Permisos.includes('P6') ||
-        localStorage.Permisos.includes('P7') || localStorage.Permisos.includes('P8') ||
-        localStorage.Permisos.includes('P9') || localStorage.Permisos.includes('P10') ||
-        localStorage.Permisos.includes('P11') || localStorage.Permisos.includes('P12') ||
-        localStorage.Permisos.includes('P13') || localStorage.Permisos.includes('P14') ||
-        localStorage.Permisos.includes('P15') || localStorage.Permisos.includes('P16') ||
-        localStorage.Permisos.includes('P17') || localStorage.Permisos.includes('P18') || 
-        localStorage.Permisos.includes('P19') || localStorage.Permisos.includes('P20') || 
-        localStorage.Permisos.includes('P21') ||
-        localStorage.Permisos.includes('P22') || localStorage.Permisos.includes('P23') ||
-        localStorage.Permisos.includes('P24') || localStorage.Permisos.includes('P25') || 
-        localStorage.Permisos.includes('P26') ||
-        localStorage.Permisos.includes('P27') || localStorage.Permisos.includes('P28') ||
-        localStorage.Permisos.includes('P29') || localStorage.Permisos.includes('P30') ||
-        localStorage.Permisos.includes('P31') || localStorage.Permisos.includes('P32') ||
-        localStorage.Permisos.includes('P49')
+        return localStorage.Permisos.includes('P104') || localStorage.Permisos.includes('P41')
+        ||  localStorage.Permisos.includes('P114') ||  localStorage.Permisos.includes('P99') ||
+        localStorage.Permisos.includes('P109') ||  localStorage.Permisos.includes('P40')
       },
 
-      SeguridadAdministracionCliente(){
+      accesoPanelProyectos(){
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P5') || localStorage.Permisos.includes('P6') ||
-        localStorage.Permisos.includes('P7') || localStorage.Permisos.includes('P8') ||
-        localStorage.Permisos.includes('P9') || localStorage.Permisos.includes('P10') ||
-        localStorage.Permisos.includes('P11') || localStorage.Permisos.includes('P12')
+        return localStorage.Permisos.includes('P79') || localStorage.Permisos.includes('P9')
+        ||  localStorage.Permisos.includes('P17') ||  localStorage.Permisos.includes('P94') ||
+        localStorage.Permisos.includes('P84') ||  localStorage.Permisos.includes('P89') ||
+        localStorage.Permisos.includes('P49') || localStorage.Permisos.includes('P69') ||
+        localStorage.Permisos.includes('P65')
       },
 
-      SeguridadAdministracionEmpresas(){
+      accesoPanelOrganizacion(){
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P13') || localStorage.Permisos.includes('P14') ||
-        localStorage.Permisos.includes('P15') || localStorage.Permisos.includes('P16') ||
-        localStorage.Permisos.includes('P17')
+        return localStorage.Permisos.includes('P74') || localStorage.Permisos.includes('P54')
+        ||  localStorage.Permisos.includes('P25') ||  localStorage.Permisos.includes('P59') 
       },
 
-      SeguridadAdministracionProyectos(){
+      checkSeguridad(codigo){
         if(!localStorage.login){
           return false
         } else
-        return localStorage.Permisos.includes('P18') || localStorage.Permisos.includes('P19') ||
-        localStorage.Permisos.includes('P20') || localStorage.Permisos.includes('P21') ||
-        localStorage.Permisos.includes('P22') || localStorage.Permisos.includes('P23') ||
-        localStorage.Permisos.includes('P24')
+        return localStorage.Permisos.includes(codigo)
       },
-      
+
       SeguridadAdministracionTareas(){
         if(!localStorage.login){
           return false
@@ -258,6 +379,14 @@ export default {
           return false
         } else
         return localStorage.Permisos.includes('P49') || localStorage.Permisos.includes('P50') 
+               
+      },
+
+      SeguridadAdministracionUnidadesNegocios(){
+        if(!localStorage.login){
+          return false
+        } else
+        return localStorage.Permisos.includes('P64') || localStorage.Permisos.includes('P65') 
                
       },
 
