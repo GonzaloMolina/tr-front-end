@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import help from '../components/Help/Help.vue'
 import clientesTable from '../components/ABMS/Clientes/clientesTable.vue'
 import createProyecto from '../components/ABMS/Proyectos/createProyecto.vue'
 import editProyecto from '../components/ABMS/Proyectos/editProyecto.vue'
@@ -17,9 +18,30 @@ import usuariosTable from '../components/ABMS/Usuarios/usuariosTable.vue'
 import colaboradoresHierarchy from '../components/ABMS/Colaboradores/colaboradoresHierarchy.vue'
 import editColaborador from '../components/ABMS/Colaboradores/editColaborador.vue'
 import editUsuario from '../components/ABMS/Usuarios/editUsuario.vue'
+import paisesTable from '../components/ABMS/Paises/paisesTable.vue'
+import cecosTable from '../components/ABMS/Ceco/cecosTable.vue'
 import tecnologiasTable from '../components/ABMS/Tecnologias/tecnologiasTable.vue'
 import editTecnologia from '../components/ABMS/Tecnologias/editTecnologia.vue'
 import createTecnologia from '../components/ABMS/Tecnologias/createTecnologia.vue'
+import proyectostiposTable from '../components/ABMS/Proyectos-Tipos/ProyectosTiposTable.vue'
+import editProyectosTipo from '../components/ABMS/Proyectos-Tipos/editProyectosTipo.vue'
+import createProyectosTipo from '../components/ABMS/Proyectos-Tipos/createProyectosTipo.vue'
+import unidadNegocioTable from '../components/ABMS/UnidadesNegocio/unidadNegocioTable.vue'
+import areasTable from '../components/ABMS/Colaboradores-Areas/areasTable.vue'
+import alcancesTable from '../components/ABMS/Proyectos-Alcances/alcancesTable.vue'
+import monedasTable from '../components/ABMS/Monedas/monedasTable.vue'
+import regionesTable from '../components/ABMS/Regiones/regionesTable.vue'
+import editRegion from '../components/ABMS/Regiones/editRegion.vue'
+import createRegion from '../components/ABMS/Regiones/createRegion.vue'
+import industriasTable from '../components/ABMS/Industrias/industriasTable.vue'
+import puestosTable from '../components/ABMS/Colaboradores-Puestos/puestosTable.vue'
+import editPuesto from '../components/ABMS/Colaboradores-Puestos/editPuesto.vue'
+import createPuesto from '../components/ABMS/Colaboradores-Puestos/createPuesto.vue'
+import categoriasTable from '../components/ABMS/Colaboradores-Categorias/categoriasTable.vue'
+import tiposcolaboradoresTable from '../components/ABMS/Colaboradores-Tipos/tiposColaboradoresTable.vue'
+import funcionesTable from '../components/ABMS/Funciones/funcionesTable.vue'
+import tiposEmpresasTable from '../components/ABMS/Empresas-Tipos/empresasTiposTable.vue'
+
 
 Vue.use(VueRouter)
 
@@ -144,6 +166,18 @@ Vue.use(VueRouter)
     props: true
   },
   {
+    path: '/paises',
+    name: 'paisesTable',
+    component: paisesTable,
+    props: true
+  },
+ {
+    path: '/cecos',
+    name: 'cecosTable',
+    component: cecosTable,
+    props: true
+   },
+  {
     path: '/tecnologias',
     name: 'tecnologiasTable',
     component: tecnologiasTable,
@@ -160,9 +194,122 @@ Vue.use(VueRouter)
     name: 'createTecnologia',
     component: createTecnologia,
     props: true
-  }
+  },
+  {
 
-
+    path: '/proyectostipos',
+    name: 'proyectostipos',
+    component: proyectostiposTable,
+    props: true
+  },
+  {
+    path: '/editProyectosTipo',
+    name: 'editProyectosTipo',
+    component: editProyectosTipo,
+    props: true
+  },
+  {
+    path: '/createProyectosTipo',
+    name: 'createProyectosTipo',
+    component: createProyectosTipo,
+    props: true
+  },
+  {
+    path: '/unidadesnegocio',
+    name: 'unidadesNegocio',
+    component: unidadNegocioTable,
+    props: true
+  },
+  {
+    path: '/areas',
+    name: 'areas',
+    component: areasTable,
+    props: true
+  },
+  {
+    path: '/alcances',
+    name: 'alcances',
+    component: alcancesTable,
+    props: true
+  },
+  {
+    path: '/monedas',
+    name: 'monedas',
+    component: monedasTable,
+    props: true
+  }, 
+  {
+    path: '/regiones',
+    name: 'regiones',
+    component: regionesTable,
+    props: true
+  }, 
+  {
+    path: '/editRegion',
+    name: 'editRegion',
+    component: editRegion,
+    props: true
+  }, 
+  {
+    path: '/createRegion',
+    name: 'createRegion',
+    component: createRegion,
+    props: true
+  }, 
+  {
+    path: '/industrias',
+    name: 'industrias',
+    component: industriasTable,
+    props: true
+  }, 
+  {
+    path: '/puestos',
+    name: 'puestos',
+    component: puestosTable,
+    props: true
+  }, 
+  {
+    path: '/editPuesto',
+    name: 'editPuesto',
+    component: editPuesto,
+    props: true
+  }, 
+  {
+    path: '/createPuesto',
+    name: 'createPuesto',
+    component: createPuesto,
+    props: true
+  }, 
+  {
+    path: '/categorias',
+    name: 'categorias',
+    component: categoriasTable,
+    props: true
+  }, 
+  {
+    path: '/tiposcolaboradores',
+    name: 'tiposcolaboradores',
+    component: tiposcolaboradoresTable,
+    props: true
+  }, 
+  {
+    path: '/funciones',
+    name: 'funciones',
+    component: funcionesTable,
+    props: true
+  }, 
+  {
+    path: '/help',
+    name: 'help',
+    component: help,
+    props: true
+  }, 
+  {
+    path: '/empresasTipos',
+    name: 'empresasTipos',
+    component: tiposEmpresasTable,
+    props: true
+  }, 
 
 ]
 

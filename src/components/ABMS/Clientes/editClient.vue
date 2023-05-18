@@ -68,7 +68,7 @@
               v-model="cliente.Cliente_Codigo"
               label="Código"
               :disabled="permisoGuardar()"
-              :rules="[rules.checkCode,rules.counterCodigo]"
+              :rules="[rules.checkCode]"
               placeholder="Escribe..."
             ></v-text-field>
             </b-col>
@@ -374,7 +374,6 @@ export default {
 
     //Reglas de agregado y editado
     rules: {
-      counterCodigo: counterCodigo,
       counterDescripcion: counterDescripcion,
       checkCode: checkCode,
       checkEmail: checkEmail,
@@ -548,7 +547,6 @@ export default {
 
     //Borrado logico de proyecto
     desactivarProyecto(item){ 
-      console.log(this.cliente.Proyectos)
       this.cliente.Proyectos = this.cliente.Proyectos.filter(proyecto => proyecto.Proyecto_Codigo !== item.Proyecto_Codigo);
       var visible = {Visible: ''}
       item.Visible = ''
@@ -627,7 +625,6 @@ export default {
       this.cliente = this.$store.state.cliente[0];
       this.cliente.ClientesFiscales = this.getClientesFiscales()
       this.getProyectos()
-      console.log(this.cliente.Proyectos)
 
       this.logo = this.$store.state.cliente[0].Cliente_Logo
       this.defaultCode = this.$store.state.cliente[0].Cliente_Codigo;

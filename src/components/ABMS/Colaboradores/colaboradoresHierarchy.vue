@@ -178,7 +178,7 @@ btnEditarPermisoAccion(){
 async enableorunable(){
  var colaborator = this.gridApi.getSelectedRows()[0]
 
- if(colaborator.Visible == 'X'){
+ if(colaborator.visible == 'X'){
     colaborator.Visible = '';
     colaborator.Usuario_Habilitado = '';
     colaborator.Colaborador_Estado = 2;

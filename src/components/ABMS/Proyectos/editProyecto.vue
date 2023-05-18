@@ -42,7 +42,7 @@
                     v-model="proyecto.Proyecto_Codigo"
                     label="Código"
                     :disabled="permisoActualizarProyecto()"
-                    :rules="[rules.checkCode,rules.counterCodigo]"
+                    :rules="[rules.checkCode]"
                     placeholder="Escribe..."
                   ></v-text-field>
                   </b-col>
@@ -308,7 +308,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
       newsletter: null,
       rules: {
         checkCode: checkCode,
-        counterCodigo: counterCodigo,
         counterDescripcion: counterDescripcion,
         counterReferentes: counterReferentes,
       },

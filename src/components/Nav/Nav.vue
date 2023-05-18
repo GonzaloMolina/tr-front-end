@@ -1,6 +1,6 @@
 <template>
 <v-content class="p-0">
-    <v-navigation-drawer v-if="checkNavBar" v-model="drawer" bottom temporary app>
+    <v-navigation-drawer v-if="checkNavBar  && this.$route.path != '/help'" v-model="drawer" bottom temporary app>
       <v-list dense nav >
         <v-list-item-group v-model="group" v-if="menuHamburguesaShow">
           <!-- Nueva carga de horas -->
@@ -120,6 +120,14 @@
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title> <router-link to="/empresasTable">Empresas</router-link> </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link v-if="checkSeguridad('P17')">
+                <v-list-item-action>
+                  <v-icon>mdi-home-city-outline</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title  style="white-space: normal;"> <router-link to="/empresasTipos">Tipos de empresas</router-link> </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link v-if="checkSeguridad('P94')">
@@ -250,7 +258,7 @@
     </v-navigation-drawer>
 
     <v-app-bar dark color="#1A5E86" app>
-      <v-app-bar-nav-icon v-if="this.$route.path != '/login'" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="this.$route.path != '/login' && this.$route.path != '/help'" @click.stop="drawer = !drawer" ></v-app-bar-nav-icon>
       <v-avatar size="42" tile>
         <img
           src="https://res.cloudinary.com/dpe3qq10k/image/upload/v1600779562/IconoBlanco_m2yto9.png"
@@ -259,8 +267,13 @@
       </v-avatar>
 
       <v-toolbar-title color="white" style="margin-left:0.5rem;">SEIDOR Analytics</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn v-if="this.$route.path == '/login'" icon @click="goToHelp" title="Ayuda">
+        <v-icon>mdi-help-circle-outline</v-icon>
+      </v-btn>
 
-      <v-layout v-if="this.$route.path != '/login'" justify-end>
+
+      <v-layout v-if="this.$route.path != '/login' && this.$route.path != '/help'" justify-end>
         <v-card @click="userPage" style="background: white;" >
           <v-title style="padding-right:1rem; padding-left:1.2rem; color:black;">{{colaboradorLogged}}</v-title>
           <v-avatar
@@ -287,6 +300,9 @@ export default {
         nombre_colaborador: '',
     }),
     methods:{
+      goToHelp() {
+        this.$router.push('/help');
+      },
 
       logout(){
         localStorage.clear();

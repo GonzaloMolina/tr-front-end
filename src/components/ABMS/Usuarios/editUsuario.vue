@@ -277,7 +277,7 @@ export default{
           this.usuario.Usuario_Habilitado = 'X'
         }
         else{
-            this.usuario.Usuario_Habilitado = null
+            this.usuario.Usuario_Habilitado = ''
         }
 
         await axios.patch(ip+"/usuarios/"+ this.usuario_id, this.usuario)

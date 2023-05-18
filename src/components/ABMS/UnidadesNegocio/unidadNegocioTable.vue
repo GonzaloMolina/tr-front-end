@@ -204,7 +204,7 @@
         }, 
         disableUN(item){
           item.Usuario_Modificacion = parseInt(localStorage.usuario_id)
-          item.Visible = null
+          item.Visible = '' 
           axios.patch(ip+"/unidades_negocios/"+item.Unidad_Negocio_Key, item)
         },
         // PERMISOS

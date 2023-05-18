@@ -83,7 +83,7 @@
 
         disableTechnology(item){
             item.Usuario_Modificacion = localStorage.usuario_id
-            item.Visible = null
+            item.Visible = ''
             axios.patch(ip+"/tecnologias/"+item.Tecnologia_Key, item)
         },
 

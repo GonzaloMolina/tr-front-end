@@ -84,7 +84,7 @@
 
         disableTipoProyecto(item){
             item.Usuario_Modificacion = localStorage.usuario_id
-            item.Visible = null
+            item.Visible = ''
             axios.patch(ip+"/proyectos_tipos/"+item.Proyecto_Tipo_Key, item)
         },
 

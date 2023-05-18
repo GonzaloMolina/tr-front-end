@@ -583,7 +583,7 @@ export default {
             this.colaborador.Visible = 'X'
           }
           else{
-            this.colaborador.Visible = null
+            this.colaborador.Visible = ''
           }
 
           axios.patch(ip+"/colaboradores/"+this.colaborador.Colaborador_Key, this.colaborador).then(

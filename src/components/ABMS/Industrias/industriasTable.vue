@@ -207,7 +207,7 @@
         }, 
         disable(item){
           item.Usuario_Modificacion = parseInt(localStorage.usuario_id)
-          item.Visible = null
+          item.Visible = ''
           axios.patch(ip+"/industrias/"+item.Industria_Key, item)
         },
 
