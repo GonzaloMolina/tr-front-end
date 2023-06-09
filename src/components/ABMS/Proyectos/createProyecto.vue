@@ -2,6 +2,7 @@
   <v-content>
     <v-container fluid>
       <loader :loader="loader" style="position: fixed;"/>
+      <div v-if="!loader">
         <h3 class="mt-3">Cliente: {{ this.$store.state.cliente[0].Cliente_Descripcion}}</h3>
         <b-form-row class="mt-3 mb-n4">
           <b-col cols="5">
@@ -42,7 +43,7 @@
                     dense
                     v-model="proyecto.Proyecto_Codigo"
                     label="Código"
-                    :rules="[rules.checkCode,rules.counterCodigo]"
+                    :rules="[rules.checkCode]"
                     placeholder="Escribe..."
                   ></v-text-field>
                   </b-col>
@@ -157,14 +158,14 @@
                     <v-select
                     dense
                     outlined
-                    v-model="proyecto.Ceco_Key"
-                    :items="Cecoitems"
-                    item-text="ceco"
-                    item-value="cod"
+                    v-model="proyecto.Ceco"
+                    :items="cecos"
                     label="CECO"
                     @blur="validateForm"
                     :disabled="proyecto.Tipo.Proyecto_Tipo_Beneficio == 'No Aplica'"
                     placeholder="Selecciona..."
+                    :return-object="true"
+                    item-text="Ceco_Descripcion"
                     ></v-select>
                   </b-col>
                 </b-form-row>
@@ -278,7 +279,7 @@
             centered
           > Se han guardado los cambios.
           </v-snackbar>
-
+        </div>
     </v-container>
   </v-content>
 </template>
@@ -313,19 +314,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         checkEmpty: isFieldEmpty,
         checkSelection: isNotSelected
       },
-      Cecoitems: [
-          { ceco: 'No Aplica', cod: 1 },
-          { ceco: 'Administracion', cod: 2 },
-          { ceco: 'Preventa', cod: 3 },
-          { ceco: 'Comercial', cod: 4 },
-          { ceco: 'Controlling', cod: 5 },
-          { ceco: 'IT', cod: 6 },
-          { ceco: 'RRHH', cod: 7 },
-          { ceco: 'Estructura', cod: 8 },
-          { ceco: 'Marketing', cod: 9 },
-          { ceco: 'Consultoria', cod: 10 },
-          { ceco: 'Innovacion', cod: 11 },
-        ],
       newsletter: '',
       searchUnidadesNegocio: '',
       searchResponsables: '',
@@ -344,6 +332,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       monedas: [],
       tecnologias: [],
       proyectos:[],
+      cecos:[],
       //SEARCHBOX
       responsablesDescripciones: [],
       vendedoresDescripciones: [],
@@ -390,6 +379,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
       this.$store.state.ProyectoKey = null,
       this.$store.state.Tecnologias = []
       this.loadProyecto();
+      this.loadCecos();
       this.loadUnidades_Negocios();
       this.loadProyectosAlcances();
       this.loadProyectosTipos();
@@ -455,6 +445,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
             this.proyectos = response.data
           }).then((response) => {
             var proyectoGuardado = this.proyecto.Proyecto_Codigo
+            console.log(this.proyectos)
             if(this.proyectos.some(item => item.Proyecto_Codigo === this.proyecto.Proyecto_Codigo || item.Proyecto_Descripcion ===  this.proyecto.Proyecto_Descripcion)){
               alert('El proyecto ya existe para el cliente seleccionado')
               throw new Error('Proyecto existe')
@@ -582,6 +573,13 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
         this.tecnologias = response.data;
       });
     },
+
+    loadCecos(){
+        axios.get(ip+"/ceco/enabled/"+1)
+            .then(response => {
+                this.cecos = response.data
+            })
+      },
  
     // RESPONSABLES con usuario Sin Asignar
     loadResponsables(){
@@ -642,9 +640,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
           moneda.Moneda_Codigo == this.proyecto.Proyecto_Moneda)[0].Moneda_Key;
       }
 
-      if(this.proyecto.Ceco_Key == null){
-        this.proyecto.Ceco_Key = 1
-      }
       
       this.proyecto.Proyecto_Unidad_Negocio = keyUnidad_Negocio;
       this.proyecto.Proyecto_Facturable = this.asignarFacturable();
@@ -686,7 +681,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes,checkEmail,
           this.proyecto.Proyecto_Vendedor = this.vendedores.find(obj => obj.Colaborador_Usuario === 2);
           this.proyecto.Proyecto_Moneda = "N/A"
           this.proyecto.Proyecto_Facturable = false
-          this.proyecto.Ceco_Key = 1
+          this.proyecto.Ceco = this.cecos.find(obj => obj.Ceco_Key === 1);
           }
     },
      mounted() {

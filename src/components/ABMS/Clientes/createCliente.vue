@@ -46,7 +46,7 @@
         <b-col class="col-2 ">
             <b-form-row>
           <b-col class="p-0 mr-4 ">
-                  <v-btn :disabled="!isFormValid" @click="guardarCliente()" color="#2991C6" dark >Guardar</v-btn>
+                  <v-btn :disabled="!isFormValid" @click="evaluarGuardado()" color="#2991C6" dark >Guardar</v-btn>
             </b-col>
             <b-col class="p-0">
                 <v-btn @click="dialogCancelar = true" color="#ffa025" dark class="ml-3">Volver</v-btn>
@@ -67,7 +67,7 @@
               v-model="cliente.Cliente_Codigo"
               label="Código"
               :disabled="permisoGuardar()"
-              :rules="[rules.checkCode,rules.counterCodigo]"
+              :rules="[rules.checkCode, rules.checkIfCodeExists]"
               placeholder="Escribe..."
             ></v-text-field>
             </b-col>
@@ -369,6 +369,7 @@ import {checkCode,counterCodigo,counterDescripcion,checkEmail,isFieldEmpty, isNo
 export default {
   components: {loader},
   data: () => ({
+    codigos: [],
     isFormValid: false,
     //dialogo de logo
     clienteFueGuardado: false,
@@ -383,7 +384,7 @@ export default {
       checkCode: checkCode,
       checkEmail: checkEmail,
       checkEmpty: isFieldEmpty,
-      checkSelection: isNotSelected
+      checkSelection: isNotSelected,
     },
     //Razones Sociales y Proyectos para los datatable de un cliente
     headersRazonesSociales: [
@@ -422,6 +423,7 @@ export default {
     monedas: [],
     empresas: [],
     paises: [],
+ 
 
     //AUTOCOMPLETE
     entries: [],
@@ -452,10 +454,12 @@ export default {
     },
 
   created() {
+    
     this.initialize();
   },
   methods: {
     async initialize() {
+      
       //Carga de cliente vacio almacenado en vuex
       this.loadCliente();
       //Pedidos al back para la carga de los combos
@@ -464,6 +468,7 @@ export default {
       this.loadMonedas();
       this.loadEmpresas();
       this.loadPaises();
+      this.loadCodigos();
       //Este if se realiza para diferenciar el comportamiento de un nuevo cliente con uno que ya fue guardado y
       // esta listo para asignarle proyectos y clientes fiscales
       setTimeout(() => {
@@ -597,20 +602,30 @@ export default {
     // desde 0. El segundo if, es el guardado final, es el camino de vuelta, guarda clientes fiscales y regresa a la pantalla principal
     async evaluarGuardado(){
       if(this.$refs.form.validate()){
-        if(!this.clienteFueGuardado){
-          await this.guardarCliente(); //DISPARAR EVENTO DE LOADING
-        } else{
-          this.guardarClientesFiscales();
-          this.alert = true;
-          setTimeout(() => {this.alert = false
-          this.$router.push({path: "/clientesTable"})}, 2000)
+        console.log(this.cliente.Cliente_Codigo)
+        console.log(this.codigos)
+        const exists = this.codigos.some((item) => item.Cliente_Codigo == this.cliente.Cliente_Codigo);
+        console.log(exists)
+          if (!exists) {
+            if(!this.clienteFueGuardado){
+               await this.guardarCliente(); //DISPARAR EVENTO DE LOADING
+            } else{
+            this.guardarClientesFiscales();
+            this.alert = true;
+            setTimeout(() => {this.alert = false
+            this.$router.push({path: "/clientesTable"})}, 2000)
 
+            }
           }
+          else{
+            alert('No se ha podido crear. El código de Cliente ya existe')
+          }
+
+
       }
     },
     //Guardado de un cliente nuevo
     async guardarCliente() {
-      console.log(this.cliente)
       this.cliente.Usuario_Creacion = localStorage.usuario_id
       this.cliente.Usuario_Modificacion = localStorage.usuario_id
       var clienteGuardado = this.cliente.Cliente_Codigo
@@ -629,6 +644,12 @@ export default {
       })
       this.clienteFueGuardado = true;
       this.$store.state.clienteFueGuardado = true;
+    },
+
+    loadCodigos() {
+      axios.get(ip+"/clientes/codigos").then((response) => {
+          this.codigos = response.data;
+        });
     },
 
     //Pedidos a la API para combos

@@ -548,19 +548,17 @@ export default {
     //Borrado logico de proyecto
     desactivarProyecto(item){ 
       this.cliente.Proyectos = this.cliente.Proyectos.filter(proyecto => proyecto.Proyecto_Codigo !== item.Proyecto_Codigo);
-      var visible = {Visible: ''}
       item.Visible = ''
-      axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
+      axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, item)
       this.closeDialogProyecto()
     },
 
     //Activado logico de proyecto
     activarProyecto(item){
       const index = this.cliente.Proyectos.indexOf(item)
-      var visible = {Visible: 'X'}
       item.Visible = 'X'
       this.cliente.Proyectos.splice(index, 1, item)
-      axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, visible)
+      axios.patch(ip+"/proyectos/"+item.Proyecto_Codigo, item)
       .then((response) => {
         
       });

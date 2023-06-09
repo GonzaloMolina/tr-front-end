@@ -41,7 +41,8 @@ import categoriasTable from '../components/ABMS/Colaboradores-Categorias/categor
 import tiposcolaboradoresTable from '../components/ABMS/Colaboradores-Tipos/tiposColaboradoresTable.vue'
 import funcionesTable from '../components/ABMS/Funciones/funcionesTable.vue'
 import tiposEmpresasTable from '../components/ABMS/Empresas-Tipos/empresasTiposTable.vue'
-
+import createUsuario from '../components/ABMS/Usuarios/createUsuario.vue'
+import createColaborador from '../components/ABMS/Colaboradores/createColaborador.vue'
 
 Vue.use(VueRouter)
 
@@ -310,7 +311,18 @@ Vue.use(VueRouter)
     component: tiposEmpresasTable,
     props: true
   }, 
-
+  {
+    path: '/createUsuario',
+    name: 'createUsuarios',
+    component: createUsuario,
+    props: true
+  }, 
+  {
+    path: '/createColaborador',
+    name: 'createColaborador',
+    component: createColaborador,
+    props: true
+  }, 
 ]
 
 const router = new VueRouter({

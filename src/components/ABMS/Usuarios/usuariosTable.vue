@@ -17,6 +17,11 @@
         <template v-slot:top>
           <v-toolbar dense flat color="white">
             <v-toolbar-title>Usuarios</v-toolbar-title>
+            <router-link to="/createUsuario">
+                <v-btn class="ml-3" dark fab x-small color="#2991c6" >
+                  <v-icon dark>mdi-plus</v-icon>
+                </v-btn>
+              </router-link>
             <v-divider
               class="mx-4"
               inset

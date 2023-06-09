@@ -7,7 +7,12 @@
                <input style="border: 1px solid" type="text" id="filter-text-box" placeholder="Filtro..." v-on:input="onFilterTextBoxChanged()">
                <v-btn id= 'btn-colaborador' color="#2991C6" dark  :disabled="btnEditarPermisosLectura()" style="40rem" @click="editColab" > EDITAR </v-btn>
                <v-btn id= 'btn-colaborador' color="#2991C6" dark :disabled="btnEditarPermisosEditar()" style="40rem" @click="enableorunable"> ACTIVAR/DESACTIVAR </v-btn>
-           </div>
+               <router-link to="/createColaborador">
+                <v-btn class="ml-3" dark fab x-small color="#2991c6" >
+                  <v-icon dark>mdi-plus</v-icon>
+                </v-btn>
+              </router-link>
+              </div>
            <ag-grid-vue
            
            style="width: 80vw; height: 100%"

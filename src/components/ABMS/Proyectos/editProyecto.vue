@@ -154,13 +154,13 @@
                     <v-select
                     dense
                     outlined
-                    v-model="proyecto.Ceco_Key"
-                    :items="Cecoitems"
-                    item-text="ceco"
-                    item-value="cod"
+                    v-model="proyecto.Ceco"
+                    :items="cecos"
+                    item-text="Ceco_Descripcion"
                     label="CECO"
                     :disabled=" permisoActualizarProyecto()"
                     placeholder="Selecciona..."
+                    :return-object="true"
                     ></v-select>
                   </b-col>
                 </b-form-row>
@@ -340,19 +340,6 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
         Proyecto_Descripcion_EN: null,
         Proyecto_Observacion_EN: null,
       },
-      Cecoitems: [
-          { ceco: 'No Aplica', cod: 1 },
-          { ceco: 'Administracion', cod: 2 },
-          { ceco: 'Preventa', cod: 3 },
-          { ceco: 'Comercial', cod: 4 },
-          { ceco: 'Controlling', cod: 5 },
-          { ceco: 'IT', cod: 6 },
-          { ceco: 'RRHH', cod: 7 },
-          { ceco: 'Estructura', cod: 8 },
-          { ceco: 'Marketing', cod: 9 },
-          { ceco: 'Consultoria', cod: 10 },
-          { ceco: 'Innovacion', cod: 11 },
-        ],
       proyectoTecnologias: [],
       proyectoConDescripciones: {},
       //Elemento que se va a guardar con el UPDATE
@@ -367,6 +354,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
       tecnologias: [],
       responsables:[],
       vendedores:[],
+      cecos:[],
       //SEARCHBOX
       responsablesDescripciones: [],
       vendedoresDescripciones: [],
@@ -419,6 +407,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
     methods: {
         async initialize () {
         this.loadProyecto();
+        this.loadCecos();
         this.loadUnidades_Negocios();
         this.loadProyectosAlcances();
         this.loadProyectosTipos();
@@ -565,13 +554,20 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
           });
       },
 
-        loadUnidades_Negocios(){
-            axios.get(ip+"/unidades_negocios/descripciones")
+      loadCecos(){
+        axios.get(ip+"/ceco/enabled/"+this.proyecto.Ceco.Ceco_Key)
             .then(response => {
-                this.unidades_Negocio = response.data
-                this.unidades_NegocioDescripciones = response.data.map(unidad_negocio => unidad_negocio.Unidad_Negocio_Descripcion)
+                this.cecos = response.data
             })
-        },
+      },
+
+      loadUnidades_Negocios(){
+          axios.get(ip+"/unidades_negocios/descripciones")
+          .then(response => {
+              this.unidades_Negocio = response.data
+              this.unidades_NegocioDescripciones = response.data.map(unidad_negocio => unidad_negocio.Unidad_Negocio_Descripcion)
+          })
+      },
 
 
         //--
@@ -630,6 +626,7 @@ import {checkCode,counterCodigo,counterDescripcion,counterReferentes} from '../.
 
         //--
         async guardarProyecto(){
+          console.log("hello")
           var responsable = this.proyecto.Proyecto_Responsable
           var tipo = this.proyecto.Proyecto_Tipo
           this.assignKeys();
